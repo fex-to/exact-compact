@@ -24,16 +24,18 @@
 - [Usage](#usage)
 - [Exactness rules](#exactness-rules)
 - [Internationalization (i18n)](#internationalization-i18n)
-  - [What is morphology?](#what-is-morphology)
-  - [Registering a locale](#registering-a-locale)
-  - [Writing morphology rules](#writing-morphology-rules)
+   - [What is morphology?](#what-is-morphology)
+   - [Registering a locale](#registering-a-locale)
+   - [Writing morphology rules](#writing-morphology-rules)
+
 - [Numbering systems](#numbering-systems)
 - [API](#api)
 - [Advanced](#advanced)
-  - [Custom systems](#custom-systems)
-  - [Allowed fractions](#allowed-fractions)
-  - [Fallback behavior](#fallback-behavior)
-  - [Below smallest unit](#below-smallest-unit)
+   - [Custom systems](#custom-systems)
+   - [Allowed fractions](#allowed-fractions)
+   - [Fallback behavior](#fallback-behavior)
+   - [Below smallest unit](#below-smallest-unit)
+
 - [Design goals](#design-goals)
 - [Build & i18n packs](#build--i18n-packs)
 - [FAQ](#faq)
@@ -55,11 +57,11 @@ Built-in compact notations (e.g., `Intl.NumberFormat({ notation: 'compact' })`) 
 ## Install
 
 ```bash
-npm i precise-compact
+npm i @fex-to/precise-compact
 # or
-pnpm add precise-compact
+pnpm add @fex-to/precise-compact
 # or
-yarn add precise-compact
+yarn add @fex-to/precise-compact
 ```
 
 Node ≥ 18.17 (or ≥ 20). ESM & CJS are both supported.
@@ -69,7 +71,7 @@ Node ≥ 18.17 (or ≥ 20). ESM & CJS are both supported.
 ## Usage
 
 ```ts
-import { createCompactFormatter, defaultFormatter } from 'precise-compact';
+import { createCompactFormatter, defaultFormatter } from '@fex-to/precise-compact';
 
 // 1) Quick start (English is built in)
 defaultFormatter.format(1000); // "1 thousand"
@@ -97,9 +99,9 @@ defaultFormatter.format(100_000_000, { system: 'eastAsia' }); // "1 yi"
 
 ## Exactness rules
 
-- **Exact integer multiples:** `k * unit` → formatted (`1_000 → 1 thousand`).
+- __Exact integer multiples:__ `k * unit` → formatted (`1_000 → 1 thousand`).
 - **Whitelisted fractions:** only those explicitly allowed by `setAllowedFractions([0, 0.5, 0.25, 0.1, ...])`.  
-  Example: `1.5 * 1000 → 1.5 thousand`, but `1.3 * 1000 → 1300` (fallback) unless `0.3` is allowed.
+   Example: `1.5 * 1000 → 1.5 thousand`, but `1.3 * 1000 → 1300` (fallback) unless `0.3` is allowed.
 - **No approximation:** Values like `1499`, `1501`, `999` fall back.
 
 ---
@@ -109,10 +111,10 @@ defaultFormatter.format(100_000_000, { system: 'eastAsia' }); // "1 yi"
 Core ships with **English** labels only. You can load **optional** locale packs **on demand**:
 
 ```ts
-import { createCompactFormatter } from 'precise-compact';
+import { createCompactFormatter } from '@fex-to/precise-compact';
 
 // On-demand locale (tree-shakable)
-import ru from 'precise-compact/i18n/ru'; // or any of ~50 packs in ./i18n
+import ru from '@fex-to/precise-compact/i18n/ru'; // or any of ~50 packs in ./i18n
 
 const fmt = createCompactFormatter();
 fmt.registerLocale(ru);
@@ -137,7 +139,7 @@ Locale packs can ship a `rules.resolveLabel` function to dynamically choose the 
 ### Registering a locale
 
 ```ts
-import { createCompactFormatter, type LocalePack } from 'precise-compact';
+import { createCompactFormatter, type LocalePack } from '@fex-to/precise-compact';
 
 const ruPack: LocalePack = {
   locale: 'ru',
@@ -310,7 +312,7 @@ This repo uses:
 Generated on-demand packs live in `./i18n` (source `.ts`) and are bundled to `dist/i18n/*.mjs|*.cjs|*.d.ts`. They are **not** auto-imported by core; you import what you need:
 
 ```ts
-import ru from 'precise-compact/i18n/ru';
+import ru from '@fex-to/precise-compact/i18n/ru';
 fmt.registerLocale(ru);
 ```
 
@@ -371,7 +373,7 @@ npm run prepublishOnly  # runs tests + build
 **1) English (built in)**
 
 ```ts
-import { defaultFormatter } from 'precise-compact';
+import { defaultFormatter } from '@fex-to/precise-compact';
 
 defaultFormatter.format(1_000); // "1 thousand"
 defaultFormatter.format(1_500); // "1.5 thousand"
@@ -382,8 +384,8 @@ defaultFormatter.format(1_501); // "1501"
 **2) Russian with morphology**
 
 ```ts
-import { createCompactFormatter } from 'precise-compact';
-import ru from 'precise-compact/i18n/ru';
+import { createCompactFormatter } from '@fex-to/precise-compact';
+import ru from '@fex-to/precise-compact/i18n/ru';
 
 const fmt = createCompactFormatter();
 fmt.registerLocale(ru);
@@ -396,7 +398,7 @@ fmt.format(5_000, { locale: 'ru' }); // "5 тысяч"
 **3) Indian system (fractions)**
 
 ```ts
-import { defaultFormatter as fmt } from 'precise-compact';
+import { defaultFormatter as fmt } from '@fex-to/precise-compact';
 
 fmt.setAllowedFractions([0, 0.25, 0.5, 0.75]);
 fmt.format(125_000, { system: 'indian' }); // "1.25 lakh"
@@ -406,7 +408,7 @@ fmt.format(75_000, { system: 'indian' }); // "0.75 lakh"
 **4) East Asia + zh-CN joiner**
 
 ```ts
-import { createCompactFormatter, type LocalePack } from 'precise-compact';
+import { createCompactFormatter, type LocalePack } from '@fex-to/precise-compact';
 
 const zhCN: LocalePack = {
   locale: 'zh-CN',
