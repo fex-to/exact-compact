@@ -2,7 +2,6 @@
 // comments in English only
 
 export type SystemId = "international" | "indian" | "eastAsia" | (string & {}); // allow custom ids
-
 export type LabelStyle = "words" | "abbr";
 
 export interface FormatOptions {
@@ -36,12 +35,29 @@ export interface SystemDef {
   units: UnitDef[];
 }
 
+// --- Morphology support ---
+export type LabelForms = {
+  zero?: string;
+  one?: string;
+  two?: string;
+  few?: string;
+  many?: string;
+  other: string; // required when using forms
+};
+export type LabelValue = string | LabelForms;
+
+type LabelNode = {
+  words: LabelValue;
+  abbr: LabelValue;
+};
+
 export interface LocaleRules {
   rtl?: boolean; // bidi hint
   joiner?: "" | " " | "\u00A0" | "\u202F"; // between number and label; default ' '
   unitOrder?: "after" | "before"; // default 'after' -> "1 million"
   numberLocale?: string; // default: pack.locale
   numberOptions?: Intl.NumberFormatOptions; // default: { useGrouping: false }
+  // NOTE: base is provided as already-inflected strings
   resolveLabel?: (
     unitKey: UnitKey,
     base: { words: string; abbr: string },
@@ -53,21 +69,22 @@ export interface LocaleRules {
 
 export interface LocalePack {
   locale: string; // e.g., 'en', 'en-GB'
-  labels: { [unit in UnitKey]?: { words: string; abbr: string } };
+  labels: { [unit in UnitKey]?: LabelNode };
   rules?: LocaleRules;
 }
 
-// --- NEW: unknown system strategy ---
-export type UnknownSystemStrategy = "raw" | "locale" | { use: SystemId }; // e.g. { use: 'international' }
+// --- Unknown system strategy ---
+export type UnknownSystemStrategy =
+  | "raw"
+  | "locale"
+  | { use: SystemId }; // e.g. { use: 'international' }
 
 export interface CompactConfig {
   systems?: SystemDef[];
   locales?: LocalePack[];
   defaultLocale?: string; // default: 'en'
   allowedFractions?: number[]; // default: [0, 0.5]
-  // NEW: control behavior for values below the smallest unit
   allowSubSmallest?: boolean; // default: false
-  // NEW: control behavior for unknown system id
   unknownSystem?: UnknownSystemStrategy; // default: 'raw'
 }
 
@@ -111,7 +128,7 @@ const SYSTEM_EAST_ASIA: SystemDef = {
   ],
 };
 
-// ---- default English locale only ----
+// ---- default English locale only (strings still work) ----
 
 const LOCALE_EN: LocalePack = {
   locale: "en",
@@ -146,7 +163,6 @@ export function createCompactFormatter(
     .slice()
     .sort((a, b) => a - b);
 
-  // NEW: config flags
   const allowSubSmallest = cfg?.allowSubSmallest ?? false;
   const unknownSystem = cfg?.unknownSystem ?? "raw";
 
@@ -186,34 +202,88 @@ export function createCompactFormatter(
     );
   }
 
-  function getLabelNode(
-    unit: UnitKey,
-    lang: string
-  ): { words: string; abbr: string } {
-    const pack = pickLocale(lang);
-    const node = pack.labels[unit];
-    if (node) return node;
-    const en = LOCALE_EN.labels[unit];
-    return en ?? { words: unit, abbr: unit };
-  }
+  // Normalize any label candidate into a {words, abbr} node.
+// Accepts either a string or an object with words/abbr (possibly partial).
+function coerceNode(unitKey: string, candidate: any): { words: any; abbr: any } {
+  if (!candidate) return { words: unitKey, abbr: unitKey };
+  // If candidate itself is a string, use it for both.
+  if (typeof candidate === 'string') return { words: candidate, abbr: candidate };
 
-  function pickLabel(unit: UnitKey, style: LabelStyle, lang: string): string {
-    const node = getLabelNode(unit, lang);
-    return node[style];
-  }
+  // Object shape: allow partials and plural maps.
+  const words = typeof candidate.words !== 'undefined' ? candidate.words : unitKey;
+  const abbr  = typeof candidate.abbr  !== 'undefined' ? candidate.abbr  : words;
+  return { words, abbr };
+}
 
-  // ---- NEW: Intl.NumberFormat cache ----
+// Replace your getLabelNode with this version
+function getLabelNode(
+  unit: any,              // allow unknown keys (e.g., "mega")
+  lang: string
+): { words: any; abbr: any } {
+  const pack = pickLocale(lang);
+
+  // 1) Active locale label
+  const active = (pack.labels as any)?.[unit];
+  if (active) return coerceNode(String(unit), active);
+
+  // 2) English fallback (LOCALE_EN)
+  const en = (LOCALE_EN.labels as any)?.[unit];
+  if (en) return coerceNode(String(unit), en);
+
+  // 3) Last resort: literal unit key
+  return { words: String(unit), abbr: String(unit) };
+}
+
+  // ---- Intl.NumberFormat cache ----
   const nfCache = new Map<string, Intl.NumberFormat>();
-  function getNumberFormat(
-    loc: string,
-    opts: Intl.NumberFormatOptions
-  ): Intl.NumberFormat {
+  function getNumberFormat(loc: string, opts: Intl.NumberFormatOptions): Intl.NumberFormat {
     const key = loc + "|" + JSON.stringify(opts);
     const hit = nfCache.get(key);
     if (hit) return hit;
     const nf = new Intl.NumberFormat(loc, opts);
     nfCache.set(key, nf);
     return nf;
+  }
+
+  // ---- Intl.PluralRules cache (morphology) ----
+  const prCache = new Map<string, Intl.PluralRules>();
+  function getPluralRules(loc: string): Intl.PluralRules {
+    const hit = prCache.get(loc);
+    if (hit) return hit;
+    let pr: Intl.PluralRules;
+    try {
+      pr = new Intl.PluralRules(loc, { type: "cardinal" });
+    } catch {
+      pr = new Intl.PluralRules("en", { type: "cardinal" });
+    }
+    prCache.set(loc, pr);
+    return pr;
+  }
+
+  function selectForm(value: number, lang: string): keyof LabelForms {
+    const pr = getPluralRules(lang);
+    // returns one | two | few | many | other | zero (depending on locale)
+    return pr.select(value) as keyof LabelForms;
+  }
+
+  function materializeLabel(val: LabelValue, value: number, lang: string): string {
+    if (typeof val === "string") return val;
+    const cat = selectForm(value, lang);
+    return (
+      val[cat] ??
+      val.other ??
+      val.one ??
+      val.few ??
+      val.many ??
+      val.two ??
+      val.zero ??
+      ""
+    );
+  }
+
+  function inflect(node: LabelNode, style: LabelStyle, value: number, lang: string): string {
+    const v = style === "abbr" ? node.abbr : node.words;
+    return materializeLabel(v, value, lang);
   }
 
   function renderNumber(
@@ -247,7 +317,7 @@ export function createCompactFormatter(
         try {
           return getNumberFormat(loc, options).format(n);
         } catch {
-          /* continue */
+          continue; // try next fallback locale
         }
       }
       // Last resort: return raw number as string
@@ -307,7 +377,7 @@ export function createCompactFormatter(
   function format(value: number | bigint, options: FormatOptions = {}): string {
     const { system = "international", style = "words" } = options;
 
-    // NEW: validate numbers (NaN/Infinity)
+    // validate numbers (NaN/Infinity and non-integers)
     if (typeof value === "number") {
       if (!Number.isFinite(value)) {
         return renderFallback(value, options, options.locale ?? defaultLocale);
@@ -324,56 +394,46 @@ export function createCompactFormatter(
     const sys = systems.get(system);
     if (!sys) {
       if (unknownSystem === "raw") {
-        return renderFallback(
-          value as number,
-          options,
-          options.locale ?? defaultLocale
-        );
+        return renderFallback(value as number, options, options.locale ?? defaultLocale);
       }
       if (unknownSystem === "locale") {
-        return renderFallback(
-          value as number,
-          { ...options, fallback: "locale" },
-          options.locale ?? defaultLocale
-        );
+        return renderFallback(value as number, { ...options, fallback: "locale" }, options.locale ?? defaultLocale);
       }
-      if (
-        typeof unknownSystem === "object" &&
-        unknownSystem.use &&
-        systems.has(unknownSystem.use)
-      ) {
+      if (typeof unknownSystem === "object" && unknownSystem.use && systems.has(unknownSystem.use)) {
         return format(value, { ...options, system: unknownSystem.use });
       }
-      // default safe
-      return renderFallback(
-        value as number,
-        options,
-        options.locale ?? defaultLocale
-      );
+      return renderFallback(value as number, options, options.locale ?? defaultLocale);
     }
 
     const smallest = sys.units[sys.units.length - 1]?.value ?? 1_000n;
     if (!allowSubSmallest && absV < smallest) {
-      return renderFallback(
-        value as number,
-        options,
-        options.locale ?? defaultLocale
-      );
+      return renderFallback(value as number, options, options.locale ?? defaultLocale);
     }
 
     const lang = options.locale ?? defaultLocale;
 
-    // IMPORTANT: allow exact sub-unit fractions of higher units (no check absV < u.value)
+    // allow exact sub-unit fractions of higher units
     for (const u of sys.units) {
       const factor = exactFactor(absV, u.value, allowedFractions);
       if (factor === null) continue;
 
       const pack = pickLocale(lang);
       const baseNode = getLabelNode(u.key, lang);
-      const baseLabel = baseNode[style];
+
+      // default morphology using Intl.PluralRules
+      const wordsInflected = inflect(baseNode, "words", factor, lang);
+      const abbrInflected = inflect(baseNode, "abbr", factor, lang);
+
+      const chosen = style === "abbr" ? abbrInflected : wordsInflected;
+
       const label = pack.rules?.resolveLabel
-        ? pack.rules.resolveLabel(u.key, baseNode, factor, style)
-        : baseLabel;
+        ? pack.rules.resolveLabel(
+            u.key,
+            { words: wordsInflected, abbr: abbrInflected },
+            factor,
+            style
+          )
+        : chosen;
 
       const numStr = renderNumber(factor, options, lang);
       const joiner = pack.rules?.joiner ?? " ";

@@ -1,14 +1,47 @@
 {
   "name": "precise-compact",
-  "version": "1.0.0",
+  "version": "0.0.1",
+  "description": "Exact compact number formatter with non-approximated units and per-locale morphology.",
+  "license": "MIT",
   "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./i18n/*": {
+      "import": "./dist/i18n/*.mjs",
+      "require": "./dist/i18n/*.cjs"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "i18n/*": [
+        "dist/i18n/*"
+      ]
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
+    "prebuild": "tsx scripts/generate-locales.ts",
+    "build": "tsup",
     "test": "vitest run --coverage",
-    "test:ui": "vitest",
-    "build": "tsc -p tsconfig.json"
+    "prepare": "npm run build"
   },
   "devDependencies": {
+    "@types/node": "^24.9.2",
     "@vitest/coverage-v8": "^4.0.5",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "vitest": "^4.0.5"
   }

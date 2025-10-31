@@ -14,6 +14,8 @@ beforeEach(() => {
   fmt = createCompactFormatter();
 });
 
+
+
 describe("precise-compact (international, English defaults)", () => {
   it("formats exact integer multiples (words)", () => {
     expect(fmt.format(1000)).toBe("1 thousand");
