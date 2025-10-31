@@ -299,7 +299,15 @@ export function createCompactFormatter(cfg?: Partial<CompactConfig>): CompactFor
     // 2) Built-in strategies
     if (opts.fallback === 'locale') {
       const n = typeof original === 'number' ? original : Number(original);
-      return renderNumber(n, opts, labelLang);
+      // For locale fallback, enable grouping unless explicitly disabled
+      const fallbackOpts: FormatOptions = {
+        ...opts,
+        numberOptions: {
+          useGrouping: true,
+          ...opts.numberOptions,
+        },
+      };
+      return renderNumber(n, fallbackOpts, labelLang);
     }
     // default: 'raw' → exact string of the original argument
     return typeof original === 'number' ? String(original) : original.toString();
