@@ -1,4 +1,3 @@
-// comments in English only
 import { defineConfig } from 'tsup';
 
 export default defineConfig([
@@ -23,7 +22,7 @@ export default defineConfig([
 
   // Per-locale files: use a GLOB ARRAY, not an object with a wildcard key
   {
-    entry: ['i18n/*.ts'], // <-- tsup поддерживает glob в массиве
+    entry: ['i18n/*.ts'],
     outDir: 'dist',
     format: ['esm', 'cjs'],
     dts: true,

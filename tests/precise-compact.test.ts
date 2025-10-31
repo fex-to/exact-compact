@@ -1,5 +1,6 @@
 // comments in English only
 import { describe, it, expect, beforeEach } from 'vitest';
+
 import {
   createCompactFormatter,
   defaultFormatter,

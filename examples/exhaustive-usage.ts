@@ -1,4 +1,3 @@
-// comments in English only
 import { createCompactFormatter, type LocalePack } from '../src/precise-compact';
 
 // ---------- tiny assert helpers ----------

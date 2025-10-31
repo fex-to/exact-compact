@@ -1,6 +1,8 @@
 // comments in English only
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createCompactFormatter, LocalePack } from '../src/precise-compact';
+
+import type { LocalePack } from '../src/precise-compact';
+import { createCompactFormatter } from '../src/precise-compact';
 
 // Helper: strip BiDi control chars that may appear in RTL rendering
 const stripBidi = (s: string) => s.replace(/[\u200E\u200F\u061C]/g, '');

@@ -50,7 +50,7 @@
     "format:check": "prettier --check .",
     "test": "vitest run --coverage",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run build",
-    "prepare": "husky",
+    "prepare": "npm run build && husky install",
     "prepublishOnly": "npm run verify",
     "release": "release-it",
     "release:patch": "release-it patch --ci --verbose",
@@ -66,10 +66,9 @@
     ]
   },
   "devDependencies": {
+    "@eslint/js": "^9.38.0",
     "@release-it/conventional-changelog": "^10.0.1",
     "@types/node": "^24.9.2",
-    "@typescript-eslint/eslint-plugin": "^8.46.2",
-    "@typescript-eslint/parser": "^8.46.2",
     "@vitest/coverage-v8": "^4.0.5",
     "@vitest/eslint-plugin": "^1.4.0",
     "eslint": "^9.38.0",
@@ -84,6 +83,7 @@
     "tsup": "^8.5.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.2",
     "vitest": "^4.0.5"
   }
 }
