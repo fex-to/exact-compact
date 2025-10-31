@@ -15,7 +15,7 @@ declare module 'precise-compact' {
         unitKey: string,
         base: { words: string; abbr: string },
         factor: number,
-        style: 'words' | 'abbr'
+        style: 'words' | 'abbr',
       ) => string;
       finalize?: (text: string) => string;
     };
