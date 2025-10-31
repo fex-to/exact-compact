@@ -3,45 +3,45 @@
 import type { LocalePack } from '../src/precise-compact';
 
 const pack = {
-  locale: 'el',
-  labels: {
-    thousand: {
-      words: {
-        one: 'χίλια',
-        other: 'χιλιάδες',
+  "locale": "el",
+  "labels": {
+    "thousand": {
+      "words": {
+        "one": "χίλια",
+        "other": "χιλιάδες"
       },
-      abbr: {
-        other: 'χιλ.',
-      },
+      "abbr": {
+        "other": "χιλ."
+      }
     },
-    million: {
-      words: {
-        one: 'εκατομμύριο',
-        other: 'εκατομμύρια',
+    "million": {
+      "words": {
+        "one": "εκατομμύριο",
+        "other": "εκατομμύρια"
       },
-      abbr: {
-        other: 'εκ.',
-      },
+      "abbr": {
+        "other": "εκ."
+      }
     },
-    billion: {
-      words: {
-        one: 'δισεκατομμύριο',
-        other: 'δισεκατομμύρια',
+    "billion": {
+      "words": {
+        "one": "δισεκατομμύριο",
+        "other": "δισεκατομμύρια"
       },
-      abbr: {
-        other: 'δισ.',
-      },
+      "abbr": {
+        "other": "δισ."
+      }
     },
-    trillion: {
-      words: {
-        one: 'τρισεκατομμύριο',
-        other: 'τρισεκατομμύρια',
+    "trillion": {
+      "words": {
+        "one": "τρισεκατομμύριο",
+        "other": "τρισεκατομμύρια"
       },
-      abbr: {
-        other: 'τρισ.',
-      },
-    },
-  },
+      "abbr": {
+        "other": "τρισ."
+      }
+    }
+  }
 } as any as LocalePack;
 
 export default pack;

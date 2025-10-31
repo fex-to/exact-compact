@@ -3,53 +3,53 @@
 import type { LocalePack } from '../src/precise-compact';
 
 const pack = {
-  locale: 'hr',
-  labels: {
-    thousand: {
-      words: {
-        one: 'tisuća',
-        few: 'tisuće',
-        many: 'tisuća',
-        other: 'tisuće',
+  "locale": "hr",
+  "labels": {
+    "thousand": {
+      "words": {
+        "one": "tisuća",
+        "few": "tisuće",
+        "many": "tisuća",
+        "other": "tisuće"
       },
-      abbr: {
-        other: 'tis.',
-      },
+      "abbr": {
+        "other": "tis."
+      }
     },
-    million: {
-      words: {
-        one: 'milijun',
-        few: 'milijuna',
-        many: 'milijuna',
-        other: 'milijuna',
+    "million": {
+      "words": {
+        "one": "milijun",
+        "few": "milijuna",
+        "many": "milijuna",
+        "other": "milijuna"
       },
-      abbr: {
-        other: 'mil.',
-      },
+      "abbr": {
+        "other": "mil."
+      }
     },
-    billion: {
-      words: {
-        one: 'milijarda',
-        few: 'milijarde',
-        many: 'milijardi',
-        other: 'milijarde',
+    "billion": {
+      "words": {
+        "one": "milijarda",
+        "few": "milijarde",
+        "many": "milijardi",
+        "other": "milijarde"
       },
-      abbr: {
-        other: 'mld.',
-      },
+      "abbr": {
+        "other": "mld."
+      }
     },
-    trillion: {
-      words: {
-        one: 'bilijun',
-        few: 'bilijuna',
-        many: 'bilijuna',
-        other: 'bilijuna',
+    "trillion": {
+      "words": {
+        "one": "bilijun",
+        "few": "bilijuna",
+        "many": "bilijuna",
+        "other": "bilijuna"
       },
-      abbr: {
-        other: 'bln.',
-      },
-    },
-  },
+      "abbr": {
+        "other": "bln."
+      }
+    }
+  }
 } as any as LocalePack;
 
 export default pack;

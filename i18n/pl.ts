@@ -3,53 +3,53 @@
 import type { LocalePack } from '../src/precise-compact';
 
 const pack = {
-  locale: 'pl',
-  labels: {
-    thousand: {
-      words: {
-        one: 'tysiąc',
-        few: 'tysiące',
-        many: 'tysięcy',
-        other: 'tysiące',
+  "locale": "pl",
+  "labels": {
+    "thousand": {
+      "words": {
+        "one": "tysiąc",
+        "few": "tysiące",
+        "many": "tysięcy",
+        "other": "tysiące"
       },
-      abbr: {
-        other: 'tys.',
-      },
+      "abbr": {
+        "other": "tys."
+      }
     },
-    million: {
-      words: {
-        one: 'milion',
-        few: 'miliony',
-        many: 'milionów',
-        other: 'miliony',
+    "million": {
+      "words": {
+        "one": "milion",
+        "few": "miliony",
+        "many": "milionów",
+        "other": "miliony"
       },
-      abbr: {
-        other: 'mln',
-      },
+      "abbr": {
+        "other": "mln"
+      }
     },
-    billion: {
-      words: {
-        one: 'miliard',
-        few: 'miliardy',
-        many: 'miliardów',
-        other: 'miliardy',
+    "billion": {
+      "words": {
+        "one": "miliard",
+        "few": "miliardy",
+        "many": "miliardów",
+        "other": "miliardy"
       },
-      abbr: {
-        other: 'mld',
-      },
+      "abbr": {
+        "other": "mld"
+      }
     },
-    trillion: {
-      words: {
-        one: 'bilion',
-        few: 'biliony',
-        many: 'bilionów',
-        other: 'biliony',
+    "trillion": {
+      "words": {
+        "one": "bilion",
+        "few": "biliony",
+        "many": "bilionów",
+        "other": "biliony"
       },
-      abbr: {
-        other: 'bln',
-      },
-    },
-  },
+      "abbr": {
+        "other": "bln"
+      }
+    }
+  }
 } as any as LocalePack;
 
 export default pack;

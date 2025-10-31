@@ -3,43 +3,43 @@
 import type { LocalePack } from '../src/precise-compact';
 
 const pack = {
-  locale: 'fr',
-  labels: {
-    thousand: {
-      words: 'mille',
-      abbr: 'k',
+  "locale": "fr",
+  "labels": {
+    "thousand": {
+      "words": "mille",
+      "abbr": "k"
     },
-    million: {
-      words: {
-        one: 'million',
-        other: 'millions',
+    "million": {
+      "words": {
+        "one": "million",
+        "other": "millions"
       },
-      abbr: {
-        other: 'M',
-      },
+      "abbr": {
+        "other": "M"
+      }
     },
-    billion: {
-      words: {
-        one: 'milliard',
-        other: 'milliards',
+    "billion": {
+      "words": {
+        "one": "milliard",
+        "other": "milliards"
       },
-      abbr: {
-        other: 'Md',
-      },
+      "abbr": {
+        "other": "Md"
+      }
     },
-    trillion: {
-      words: {
-        one: 'billion',
-        other: 'billions',
+    "trillion": {
+      "words": {
+        "one": "billion",
+        "other": "billions"
       },
-      abbr: {
-        other: 'Bn',
-      },
-    },
+      "abbr": {
+        "other": "Bn"
+      }
+    }
   },
-  rules: {
-    joiner: ' ',
-  },
+  "rules": {
+    "joiner": " "
+  }
 } as any as LocalePack;
 
 export default pack;

@@ -8,19 +8,19 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     },
     "./i18n/*": {
+      "types": "./types/i18n.d.ts",
       "import": "./dist/i18n/*.mjs",
       "require": "./dist/i18n/*.cjs"
     }
   },
   "typesVersions": {
     "*": {
-      "i18n/*": [
-        "dist/i18n/*"
-      ]
+      "i18n/*": ["types/i18n.d.ts"]
     }
   },
   "publishConfig": {
@@ -31,6 +31,7 @@
   "sideEffects": false,
   "files": [
     "dist",
+    "types",
     "LICENSE",
     "README.md"
   ],
@@ -39,9 +40,10 @@
   },
   "packageManager": "npm@11.6.2",
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf dist types",
     "generate:locales": "tsx scripts/generate-locales.ts",
-    "prebuild": "npm run generate:locales",
+    "generate:i18n:dts": "tsx scripts/generate-i18n-dts.ts",
+    "prebuild": "npm run generate:locales && npm run generate:i18n:dts",
     "build": "tsup",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint . --ext .ts",
@@ -50,7 +52,7 @@
     "format:check": "prettier --check .",
     "test": "vitest run --coverage",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run build",
-    "prepare": "npm run build && husky install",
+    "prepare": "husky install",
     "prepublishOnly": "npm run verify",
     "release": "release-it",
     "release:patch": "release-it patch --ci --verbose",
@@ -58,18 +60,14 @@
     "release:major": "release-it major --ci --verbose"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,json,md,yml,yaml}": [
-      "prettier --write"
-    ],
-    "*.{ts,tsx}": [
-      "eslint --fix"
-    ]
+    "*.{ts,tsx,js,json,md,yml,yaml}": ["prettier --write"],
+    "*.{ts,tsx}": ["eslint --fix"]
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
     "@release-it/conventional-changelog": "^10.0.1",
     "@types/node": "^24.9.2",
-    "@vitest/coverage-v8": "^4.0.5",
+    "@vitest/coverage-v8": "^4.0.6",
     "@vitest/eslint-plugin": "^1.4.0",
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
@@ -84,6 +82,6 @@
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.2",
-    "vitest": "^4.0.5"
+    "vitest": "^4.0.6"
   }
 }

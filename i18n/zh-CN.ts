@@ -3,29 +3,29 @@
 import type { LocalePack } from '../src/precise-compact';
 
 const pack = {
-  locale: 'zh-CN',
-  labels: {
-    thousand: {
-      words: '千',
-      abbr: '千',
+  "locale": "zh-CN",
+  "labels": {
+    "thousand": {
+      "words": "千",
+      "abbr": "千"
     },
-    million: {
-      words: '百万',
-      abbr: '百万',
+    "million": {
+      "words": "百万",
+      "abbr": "百万"
     },
-    billion: {
-      words: '十亿',
-      abbr: '十亿',
+    "billion": {
+      "words": "十亿",
+      "abbr": "十亿"
     },
-    trillion: {
-      words: '万亿',
-      abbr: '万亿',
-    },
+    "trillion": {
+      "words": "万亿",
+      "abbr": "万亿"
+    }
   },
-  rules: {
-    joiner: '',
-    numberLocale: 'zh-CN',
-  },
+  "rules": {
+    "joiner": "",
+    "numberLocale": "zh-CN"
+  }
 } as any as LocalePack;
 
 export default pack;

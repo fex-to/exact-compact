@@ -1,37 +1,41 @@
+import { globSync } from 'glob';
+import path from 'node:path';
 import { defineConfig } from 'tsup';
 
+const localeFiles = globSync('i18n/*.ts');
+const localeEntries = Object.fromEntries(
+  localeFiles.map((p) => {
+    const base = path.basename(p, '.ts'); // e.g. 'en', 'ru'
+    return [`i18n/${base}`, p]; // dist/i18n/{base}.{mjs,cjs}
+  }),
+);
+
 export default defineConfig([
-  // Main library
+  // Core bundle (+ d.ts)
   {
     entry: { index: 'src/precise-compact.ts' },
-    outDir: 'dist',
     format: ['esm', 'cjs'],
-    dts: true,
+    dts: { entry: { index: 'src/precise-compact.ts' } },
     sourcemap: true,
     clean: true,
-    esbuildOptions(options) {
-      options.charset = 'utf8';
-    },
+    target: 'es2020',
     treeshake: true,
+    skipNodeModulesBundle: true,
     splitting: false,
-    // Emit .mjs for ESM and .cjs for CJS to match package.json
-    outExtension: ({ format }) => ({
-      js: format === 'esm' ? '.mjs' : '.cjs',
-    }),
+    outExtension: ({ format }) => ({ js: format === 'esm' ? '.mjs' : '.cjs' }),
   },
-
-  // Per-locale files: use a GLOB ARRAY, not an object with a wildcard key
+  // Locales: JS only, без d.ts и без sourcemap
   {
-    entry: ['i18n/*.ts'],
+    entry: localeEntries,
     outDir: 'dist',
     format: ['esm', 'cjs'],
-    dts: true,
-    sourcemap: true,
+    dts: false,
+    sourcemap: false, // меньше мусора
     clean: false,
+    target: 'es2020',
     treeshake: true,
+    skipNodeModulesBundle: true,
     splitting: false,
-    outExtension: ({ format }) => ({
-      js: format === 'esm' ? '.mjs' : '.cjs',
-    }),
+    outExtension: ({ format }) => ({ js: format === 'esm' ? '.mjs' : '.cjs' }),
   },
 ]);
