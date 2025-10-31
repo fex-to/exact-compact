@@ -29,13 +29,16 @@ const header =
   `  }\n` +
   `}\n\n`;
 
-const body = locales.map((loc) =>
-  `declare module 'precise-compact/i18n/${loc}' {\n` +
-  `  import type { LocalePack } from 'precise-compact';\n` +
-  `  const pack: LocalePack;\n` +
-  `  export default pack;\n` +
-  `}\n`
-).join('\n');
+const body = locales
+  .map(
+    (loc) =>
+      `declare module 'precise-compact/i18n/${loc}' {\n` +
+      `  import type { LocalePack } from 'precise-compact';\n` +
+      `  const pack: LocalePack;\n` +
+      `  export default pack;\n` +
+      `}\n`,
+  )
+  .join('\n');
 
 fs.mkdirSync('types', { recursive: true });
 fs.writeFileSync('types/i18n.d.ts', header + body);

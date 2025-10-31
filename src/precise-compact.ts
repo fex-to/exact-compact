@@ -267,11 +267,11 @@ export function createCompactFormatter(cfg?: Partial<CompactConfig>): CompactFor
     const pack = pickLocale(opts.locale ?? labelLang);
 
     const preferred = pickSupportedLocale([
-      opts.numberLocale,           // explicit override
-      pack.rules?.numberLocale,    // locale rule hint
-      defaultLocale,               // formatter default (may be invalid)
-      'en-US',                     // guaranteed dot-decimal
-      'en',                        // generic English
+      opts.numberLocale, // explicit override
+      pack.rules?.numberLocale, // locale rule hint
+      defaultLocale, // formatter default (may be invalid)
+      'en-US', // guaranteed dot-decimal
+      'en', // generic English
     ]);
 
     const options: Intl.NumberFormatOptions = {
@@ -287,7 +287,11 @@ export function createCompactFormatter(cfg?: Partial<CompactConfig>): CompactFor
     return String(n);
   }
 
-  function renderFallback(original: number | bigint, opts: FormatOptions, labelLang: string): string {
+  function renderFallback(
+    original: number | bigint,
+    opts: FormatOptions,
+    labelLang: string,
+  ): string {
     // 1) Custom fallback gets the raw value untouched
     if (typeof opts.fallbackFn === 'function') {
       return opts.fallbackFn(original);
@@ -359,9 +363,17 @@ export function createCompactFormatter(cfg?: Partial<CompactConfig>): CompactFor
         return renderFallback(original, options, options.locale ?? defaultLocale);
       }
       if (unknownSystem === 'locale') {
-        return renderFallback(original, { ...options, fallback: 'locale' }, options.locale ?? defaultLocale);
+        return renderFallback(
+          original,
+          { ...options, fallback: 'locale' },
+          options.locale ?? defaultLocale,
+        );
       }
-      if (typeof unknownSystem === 'object' && unknownSystem.use && systems.has(unknownSystem.use)) {
+      if (
+        typeof unknownSystem === 'object' &&
+        unknownSystem.use &&
+        systems.has(unknownSystem.use)
+      ) {
         return format(original, { ...options, system: unknownSystem.use }); // pass original
       }
       return renderFallback(original, options, options.locale ?? defaultLocale);
@@ -384,17 +396,22 @@ export function createCompactFormatter(cfg?: Partial<CompactConfig>): CompactFor
 
       // morphology with Intl.PluralRules (or custom resolveLabel)
       const wordsInflected = inflect(baseNode, 'words', factor, lang);
-      const abbrInflected  = inflect(baseNode, 'abbr',  factor, lang);
+      const abbrInflected = inflect(baseNode, 'abbr', factor, lang);
       const chosen = style === 'abbr' ? abbrInflected : wordsInflected;
 
       const label = pack.rules?.resolveLabel
-        ? pack.rules.resolveLabel(u.key, { words: wordsInflected, abbr: abbrInflected }, factor, style)
+        ? pack.rules.resolveLabel(
+            u.key,
+            { words: wordsInflected, abbr: abbrInflected },
+            factor,
+            style,
+          )
         : chosen;
 
-      const numStr    = renderNumber(factor, options, lang);
-      const joiner    = pack.rules?.joiner ?? ' ';
+      const numStr = renderNumber(factor, options, lang);
+      const joiner = pack.rules?.joiner ?? ' ';
       const unitFirst = pack.rules?.unitOrder === 'before';
-      const sign      = v < 0n ? '-' : '';
+      const sign = v < 0n ? '-' : '';
 
       let out = unitFirst ? `${label}${joiner}${numStr}` : `${numStr}${joiner}${label}`;
       if (pack.rules?.finalize) out = pack.rules.finalize(out);

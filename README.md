@@ -24,17 +24,17 @@
 - [Usage](#usage)
 - [Exactness rules](#exactness-rules)
 - [Internationalization (i18n)](#internationalization-i18n)
-   - [What is morphology?](#what-is-morphology)
-   - [Registering a locale](#registering-a-locale)
-   - [Writing morphology rules](#writing-morphology-rules)
+  - [What is morphology?](#what-is-morphology)
+  - [Registering a locale](#registering-a-locale)
+  - [Writing morphology rules](#writing-morphology-rules)
 
 - [Numbering systems](#numbering-systems)
 - [API](#api)
 - [Advanced](#advanced)
-   - [Custom systems](#custom-systems)
-   - [Allowed fractions](#allowed-fractions)
-   - [Fallback behavior](#fallback-behavior)
-   - [Below smallest unit](#below-smallest-unit)
+  - [Custom systems](#custom-systems)
+  - [Allowed fractions](#allowed-fractions)
+  - [Fallback behavior](#fallback-behavior)
+  - [Below smallest unit](#below-smallest-unit)
 
 - [Design goals](#design-goals)
 - [Build & i18n packs](#build--i18n-packs)
@@ -99,7 +99,7 @@ defaultFormatter.format(100_000_000, { system: 'eastAsia' }); // "1 yi"
 
 ## Exactness rules
 
-- __Exact integer multiples:__ `k * unit` → formatted (`1_000 → 1 thousand`).
+- **Exact integer multiples:** `k * unit` → formatted (`1_000 → 1 thousand`).
 - **Whitelisted fractions:** only those explicitly allowed by `setAllowedFractions([0, 0.5, 0.25, 0.1, ...])`.  
    Example: `1.5 * 1000 → 1.5 thousand`, but `1.3 * 1000 → 1300` (fallback) unless `0.3` is allowed.
 - **No approximation:** Values like `1499`, `1501`, `999` fall back.

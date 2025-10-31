@@ -13,7 +13,7 @@ export default tseslint.config(
       'dist/**',
       'coverage/**',
       'node_modules/**',
-      'i18n/**',      // generated locale packs
+      'i18n/**', // generated locale packs
       // Убери строки ниже, если хочешь линтить примеры/скрипты
       'examples/**',
       'scripts/**',
@@ -59,7 +59,10 @@ export default tseslint.config(
         {
           'newlines-between': 'always',
           alphabetize: { order: 'asc', caseInsensitive: true },
-          groups: [['builtin', 'external'], ['internal', 'parent', 'sibling', 'index']],
+          groups: [
+            ['builtin', 'external'],
+            ['internal', 'parent', 'sibling', 'index'],
+          ],
         },
       ],
 

@@ -3,7 +3,7 @@ name: CI & Publish
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
   workflow_dispatch: {}
 
 permissions:
@@ -26,8 +26,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: "https://registry.npmjs.org"
-          cache: "npm"
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
 
       - name: Install deps (CI)
         run: npm ci
