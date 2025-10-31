@@ -2,13 +2,14 @@
   "$schema": "https://unpkg.com/release-it/schema/release-it.json",
   "git": {
     "requireCleanWorkingDir": true,
-    "requireBranch": false,
+    "requireBranch": "main",
     "tagName": "v${version}",
     "commitMessage": "chore(release): v${version}",
+    "addUntrackedFiles": true,
     "push": true
   },
   "npm": {
-    "publish": true,
+    "publish": false,
     "ignoreVersion": false
   },
   "github": {
@@ -17,7 +18,7 @@
     "autoGenerate": true
   },
   "hooks": {
-    "before:init": "npm test",
+    "before:init": "npm run verify",
     "after:bump": "npm run build"
   },
   "plugins": {
