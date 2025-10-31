@@ -1,6 +1,6 @@
 {
   "name": "precise-compact",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Exact compact number formatter with non-approximated units and per-locale morphology.",
   "license": "MIT",
   "type": "module",
