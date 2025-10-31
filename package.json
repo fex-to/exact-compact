@@ -1,5 +1,5 @@
 {
-  "name": "precise-compact",
+  "name": "@fex-to/precise-compact",
   "version": "0.0.3",
   "description": "Exact compact number formatter with non-approximated units and per-locale morphology.",
   "license": "MIT",
