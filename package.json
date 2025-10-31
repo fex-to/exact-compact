@@ -40,6 +40,14 @@
   "engines": {
     "node": ">=18.17 || >=20"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fex-to/exact-compact"
+  },
+  "bugs": {
+    "url": "https://github.com/fex-to/exact-compact/issues"
+  },
+  "homepage": "https://github.com/fex-to/exact-compact#readme",
   "packageManager": "npm@11.6.2",
   "scripts": {
     "clean": "rimraf dist",
