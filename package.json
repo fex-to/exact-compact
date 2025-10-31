@@ -1,6 +1,6 @@
 {
   "name": "@fex-to/precise-compact",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Exact compact number formatter with non-approximated units and per-locale morphology.",
   "license": "MIT",
   "type": "module",
