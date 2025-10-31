@@ -10,6 +10,9 @@ export default defineConfig([
     dts: true,
     sourcemap: true,
     clean: true,
+      esbuildOptions(options) {
+    options.charset = 'utf8';
+  },
     treeshake: true,
     splitting: false,
     // Emit .mjs for ESM and .cjs for CJS to match package.json

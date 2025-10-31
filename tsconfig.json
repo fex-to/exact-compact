@@ -12,5 +12,6 @@
     "outDir": "dist",
     "allowJs": false
   },
-  "include": ["src", "i18n", "scripts"]
+  "include": ["src", "i18n", "scripts"],
+  "exclude": ["i18n/index.ts"]
 }

@@ -5,13 +5,11 @@
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     },
     "./i18n/*": {
       "import": "./dist/i18n/*.mjs",
@@ -25,21 +23,36 @@
       ]
     }
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/",
+    "tag": "latest"
+  },
   "sideEffects": false,
   "files": [
     "dist",
     "LICENSE",
     "README.md"
   ],
+  "engines": {
+    "node": ">=18.17 || >=20"
+  },
+  "packageManager": "npm@11.6.2",
   "scripts": {
+    "clean": "rimraf dist",
     "prebuild": "tsx scripts/generate-locales.ts",
     "build": "tsup",
     "test": "vitest run --coverage",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run test && npm run build",
+        "release": "release-it"
   },
   "devDependencies": {
+    "@release-it/conventional-changelog": "^10.0.1",
     "@types/node": "^24.9.2",
     "@vitest/coverage-v8": "^4.0.5",
+    "release-it": "^19.0.5",
+    "rimraf": "^6.1.0",
     "tsup": "^8.5.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
