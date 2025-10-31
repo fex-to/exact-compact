@@ -111,15 +111,36 @@ const AR: LocalePack = {
       abbr: { other: 'أ' },
     },
     million: {
-      words: { zero: 'مليون', one: 'مليون', two: 'مليونان', few: 'ملايين', many: 'مليون', other: 'مليون' },
+      words: {
+        zero: 'مليون',
+        one: 'مليون',
+        two: 'مليونان',
+        few: 'ملايين',
+        many: 'مليون',
+        other: 'مليون',
+      },
       abbr: { other: 'م' },
     },
     billion: {
-      words: { zero: 'مليار', one: 'مليار', two: 'ملياران', few: 'مليارات', many: 'مليار', other: 'مليار' },
+      words: {
+        zero: 'مليار',
+        one: 'مليار',
+        two: 'ملياران',
+        few: 'مليارات',
+        many: 'مليار',
+        other: 'مليار',
+      },
       abbr: { other: 'ملي' },
     },
     trillion: {
-      words: { zero: 'تريليون', one: 'تريليون', two: 'تريليونان', few: 'تريليونات', many: 'تريليون', other: 'تريليون' },
+      words: {
+        zero: 'تريليون',
+        one: 'تريليون',
+        two: 'تريليونان',
+        few: 'تريليونات',
+        many: 'تريليون',
+        other: 'تريليون',
+      },
       abbr: { other: 'تر' },
     },
   },
@@ -172,7 +193,7 @@ const ID: LocalePack = {
   labels: {
     thousand: { words: 'ribu', abbr: 'rb' },
     million: { words: 'juta', abbr: 'jt' },
-    billion: { words: 'miliar', abbr: 'M' },  // commonly abbreviated as 'M'
+    billion: { words: 'miliar', abbr: 'M' }, // commonly abbreviated as 'M'
     trillion: { words: 'triliun', abbr: 'T' },
   },
   rules: {
@@ -185,22 +206,22 @@ f.registerLocale(ID);
 
 // RU
 f.setAllowedFractions([0, 0.5]); // allow halves
-console.log(f.format(1_000,   { locale: 'ru-RU' })); // "1 тысяча"
-console.log(f.format(2_000,   { locale: 'ru-RU' })); // "2 тысячи"
-console.log(f.format(5_000,   { locale: 'ru-RU' })); // "5 тысяч"
-console.log(f.format(1_500,   { locale: 'ru-RU' })); // "1,5 тысячи" or "1.5 тысячи" depending on numberLocale
+console.log(f.format(1_000, { locale: 'ru-RU' })); // "1 тысяча"
+console.log(f.format(2_000, { locale: 'ru-RU' })); // "2 тысячи"
+console.log(f.format(5_000, { locale: 'ru-RU' })); // "5 тысяч"
+console.log(f.format(1_500, { locale: 'ru-RU' })); // "1,5 тысячи" or "1.5 тысячи" depending on numberLocale
 console.log(f.format(2_000_000, { locale: 'ru-RU' })); // "2 миллиона"
 
 // UK
-console.log(f.format(1_000,   { locale: 'uk-UA' })); // "1 тисяча"
-console.log(f.format(2_000,   { locale: 'uk-UA' })); // "2 тисячі"
-console.log(f.format(5_000,   { locale: 'uk-UA' })); // "5 тисяч"
+console.log(f.format(1_000, { locale: 'uk-UA' })); // "1 тисяча"
+console.log(f.format(2_000, { locale: 'uk-UA' })); // "2 тисячі"
+console.log(f.format(5_000, { locale: 'uk-UA' })); // "5 тисяч"
 console.log(f.format(2_000_000, { locale: 'uk-UA' })); // "2 мільйона"
 
 // PL
-console.log(f.format(1_000,   { locale: 'pl-PL' })); // "1 tysiąc"
-console.log(f.format(2_000,   { locale: 'pl-PL' })); // "2 tysiące"
-console.log(f.format(5_000,   { locale: 'pl-PL' })); // "5 tysięcy"
+console.log(f.format(1_000, { locale: 'pl-PL' })); // "1 tysiąc"
+console.log(f.format(2_000, { locale: 'pl-PL' })); // "2 tysiące"
+console.log(f.format(5_000, { locale: 'pl-PL' })); // "5 tysięcy"
 console.log(f.format(1_000_000, { locale: 'pl-PL' })); // "1 milion"
 console.log(f.format(2_000_000, { locale: 'pl-PL' })); // "2 miliony"
 console.log(f.format(5_000_000, { locale: 'pl-PL' })); // "5 milionów"
@@ -208,35 +229,35 @@ console.log(f.format(1_000_000_000, { locale: 'pl-PL' })); // "1 miliard"
 console.log(f.format(1_000_000_000_000, { locale: 'pl-PL' })); // "1 bilion"
 
 // RO (cardinal: one/other)
-console.log(f.format(1_000,   { locale: 'ro-RO' })); // "1 mie"
-console.log(f.format(2_000,   { locale: 'ro-RO' })); // "2 mii"
+console.log(f.format(1_000, { locale: 'ro-RO' })); // "1 mie"
+console.log(f.format(2_000, { locale: 'ro-RO' })); // "2 mii"
 console.log(f.format(1_000_000, { locale: 'ro-RO' })); // "1 milion"
 console.log(f.format(2_000_000, { locale: 'ro-RO' })); // "2 milioane"
 console.log(f.format(1_000_000_000, { locale: 'ro-RO' })); // "1 miliard"
 console.log(f.format(1_000_000_000_000, { locale: 'ro-RO' })); // "1 bilion"
 
 // AR (Arabic morphologies)
-console.log(f.format(1_000,   { locale: 'ar' })); // "‏1 ألف‏"
-console.log(f.format(2_000,   { locale: 'ar' })); // "‏2 ألفان‏"
-console.log(f.format(3_000,   { locale: 'ar' })); // "‏3 آلاف‏"
-console.log(f.format(11_000,  { locale: 'ar' })); // "‏11 ألف‏"
+console.log(f.format(1_000, { locale: 'ar' })); // "‏1 ألف‏"
+console.log(f.format(2_000, { locale: 'ar' })); // "‏2 ألفان‏"
+console.log(f.format(3_000, { locale: 'ar' })); // "‏3 آلاف‏"
+console.log(f.format(11_000, { locale: 'ar' })); // "‏11 ألف‏"
 console.log(f.format(1_000_000, { locale: 'ar' })); // "‏1 مليون‏"
 
 // EN (default behavior)
-console.log(f.format(1_000,   { locale: 'en-GB' })); // "1 thousand"
-console.log(f.format(2_000,   { locale: 'en-GB' })); // "2 thousand"
+console.log(f.format(1_000, { locale: 'en-GB' })); // "1 thousand"
+console.log(f.format(2_000, { locale: 'en-GB' })); // "2 thousand"
 console.log(f.format(1_000_000, { locale: 'en-GB' })); // "1 million"
 
 // BG
-console.log(f.format(1_000,   { locale: 'bg-BG' })); // "1 хиляда"
-console.log(f.format(2_000,   { locale: 'bg-BG' })); // "2 хиляди"
-console.log(f.format(5_000,   { locale: 'bg-BG' })); // "5 хиляди"
+console.log(f.format(1_000, { locale: 'bg-BG' })); // "1 хиляда"
+console.log(f.format(2_000, { locale: 'bg-BG' })); // "2 хиляди"
+console.log(f.format(5_000, { locale: 'bg-BG' })); // "5 хиляди"
 console.log(f.format(1_000_000, { locale: 'bg-BG' })); // "1 милион"
 console.log(f.format(2_000_000, { locale: 'bg-BG' })); // "2 милиона"
 
 // ID
-console.log(f.format(1_000,   { locale: 'id-ID' })); // "1 ribu"
-console.log(f.format(2_000,   { locale: 'id-ID' })); // "2 ribu"
+console.log(f.format(1_000, { locale: 'id-ID' })); // "1 ribu"
+console.log(f.format(2_000, { locale: 'id-ID' })); // "2 ribu"
 console.log(f.format(1_000_000, { locale: 'id-ID' })); // "1 juta"
 console.log(f.format(2_000_000, { locale: 'id-ID' })); // "2 juta"
 console.log(f.format(1_000_000_000, { locale: 'id-ID' })); // "1 miliar"

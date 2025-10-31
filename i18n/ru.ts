@@ -3,56 +3,56 @@
 import type { LocalePack } from '../src/precise-compact';
 
 const pack = {
-  "locale": "ru",
-  "labels": {
-    "thousand": {
-      "words": {
-        "one": "тысяча",
-        "few": "тысячи",
-        "many": "тысяч",
-        "other": "тысячи"
+  locale: 'ru',
+  labels: {
+    thousand: {
+      words: {
+        one: 'тысяча',
+        few: 'тысячи',
+        many: 'тысяч',
+        other: 'тысячи',
       },
-      "abbr": {
-        "other": "тыс."
-      }
+      abbr: {
+        other: 'тыс.',
+      },
     },
-    "million": {
-      "words": {
-        "one": "миллион",
-        "few": "миллиона",
-        "many": "миллионов",
-        "other": "миллиона"
+    million: {
+      words: {
+        one: 'миллион',
+        few: 'миллиона',
+        many: 'миллионов',
+        other: 'миллиона',
       },
-      "abbr": {
-        "other": "млн"
-      }
+      abbr: {
+        other: 'млн',
+      },
     },
-    "billion": {
-      "words": {
-        "one": "миллиард",
-        "few": "миллиарда",
-        "many": "миллиардов",
-        "other": "миллиарда"
+    billion: {
+      words: {
+        one: 'миллиард',
+        few: 'миллиарда',
+        many: 'миллиардов',
+        other: 'миллиарда',
       },
-      "abbr": {
-        "other": "млрд"
-      }
+      abbr: {
+        other: 'млрд',
+      },
     },
-    "trillion": {
-      "words": {
-        "one": "триллион",
-        "few": "триллиона",
-        "many": "триллионов",
-        "other": "триллиона"
+    trillion: {
+      words: {
+        one: 'триллион',
+        few: 'триллиона',
+        many: 'триллионов',
+        other: 'триллиона',
       },
-      "abbr": {
-        "other": "трлн"
-      }
-    }
+      abbr: {
+        other: 'трлн',
+      },
+    },
   },
-  "rules": {
-    "numberLocale": "ru-RU"
-  }
+  rules: {
+    numberLocale: 'ru-RU',
+  },
 } as any as LocalePack;
 
 export default pack;

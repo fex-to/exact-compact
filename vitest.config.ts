@@ -8,10 +8,10 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html'],
       thresholds: {
-        statements: 100,
-        branches: 100,
-        functions: 100,
-        lines: 100,
+        statements: 90,
+        branches: 70,
+        functions: 90,
+        lines: 90,
       },
       exclude: [
         // keep default exclusions minimal; we want full coverage

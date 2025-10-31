@@ -3,64 +3,64 @@
 import type { LocalePack } from '../src/precise-compact';
 
 const pack = {
-  "locale": "ar",
-  "labels": {
-    "thousand": {
-      "words": {
-        "zero": "ألف",
-        "one": "ألف",
-        "two": "ألفان",
-        "few": "آلاف",
-        "many": "ألف",
-        "other": "ألف"
+  locale: 'ar',
+  labels: {
+    thousand: {
+      words: {
+        zero: 'ألف',
+        one: 'ألف',
+        two: 'ألفان',
+        few: 'آلاف',
+        many: 'ألف',
+        other: 'ألف',
       },
-      "abbr": {
-        "other": "أ"
-      }
+      abbr: {
+        other: 'أ',
+      },
     },
-    "million": {
-      "words": {
-        "zero": "مليون",
-        "one": "مليون",
-        "two": "مليونان",
-        "few": "ملايين",
-        "many": "مليون",
-        "other": "مليون"
+    million: {
+      words: {
+        zero: 'مليون',
+        one: 'مليون',
+        two: 'مليونان',
+        few: 'ملايين',
+        many: 'مليون',
+        other: 'مليون',
       },
-      "abbr": {
-        "other": "م"
-      }
+      abbr: {
+        other: 'م',
+      },
     },
-    "billion": {
-      "words": {
-        "zero": "مليار",
-        "one": "مليار",
-        "two": "ملياران",
-        "few": "مليارات",
-        "many": "مليار",
-        "other": "مليار"
+    billion: {
+      words: {
+        zero: 'مليار',
+        one: 'مليار',
+        two: 'ملياران',
+        few: 'مليارات',
+        many: 'مليار',
+        other: 'مليار',
       },
-      "abbr": {
-        "other": "ملي"
-      }
+      abbr: {
+        other: 'ملي',
+      },
     },
-    "trillion": {
-      "words": {
-        "zero": "تريليون",
-        "one": "تريليون",
-        "two": "تريليونان",
-        "few": "تريليونات",
-        "many": "تريليون",
-        "other": "تريليون"
+    trillion: {
+      words: {
+        zero: 'تريليون',
+        one: 'تريليون',
+        two: 'تريليونان',
+        few: 'تريليونات',
+        many: 'تريليون',
+        other: 'تريليون',
       },
-      "abbr": {
-        "other": "تر"
-      }
-    }
+      abbr: {
+        other: 'تر',
+      },
+    },
   },
-  "rules": {
-    "rtl": true
-  }
+  rules: {
+    rtl: true,
+  },
 } as any as LocalePack;
 
 export default pack;

@@ -3,25 +3,25 @@
 import type { LocalePack } from '../src/precise-compact';
 
 const pack = {
-  "locale": "gu",
-  "labels": {
-    "thousand": {
-      "words": "હજાર",
-      "abbr": "હ"
+  locale: 'gu',
+  labels: {
+    thousand: {
+      words: 'હજાર',
+      abbr: 'હ',
     },
-    "million": {
-      "words": "મિલિયન",
-      "abbr": "મિ"
+    million: {
+      words: 'મિલિયન',
+      abbr: 'મિ',
     },
-    "billion": {
-      "words": "બિલિયન",
-      "abbr": "બિ"
+    billion: {
+      words: 'બિલિયન',
+      abbr: 'બિ',
     },
-    "trillion": {
-      "words": "ટ્રિલિયન",
-      "abbr": "ટ્રિ"
-    }
-  }
+    trillion: {
+      words: 'ટ્રિલિયન',
+      abbr: 'ટ્રિ',
+    },
+  },
 } as any as LocalePack;
 
 export default pack;

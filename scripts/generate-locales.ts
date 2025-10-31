@@ -64,7 +64,14 @@ function slavic3(one: string, few: string, many: string, abbr: string): LabelNod
   return { words: { one, few, many, other: few }, abbr: { other: abbr } };
 }
 
-function arabic6(one: string, two: string, few: string, many: string, other: string, abbr: string): LabelNode {
+function arabic6(
+  one: string,
+  two: string,
+  few: string,
+  many: string,
+  other: string,
+  abbr: string,
+): LabelNode {
   return { words: { zero: other, one, two, few, many, other }, abbr: { other: abbr } };
 }
 

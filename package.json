@@ -40,17 +40,45 @@
   "packageManager": "npm@11.6.2",
   "scripts": {
     "clean": "rimraf dist",
-    "prebuild": "tsx scripts/generate-locales.ts",
+    "generate:locales": "tsx scripts/generate-locales.ts",
+    "prebuild": "npm run generate:locales",
     "build": "tsup",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "vitest run --coverage",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm run test && npm run build",
-        "release": "release-it"
+    "verify": "npm run typecheck && npm run lint && npm run test && npm run build",
+    "prepare": "husky",
+    "prepublishOnly": "npm run verify",
+    "release": "release-it",
+    "release:patch": "release-it patch --ci --verbose",
+    "release:minor": "release-it minor --ci --verbose",
+    "release:major": "release-it major --ci --verbose"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,json,md,yml,yaml}": [
+      "prettier --write"
+    ],
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ]
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^10.0.1",
     "@types/node": "^24.9.2",
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
     "@vitest/coverage-v8": "^4.0.5",
+    "@vitest/eslint-plugin": "^1.4.0",
+    "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
+    "prettier": "^3.6.2",
     "release-it": "^19.0.5",
     "rimraf": "^6.1.0",
     "tsup": "^8.5.0",

@@ -3,28 +3,28 @@
 import type { LocalePack } from '../src/precise-compact';
 
 const pack = {
-  "locale": "ko",
-  "labels": {
-    "thousand": {
-      "words": "천",
-      "abbr": "천"
+  locale: 'ko',
+  labels: {
+    thousand: {
+      words: '천',
+      abbr: '천',
     },
-    "million": {
-      "words": "백만",
-      "abbr": "백만"
+    million: {
+      words: '백만',
+      abbr: '백만',
     },
-    "billion": {
-      "words": "십억",
-      "abbr": "십억"
+    billion: {
+      words: '십억',
+      abbr: '십억',
     },
-    "trillion": {
-      "words": "조",
-      "abbr": "조"
-    }
+    trillion: {
+      words: '조',
+      abbr: '조',
+    },
   },
-  "rules": {
-    "joiner": ""
-  }
+  rules: {
+    joiner: '',
+  },
 } as any as LocalePack;
 
 export default pack;

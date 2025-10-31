@@ -3,53 +3,53 @@
 import type { LocalePack } from '../src/precise-compact';
 
 const pack = {
-  "locale": "uk",
-  "labels": {
-    "thousand": {
-      "words": {
-        "one": "тисяча",
-        "few": "тисячі",
-        "many": "тисяч",
-        "other": "тисячі"
+  locale: 'uk',
+  labels: {
+    thousand: {
+      words: {
+        one: 'тисяча',
+        few: 'тисячі',
+        many: 'тисяч',
+        other: 'тисячі',
       },
-      "abbr": {
-        "other": "тис."
-      }
+      abbr: {
+        other: 'тис.',
+      },
     },
-    "million": {
-      "words": {
-        "one": "мільйон",
-        "few": "мільйона",
-        "many": "мільйонів",
-        "other": "мільйона"
+    million: {
+      words: {
+        one: 'мільйон',
+        few: 'мільйона',
+        many: 'мільйонів',
+        other: 'мільйона',
       },
-      "abbr": {
-        "other": "млн"
-      }
+      abbr: {
+        other: 'млн',
+      },
     },
-    "billion": {
-      "words": {
-        "one": "мільярд",
-        "few": "мільярда",
-        "many": "мільярдів",
-        "other": "мільярда"
+    billion: {
+      words: {
+        one: 'мільярд',
+        few: 'мільярда',
+        many: 'мільярдів',
+        other: 'мільярда',
       },
-      "abbr": {
-        "other": "млрд"
-      }
+      abbr: {
+        other: 'млрд',
+      },
     },
-    "trillion": {
-      "words": {
-        "one": "трильйон",
-        "few": "трильйона",
-        "many": "трильйонів",
-        "other": "трильйона"
+    trillion: {
+      words: {
+        one: 'трильйон',
+        few: 'трильйона',
+        many: 'трильйонів',
+        other: 'трильйона',
       },
-      "abbr": {
-        "other": "трлн"
-      }
-    }
-  }
+      abbr: {
+        other: 'трлн',
+      },
+    },
+  },
 } as any as LocalePack;
 
 export default pack;

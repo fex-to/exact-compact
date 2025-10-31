@@ -106,15 +106,36 @@ function makeFmtWithLocales() {
         abbr: { other: 'أ' },
       },
       million: {
-        words: { zero: 'مليون', one: 'مليون', two: 'مليونان', few: 'ملايين', many: 'مليون', other: 'مليون' },
+        words: {
+          zero: 'مليون',
+          one: 'مليون',
+          two: 'مليونان',
+          few: 'ملايين',
+          many: 'مليون',
+          other: 'مليون',
+        },
         abbr: { other: 'م' },
       },
       billion: {
-        words: { zero: 'مليار', one: 'مليار', two: 'ملياران', few: 'مليارات', many: 'مليار', other: 'مليار' },
+        words: {
+          zero: 'مليار',
+          one: 'مليار',
+          two: 'ملياران',
+          few: 'مليارات',
+          many: 'مليار',
+          other: 'مليار',
+        },
         abbr: { other: 'ملي' },
       },
       trillion: {
-        words: { zero: 'تريليون', one: 'تريليون', two: 'تريليونان', few: 'تريليونات', many: 'تريليون', other: 'تريليون' },
+        words: {
+          zero: 'تريليون',
+          one: 'تريليون',
+          two: 'تريليونان',
+          few: 'تريليونات',
+          many: 'تريليون',
+          other: 'تريليون',
+        },
         abbr: { other: 'تر' },
       },
     },
@@ -220,10 +241,10 @@ describe('morphology by locale', () => {
 
   it('ar: Arabic forms; label part matches regardless of BiDi marks', () => {
     // We check label substrings rather than full RTL-wrapped string
-    expect(stripBidi(f.format(1_000, { locale: 'ar' }))).toContain('ألف');     // one
-    expect(stripBidi(f.format(2_000, { locale: 'ar' }))).toContain('ألفان');   // two
-    expect(stripBidi(f.format(3_000, { locale: 'ar' }))).toContain('آلاف');    // few
-    expect(stripBidi(f.format(11_000, { locale: 'ar' }))).toContain('ألف');    // many/other fallbacks to ألف
+    expect(stripBidi(f.format(1_000, { locale: 'ar' }))).toContain('ألف'); // one
+    expect(stripBidi(f.format(2_000, { locale: 'ar' }))).toContain('ألفان'); // two
+    expect(stripBidi(f.format(3_000, { locale: 'ar' }))).toContain('آلاف'); // few
+    expect(stripBidi(f.format(11_000, { locale: 'ar' }))).toContain('ألف'); // many/other fallbacks to ألف
   });
 
   it('en-GB: no morphology (strings), abbr works', () => {

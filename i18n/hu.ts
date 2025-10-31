@@ -3,25 +3,25 @@
 import type { LocalePack } from '../src/precise-compact';
 
 const pack = {
-  "locale": "hu",
-  "labels": {
-    "thousand": {
-      "words": "ezer",
-      "abbr": "e"
+  locale: 'hu',
+  labels: {
+    thousand: {
+      words: 'ezer',
+      abbr: 'e',
     },
-    "million": {
-      "words": "millió",
-      "abbr": "M"
+    million: {
+      words: 'millió',
+      abbr: 'M',
     },
-    "billion": {
-      "words": "milliárd",
-      "abbr": "Md"
+    billion: {
+      words: 'milliárd',
+      abbr: 'Md',
     },
-    "trillion": {
-      "words": "billió",
-      "abbr": "Bl"
-    }
-  }
+    trillion: {
+      words: 'billió',
+      abbr: 'Bl',
+    },
+  },
 } as any as LocalePack;
 
 export default pack;

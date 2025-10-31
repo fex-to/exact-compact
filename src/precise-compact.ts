@@ -1,29 +1,29 @@
 // MIT License
 // comments in English only
 
-export type SystemId = "international" | "indian" | "eastAsia" | (string & {}); // allow custom ids
-export type LabelStyle = "words" | "abbr";
+export type SystemId = 'international' | 'indian' | 'eastAsia' | (string & {}); // allow custom ids
+export type LabelStyle = 'words' | 'abbr';
 
 export interface FormatOptions {
   system?: SystemId; // default: 'international'
   style?: LabelStyle; // default: 'words'
-  fallback?: "raw" | "locale"; // default: 'raw'
+  fallback?: 'raw' | 'locale'; // default: 'raw'
   locale?: string; // labels locale override
   numberLocale?: string; // Intl locale for numbers (e.g., 'ar-EG-u-nu-arab')
   numberOptions?: Intl.NumberFormatOptions; // Intl options override for numbers
 }
 
 export type UnitKey =
-  | "thousand"
-  | "million"
-  | "billion"
-  | "trillion"
-  | "lakh"
-  | "crore"
-  | "arab"
-  | "kharab"
-  | "wan"
-  | "yi";
+  | 'thousand'
+  | 'million'
+  | 'billion'
+  | 'trillion'
+  | 'lakh'
+  | 'crore'
+  | 'arab'
+  | 'kharab'
+  | 'wan'
+  | 'yi';
 
 export interface UnitDef {
   key: UnitKey;
@@ -53,8 +53,8 @@ type LabelNode = {
 
 export interface LocaleRules {
   rtl?: boolean; // bidi hint
-  joiner?: "" | " " | "\u00A0" | "\u202F"; // between number and label; default ' '
-  unitOrder?: "after" | "before"; // default 'after' -> "1 million"
+  joiner?: '' | ' ' | '\u00A0' | '\u202F'; // between number and label; default ' '
+  unitOrder?: 'after' | 'before'; // default 'after' -> "1 million"
   numberLocale?: string; // default: pack.locale
   numberOptions?: Intl.NumberFormatOptions; // default: { useGrouping: false }
   // NOTE: base is provided as already-inflected strings
@@ -62,7 +62,7 @@ export interface LocaleRules {
     unitKey: UnitKey,
     base: { words: string; abbr: string },
     factor: number,
-    style: LabelStyle
+    style: LabelStyle,
   ) => string;
   finalize?: (text: string) => string; // final tweak (e.g., add RLM)
 }
@@ -74,10 +74,7 @@ export interface LocalePack {
 }
 
 // --- Unknown system strategy ---
-export type UnknownSystemStrategy =
-  | "raw"
-  | "locale"
-  | { use: SystemId }; // e.g. { use: 'international' }
+export type UnknownSystemStrategy = 'raw' | 'locale' | { use: SystemId }; // e.g. { use: 'international' }
 
 export interface CompactConfig {
   systems?: SystemDef[];
@@ -99,78 +96,70 @@ export interface CompactFormatter {
 // ---- default systems ----
 
 const SYSTEM_INTL: SystemDef = {
-  id: "international",
+  id: 'international',
   units: [
-    { key: "trillion", value: 1_000_000_000_000n },
-    { key: "billion", value: 1_000_000_000n },
-    { key: "million", value: 1_000_000n },
-    { key: "thousand", value: 1_000n },
+    { key: 'trillion', value: 1_000_000_000_000n },
+    { key: 'billion', value: 1_000_000_000n },
+    { key: 'million', value: 1_000_000n },
+    { key: 'thousand', value: 1_000n },
   ],
 };
 
 const SYSTEM_INDIAN: SystemDef = {
-  id: "indian",
+  id: 'indian',
   units: [
-    { key: "kharab", value: 100_000_000_000n }, // 10^11
-    { key: "arab", value: 1_000_000_000n }, // 10^9
-    { key: "crore", value: 10_000_000n }, // 10^7
-    { key: "lakh", value: 100_000n }, // 10^5
-    { key: "thousand", value: 1_000n }, // 10^3
+    { key: 'kharab', value: 100_000_000_000n }, // 10^11
+    { key: 'arab', value: 1_000_000_000n }, // 10^9
+    { key: 'crore', value: 10_000_000n }, // 10^7
+    { key: 'lakh', value: 100_000n }, // 10^5
+    { key: 'thousand', value: 1_000n }, // 10^3
   ],
 };
 
 const SYSTEM_EAST_ASIA: SystemDef = {
-  id: "eastAsia",
+  id: 'eastAsia',
   units: [
-    { key: "yi", value: 100_000_000n }, // 10^8
-    { key: "wan", value: 10_000n }, // 10^4
-    { key: "thousand", value: 1_000n }, // convenience
+    { key: 'yi', value: 100_000_000n }, // 10^8
+    { key: 'wan', value: 10_000n }, // 10^4
+    { key: 'thousand', value: 1_000n }, // convenience
   ],
 };
 
 // ---- default English locale only (strings still work) ----
 
 const LOCALE_EN: LocalePack = {
-  locale: "en",
+  locale: 'en',
   labels: {
-    thousand: { words: "thousand", abbr: "K" },
-    million: { words: "million", abbr: "M" },
-    billion: { words: "billion", abbr: "B" },
-    trillion: { words: "trillion", abbr: "T" },
-    lakh: { words: "lakh", abbr: "L" },
-    crore: { words: "crore", abbr: "Cr" },
-    arab: { words: "arab", abbr: "Ar" },
-    kharab: { words: "kharab", abbr: "Khar" },
-    wan: { words: "wan", abbr: "w" },
-    yi: { words: "yi", abbr: "y" },
+    thousand: { words: 'thousand', abbr: 'K' },
+    million: { words: 'million', abbr: 'M' },
+    billion: { words: 'billion', abbr: 'B' },
+    trillion: { words: 'trillion', abbr: 'T' },
+    lakh: { words: 'lakh', abbr: 'L' },
+    crore: { words: 'crore', abbr: 'Cr' },
+    arab: { words: 'arab', abbr: 'Ar' },
+    kharab: { words: 'kharab', abbr: 'Khar' },
+    wan: { words: 'wan', abbr: 'w' },
+    yi: { words: 'yi', abbr: 'y' },
   },
   rules: {
-    joiner: " ",
-    unitOrder: "after",
+    joiner: ' ',
+    unitOrder: 'after',
     numberOptions: { useGrouping: false },
   },
 };
 
 // ---- factory ----
 
-export function createCompactFormatter(
-  cfg?: Partial<CompactConfig>
-): CompactFormatter {
+export function createCompactFormatter(cfg?: Partial<CompactConfig>): CompactFormatter {
   const systems = new Map<SystemId, SystemDef>();
   const locales = new Map<string, LocalePack>();
-  let defaultLocale = cfg?.defaultLocale ?? "en";
-  let allowedFractions = (cfg?.allowedFractions ?? [0, 0.5])
-    .slice()
-    .sort((a, b) => a - b);
+  let defaultLocale = cfg?.defaultLocale ?? 'en';
+  let allowedFractions = (cfg?.allowedFractions ?? [0, 0.5]).slice().sort((a, b) => a - b);
 
   const allowSubSmallest = cfg?.allowSubSmallest ?? false;
-  const unknownSystem = cfg?.unknownSystem ?? "raw";
+  const unknownSystem = cfg?.unknownSystem ?? 'raw';
 
-  for (const s of cfg?.systems ?? [
-    SYSTEM_INTL,
-    SYSTEM_INDIAN,
-    SYSTEM_EAST_ASIA,
-  ]) {
+  for (const s of cfg?.systems ?? [SYSTEM_INTL, SYSTEM_INDIAN, SYSTEM_EAST_ASIA]) {
     systems.set(s.id, {
       ...s,
       units: [...s.units].sort((a, b) => Number(b.value - a.value)),
@@ -195,49 +184,45 @@ export function createCompactFormatter(
   }
 
   function pickLocale(lang?: string): LocalePack {
-    return (
-      locales.get(lang ?? defaultLocale) ??
-      locales.get(defaultLocale) ??
-      LOCALE_EN
-    );
+    return locales.get(lang ?? defaultLocale) ?? locales.get(defaultLocale) ?? LOCALE_EN;
   }
 
   // Normalize any label candidate into a {words, abbr} node.
-// Accepts either a string or an object with words/abbr (possibly partial).
-function coerceNode(unitKey: string, candidate: any): { words: any; abbr: any } {
-  if (!candidate) return { words: unitKey, abbr: unitKey };
-  // If candidate itself is a string, use it for both.
-  if (typeof candidate === 'string') return { words: candidate, abbr: candidate };
+  // Accepts either a string or an object with words/abbr (possibly partial).
+  function coerceNode(unitKey: string, candidate: any): { words: any; abbr: any } {
+    if (!candidate) return { words: unitKey, abbr: unitKey };
+    // If candidate itself is a string, use it for both.
+    if (typeof candidate === 'string') return { words: candidate, abbr: candidate };
 
-  // Object shape: allow partials and plural maps.
-  const words = typeof candidate.words !== 'undefined' ? candidate.words : unitKey;
-  const abbr  = typeof candidate.abbr  !== 'undefined' ? candidate.abbr  : words;
-  return { words, abbr };
-}
+    // Object shape: allow partials and plural maps.
+    const words = typeof candidate.words !== 'undefined' ? candidate.words : unitKey;
+    const abbr = typeof candidate.abbr !== 'undefined' ? candidate.abbr : words;
+    return { words, abbr };
+  }
 
-// Replace your getLabelNode with this version
-function getLabelNode(
-  unit: any,              // allow unknown keys (e.g., "mega")
-  lang: string
-): { words: any; abbr: any } {
-  const pack = pickLocale(lang);
+  // Replace your getLabelNode with this version
+  function getLabelNode(
+    unit: any, // allow unknown keys (e.g., "mega")
+    lang: string,
+  ): { words: any; abbr: any } {
+    const pack = pickLocale(lang);
 
-  // 1) Active locale label
-  const active = (pack.labels as any)?.[unit];
-  if (active) return coerceNode(String(unit), active);
+    // 1) Active locale label
+    const active = (pack.labels as any)?.[unit];
+    if (active) return coerceNode(String(unit), active);
 
-  // 2) English fallback (LOCALE_EN)
-  const en = (LOCALE_EN.labels as any)?.[unit];
-  if (en) return coerceNode(String(unit), en);
+    // 2) English fallback (LOCALE_EN)
+    const en = (LOCALE_EN.labels as any)?.[unit];
+    if (en) return coerceNode(String(unit), en);
 
-  // 3) Last resort: literal unit key
-  return { words: String(unit), abbr: String(unit) };
-}
+    // 3) Last resort: literal unit key
+    return { words: String(unit), abbr: String(unit) };
+  }
 
   // ---- Intl.NumberFormat cache ----
   const nfCache = new Map<string, Intl.NumberFormat>();
   function getNumberFormat(loc: string, opts: Intl.NumberFormatOptions): Intl.NumberFormat {
-    const key = loc + "|" + JSON.stringify(opts);
+    const key = loc + '|' + JSON.stringify(opts);
     const hit = nfCache.get(key);
     if (hit) return hit;
     const nf = new Intl.NumberFormat(loc, opts);
@@ -252,9 +237,9 @@ function getLabelNode(
     if (hit) return hit;
     let pr: Intl.PluralRules;
     try {
-      pr = new Intl.PluralRules(loc, { type: "cardinal" });
+      pr = new Intl.PluralRules(loc, { type: 'cardinal' });
     } catch {
-      pr = new Intl.PluralRules("en", { type: "cardinal" });
+      pr = new Intl.PluralRules('en', { type: 'cardinal' });
     }
     prCache.set(loc, pr);
     return pr;
@@ -267,33 +252,19 @@ function getLabelNode(
   }
 
   function materializeLabel(val: LabelValue, value: number, lang: string): string {
-    if (typeof val === "string") return val;
+    if (typeof val === 'string') return val;
     const cat = selectForm(value, lang);
-    return (
-      val[cat] ??
-      val.other ??
-      val.one ??
-      val.few ??
-      val.many ??
-      val.two ??
-      val.zero ??
-      ""
-    );
+    return val[cat] ?? val.other ?? val.one ?? val.few ?? val.many ?? val.two ?? val.zero ?? '';
   }
 
   function inflect(node: LabelNode, style: LabelStyle, value: number, lang: string): string {
-    const v = style === "abbr" ? node.abbr : node.words;
+    const v = style === 'abbr' ? node.abbr : node.words;
     return materializeLabel(v, value, lang);
   }
 
-  function renderNumber(
-    n: number,
-    opts: FormatOptions,
-    labelLang: string
-  ): string {
+  function renderNumber(n: number, opts: FormatOptions, labelLang: string): string {
     const pack = pickLocale(opts.locale ?? labelLang);
-    const candidate =
-      opts.numberLocale ?? pack.rules?.numberLocale ?? opts.locale ?? labelLang;
+    const candidate = opts.numberLocale ?? pack.rules?.numberLocale ?? opts.locale ?? labelLang;
 
     const options: Intl.NumberFormatOptions = {
       useGrouping: false,
@@ -306,12 +277,9 @@ function getLabelNode(
       return getNumberFormat(candidate, options).format(n);
     } catch {
       // Robust fallback chain: rules.numberLocale -> defaultLocale -> en-US -> en
-      const fallbacks = [
-        pack.rules?.numberLocale,
-        defaultLocale,
-        "en-US",
-        "en",
-      ].filter(Boolean) as string[];
+      const fallbacks = [pack.rules?.numberLocale, defaultLocale, 'en-US', 'en'].filter(
+        Boolean,
+      ) as string[];
 
       for (const loc of fallbacks) {
         try {
@@ -325,29 +293,21 @@ function getLabelNode(
     }
   }
 
-  function renderFallback(
-    n: number | bigint,
-    opts: FormatOptions,
-    labelLang: string
-  ): string {
-    if (opts.fallback === "locale") {
-      const v = typeof n === "number" ? n : Number(n);
+  function renderFallback(n: number | bigint, opts: FormatOptions, labelLang: string): string {
+    if (opts.fallback === 'locale') {
+      const v = typeof n === 'number' ? n : Number(n);
       return renderNumber(v, opts, labelLang);
     }
-    return typeof n === "number" ? String(n) : n.toString();
+    return typeof n === 'number' ? String(n) : n.toString();
   }
 
   function fractionDenominator(f: number): number {
     const s = f.toString();
-    const i = s.indexOf(".");
+    const i = s.indexOf('.');
     return i === -1 ? 1 : 10 ** (s.length - i - 1);
   }
 
-  function exactFactor(
-    absValue: bigint,
-    unit: bigint,
-    fractions: number[]
-  ): number | null {
+  function exactFactor(absValue: bigint, unit: bigint, fractions: number[]): number | null {
     // exact integer multiple
     if (absValue % unit === 0n) return Number(absValue / unit);
 
@@ -375,10 +335,10 @@ function getLabelNode(
   }
 
   function format(value: number | bigint, options: FormatOptions = {}): string {
-    const { system = "international", style = "words" } = options;
+    const { system = 'international', style = 'words' } = options;
 
     // validate numbers (NaN/Infinity and non-integers)
-    if (typeof value === "number") {
+    if (typeof value === 'number') {
       if (!Number.isFinite(value)) {
         return renderFallback(value, options, options.locale ?? defaultLocale);
       }
@@ -387,19 +347,27 @@ function getLabelNode(
       }
     }
 
-    const v = typeof value === "bigint" ? value : BigInt(value);
+    const v = typeof value === 'bigint' ? value : BigInt(value);
     const absV = v < 0n ? -v : v;
 
     // Unknown system strategy
     const sys = systems.get(system);
     if (!sys) {
-      if (unknownSystem === "raw") {
+      if (unknownSystem === 'raw') {
         return renderFallback(value as number, options, options.locale ?? defaultLocale);
       }
-      if (unknownSystem === "locale") {
-        return renderFallback(value as number, { ...options, fallback: "locale" }, options.locale ?? defaultLocale);
+      if (unknownSystem === 'locale') {
+        return renderFallback(
+          value as number,
+          { ...options, fallback: 'locale' },
+          options.locale ?? defaultLocale,
+        );
       }
-      if (typeof unknownSystem === "object" && unknownSystem.use && systems.has(unknownSystem.use)) {
+      if (
+        typeof unknownSystem === 'object' &&
+        unknownSystem.use &&
+        systems.has(unknownSystem.use)
+      ) {
         return format(value, { ...options, system: unknownSystem.use });
       }
       return renderFallback(value as number, options, options.locale ?? defaultLocale);
@@ -421,28 +389,26 @@ function getLabelNode(
       const baseNode = getLabelNode(u.key, lang);
 
       // default morphology using Intl.PluralRules
-      const wordsInflected = inflect(baseNode, "words", factor, lang);
-      const abbrInflected = inflect(baseNode, "abbr", factor, lang);
+      const wordsInflected = inflect(baseNode, 'words', factor, lang);
+      const abbrInflected = inflect(baseNode, 'abbr', factor, lang);
 
-      const chosen = style === "abbr" ? abbrInflected : wordsInflected;
+      const chosen = style === 'abbr' ? abbrInflected : wordsInflected;
 
       const label = pack.rules?.resolveLabel
         ? pack.rules.resolveLabel(
             u.key,
             { words: wordsInflected, abbr: abbrInflected },
             factor,
-            style
+            style,
           )
         : chosen;
 
       const numStr = renderNumber(factor, options, lang);
-      const joiner = pack.rules?.joiner ?? " ";
-      const unitFirst = pack.rules?.unitOrder === "before";
-      const sign = v < 0n ? "-" : "";
+      const joiner = pack.rules?.joiner ?? ' ';
+      const unitFirst = pack.rules?.unitOrder === 'before';
+      const sign = v < 0n ? '-' : '';
 
-      let out = unitFirst
-        ? `${label}${joiner}${numStr}`
-        : `${numStr}${joiner}${label}`;
+      let out = unitFirst ? `${label}${joiner}${numStr}` : `${numStr}${joiner}${label}`;
       if (pack.rules?.finalize) out = pack.rules.finalize(out);
       return sign + out;
     }

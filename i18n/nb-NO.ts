@@ -3,40 +3,40 @@
 import type { LocalePack } from '../src/precise-compact';
 
 const pack = {
-  "locale": "nb-NO",
-  "labels": {
-    "thousand": {
-      "words": "tusen",
-      "abbr": "tus"
+  locale: 'nb-NO',
+  labels: {
+    thousand: {
+      words: 'tusen',
+      abbr: 'tus',
     },
-    "million": {
-      "words": {
-        "one": "million",
-        "other": "millioner"
+    million: {
+      words: {
+        one: 'million',
+        other: 'millioner',
       },
-      "abbr": {
-        "other": "mill."
-      }
+      abbr: {
+        other: 'mill.',
+      },
     },
-    "billion": {
-      "words": {
-        "one": "milliard",
-        "other": "milliarder"
+    billion: {
+      words: {
+        one: 'milliard',
+        other: 'milliarder',
       },
-      "abbr": {
-        "other": "mrd."
-      }
+      abbr: {
+        other: 'mrd.',
+      },
     },
-    "trillion": {
-      "words": {
-        "one": "billion",
-        "other": "billioner"
+    trillion: {
+      words: {
+        one: 'billion',
+        other: 'billioner',
       },
-      "abbr": {
-        "other": "bio."
-      }
-    }
-  }
+      abbr: {
+        other: 'bio.',
+      },
+    },
+  },
 } as any as LocalePack;
 
 export default pack;

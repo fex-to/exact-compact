@@ -72,21 +72,21 @@ Node ≥ 18.17 (or ≥ 20). ESM & CJS are both supported.
 import { createCompactFormatter, defaultFormatter } from 'precise-compact';
 
 // 1) Quick start (English is built in)
-defaultFormatter.format(1000);        // "1 thousand"
-defaultFormatter.format(1_000_000);   // "1 million"
-defaultFormatter.format(1500);        // "1.5 thousand"
-defaultFormatter.format(1501);        // "1501" (not exact -> fallback raw)
+defaultFormatter.format(1000); // "1 thousand"
+defaultFormatter.format(1_000_000); // "1 million"
+defaultFormatter.format(1500); // "1.5 thousand"
+defaultFormatter.format(1501); // "1501" (not exact -> fallback raw)
 
 // 2) Abbreviations
 defaultFormatter.format(2_000_000, { style: 'abbr' }); // "2 M"
 
 // 3) Indian system
-defaultFormatter.format(100_000, { system: 'indian' });           // "1 lakh"
-defaultFormatter.format(25_000_000, { system: 'indian' });        // "2.5 crore"
+defaultFormatter.format(100_000, { system: 'indian' }); // "1 lakh"
+defaultFormatter.format(25_000_000, { system: 'indian' }); // "2.5 crore"
 defaultFormatter.format(25_000_000, { system: 'indian', style: 'abbr' }); // "2.5 Cr"
 
 // 4) East Asia system
-defaultFormatter.format(10_000, { system: 'eastAsia' });   // "1 wan"
+defaultFormatter.format(10_000, { system: 'eastAsia' }); // "1 wan"
 defaultFormatter.format(100_000_000, { system: 'eastAsia' }); // "1 yi"
 ```
 
@@ -143,29 +143,31 @@ const ruPack: LocalePack = {
   locale: 'ru',
   labels: {
     thousand: { words: 'тысяча', abbr: 'тыс.' },
-    million:  { words: 'миллион', abbr: 'млн'  },
-    billion:  { words: 'миллиард', abbr: 'млрд' },
-    trillion: { words: 'триллион', abbr: 'трлн' }
+    million: { words: 'миллион', abbr: 'млн' },
+    billion: { words: 'миллиард', abbr: 'млрд' },
+    trillion: { words: 'триллион', abbr: 'трлн' },
   },
   rules: {
     numberLocale: 'ru-RU',
     resolveLabel: (unit, base, factor, style) => {
       if (style === 'abbr') return base.abbr;
       const i = Math.floor(Math.abs(factor));
-      const last2 = i % 100, last1 = i % 10;
-      const forms = unit === 'thousand'
-        ? ['тысяча', 'тысячи', 'тысяч']
-        : unit === 'million'
-        ? ['миллион', 'миллиона', 'миллионов']
-        : unit === 'billion'
-        ? ['миллиард', 'миллиарда', 'миллиардов']
-        : ['триллион', 'триллиона', 'триллионов'];
+      const last2 = i % 100,
+        last1 = i % 10;
+      const forms =
+        unit === 'thousand'
+          ? ['тысяча', 'тысячи', 'тысяч']
+          : unit === 'million'
+            ? ['миллион', 'миллиона', 'миллионов']
+            : unit === 'billion'
+              ? ['миллиард', 'миллиарда', 'миллиардов']
+              : ['триллион', 'триллиона', 'триллионов'];
       if (last2 >= 11 && last2 <= 14) return forms[2];
       if (last1 === 1) return forms[0];
       if (last1 >= 2 && last1 <= 4) return forms[1];
       return forms[2];
-    }
-  }
+    },
+  },
 };
 
 const fmt = createCompactFormatter();
@@ -204,11 +206,11 @@ type SystemId = 'international' | 'indian' | 'eastAsia' | (string & {});
 type LabelStyle = 'words' | 'abbr';
 
 interface FormatOptions {
-  system?: SystemId;                   // default: 'international'
-  style?: LabelStyle;                  // default: 'words'
-  fallback?: 'raw' | 'locale';         // default: 'raw'
-  locale?: string;                     // labels locale override
-  numberLocale?: string;               // Intl locale, e.g. 'ar-EG-u-nu-arab'
+  system?: SystemId; // default: 'international'
+  style?: LabelStyle; // default: 'words'
+  fallback?: 'raw' | 'locale'; // default: 'raw'
+  locale?: string; // labels locale override
+  numberLocale?: string; // Intl locale, e.g. 'ar-EG-u-nu-arab'
   numberOptions?: Intl.NumberFormatOptions; // Intl options
 }
 
@@ -236,9 +238,9 @@ export const defaultFormatter: CompactFormatter;
 fmt.registerSystem({
   id: 'custom',
   units: [
-    { key: 'million',  value: 1_000_000n },
-    { key: 'thousand', value: 1_000n }
-  ]
+    { key: 'million', value: 1_000_000n },
+    { key: 'thousand', value: 1_000n },
+  ],
 });
 
 fmt.format(3_000_000, { system: 'custom' }); // "3 million"
@@ -252,7 +254,7 @@ By default only `[0, 0.5]` are allowed. You can extend:
 fmt.setAllowedFractions([0, 0.25, 0.5, 0.75, 0.1]);
 
 fmt.format(125_000, { system: 'indian' }); // "1.25 lakh"
-fmt.format(75_000,  { system: 'indian' }); // "0.75 lakh"
+fmt.format(75_000, { system: 'indian' }); // "0.75 lakh"
 ```
 
 ### Fallback behavior
@@ -264,7 +266,7 @@ fmt.format(75_000,  { system: 'indian' }); // "0.75 lakh"
 fmt.format(1501, {
   fallback: 'locale',
   numberLocale: 'de-DE',
-  numberOptions: { useGrouping: true }
+  numberOptions: { useGrouping: true },
 }); // "1.501"
 ```
 
@@ -277,7 +279,9 @@ You can still make sub-unit fractions possible by allowing them:
 
 ```ts
 // Example: 500 → "0.5 thousand" if halves are allowed
-const f = createCompactFormatter({ /* optional cfg */ });
+const f = createCompactFormatter({
+  /* optional cfg */
+});
 f.setAllowedFractions([0, 0.5]);
 f.format(500); // "0.5 thousand"
 ```
@@ -369,10 +373,10 @@ npm run prepublishOnly  # runs tests + build
 ```ts
 import { defaultFormatter } from 'precise-compact';
 
-defaultFormatter.format(1_000);      // "1 thousand"
-defaultFormatter.format(1_500);      // "1.5 thousand"
-defaultFormatter.format(1_000_000);  // "1 million"
-defaultFormatter.format(1_501);      // "1501"
+defaultFormatter.format(1_000); // "1 thousand"
+defaultFormatter.format(1_500); // "1.5 thousand"
+defaultFormatter.format(1_000_000); // "1 million"
+defaultFormatter.format(1_501); // "1501"
 ```
 
 **2) Russian with morphology**
@@ -396,7 +400,7 @@ import { defaultFormatter as fmt } from 'precise-compact';
 
 fmt.setAllowedFractions([0, 0.25, 0.5, 0.75]);
 fmt.format(125_000, { system: 'indian' }); // "1.25 lakh"
-fmt.format(75_000,  { system: 'indian' }); // "0.75 lakh"
+fmt.format(75_000, { system: 'indian' }); // "0.75 lakh"
 ```
 
 **4) East Asia + zh-CN joiner**
@@ -408,7 +412,7 @@ const zhCN: LocalePack = {
   locale: 'zh-CN',
   labels: {
     wan: { words: '万', abbr: '万' },
-    yi:  { words: '亿', abbr: '亿' },
+    yi: { words: '亿', abbr: '亿' },
     thousand: { words: '千', abbr: '千' },
   },
   rules: { joiner: '', numberLocale: 'zh-CN' },

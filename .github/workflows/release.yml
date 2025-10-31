@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       bump:
-        description: "Version bump (patch/minor/major/prerelease)"
+        description: 'Version bump (patch/minor/major/prerelease)'
         required: false
-        default: "patch"
+        default: 'patch'
   push:
     tags:
-      - "v*"
+      - 'v*'
 
 permissions:
   contents: write
@@ -27,8 +27,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install
         run: npm ci
@@ -40,6 +40,15 @@ jobs:
 
       - name: Test
         run: npm test
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Typecheck
+        run: npm run typecheck
 
       - name: Build (sanity)
         run: npm run build
