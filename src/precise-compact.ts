@@ -5,12 +5,13 @@ export type SystemId = 'international' | 'indian' | 'eastAsia' | (string & {}); 
 export type LabelStyle = 'words' | 'abbr';
 
 export interface FormatOptions {
-  system?: SystemId; // default: 'international'
-  style?: LabelStyle; // default: 'words'
-  fallback?: 'raw' | 'locale'; // default: 'raw'
-  locale?: string; // labels locale override
-  numberLocale?: string; // Intl locale for numbers (e.g., 'ar-EG-u-nu-arab')
-  numberOptions?: Intl.NumberFormatOptions; // Intl options override for numbers
+  system?: SystemId;
+  style?: LabelStyle;
+  fallback?: 'raw' | 'locale'; // built-in fallback strategy
+  fallbackFn?: (value: number | bigint) => string; // ← custom fallback receives raw arg
+  locale?: string;
+  numberLocale?: string;
+  numberOptions?: Intl.NumberFormatOptions;
 }
 
 export type UnitKey =
@@ -219,6 +220,8 @@ export function createCompactFormatter(cfg?: Partial<CompactConfig>): CompactFor
     return { words: String(unit), abbr: String(unit) };
   }
 
+
+
   // ---- Intl.NumberFormat cache ----
   const nfCache = new Map<string, Intl.NumberFormat>();
   function getNumberFormat(loc: string, opts: Intl.NumberFormatOptions): Intl.NumberFormat {
@@ -293,13 +296,22 @@ export function createCompactFormatter(cfg?: Partial<CompactConfig>): CompactFor
     }
   }
 
-  function renderFallback(n: number | bigint, opts: FormatOptions, labelLang: string): string {
-    if (opts.fallback === 'locale') {
-      const v = typeof n === 'number' ? n : Number(n);
-      return renderNumber(v, opts, labelLang);
-    }
-    return typeof n === 'number' ? String(n) : n.toString();
+function renderFallback(original: number | bigint, opts: FormatOptions, labelLang: string): string {
+  // 1) Custom fallback gets the raw value untouched
+  if (typeof opts.fallbackFn === 'function') {
+    return opts.fallbackFn(original);
   }
+
+  // 2) Built-in strategies
+  if (opts.fallback === 'locale') {
+    // Intl.NumberFormat requires a number; convert only here, as late as possible
+    const n = typeof original === 'number' ? original : Number(original);
+    return renderNumber(n, opts, labelLang);
+  }
+
+  // default: 'raw' → exact string of the original argument
+  return typeof original === 'number' ? String(original) : original.toString();
+}
 
   function fractionDenominator(f: number): number {
     const s = f.toString();
@@ -334,87 +346,72 @@ export function createCompactFormatter(cfg?: Partial<CompactConfig>): CompactFor
     return null;
   }
 
-  function format(value: number | bigint, options: FormatOptions = {}): string {
-    const { system = 'international', style = 'words' } = options;
+function format(value: number | bigint, options: FormatOptions = {}): string {
+  const original = value; // ← keep raw user argument
 
-    // validate numbers (NaN/Infinity and non-integers)
-    if (typeof value === 'number') {
-      if (!Number.isFinite(value)) {
-        return renderFallback(value, options, options.locale ?? defaultLocale);
-      }
-      if (!Number.isInteger(value)) {
-        return renderFallback(value, options, options.locale ?? defaultLocale);
-      }
+  const { system = 'international', style = 'words' } = options;
+
+  // validate numbers (NaN/Infinity and non-integers)
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) {
+      return renderFallback(original, options, options.locale ?? defaultLocale);
     }
-
-    const v = typeof value === 'bigint' ? value : BigInt(value);
-    const absV = v < 0n ? -v : v;
-
-    // Unknown system strategy
-    const sys = systems.get(system);
-    if (!sys) {
-      if (unknownSystem === 'raw') {
-        return renderFallback(value as number, options, options.locale ?? defaultLocale);
-      }
-      if (unknownSystem === 'locale') {
-        return renderFallback(
-          value as number,
-          { ...options, fallback: 'locale' },
-          options.locale ?? defaultLocale,
-        );
-      }
-      if (
-        typeof unknownSystem === 'object' &&
-        unknownSystem.use &&
-        systems.has(unknownSystem.use)
-      ) {
-        return format(value, { ...options, system: unknownSystem.use });
-      }
-      return renderFallback(value as number, options, options.locale ?? defaultLocale);
+    if (!Number.isInteger(value)) {
+      return renderFallback(original, options, options.locale ?? defaultLocale);
     }
-
-    const smallest = sys.units[sys.units.length - 1]?.value ?? 1_000n;
-    if (!allowSubSmallest && absV < smallest) {
-      return renderFallback(value as number, options, options.locale ?? defaultLocale);
-    }
-
-    const lang = options.locale ?? defaultLocale;
-
-    // allow exact sub-unit fractions of higher units
-    for (const u of sys.units) {
-      const factor = exactFactor(absV, u.value, allowedFractions);
-      if (factor === null) continue;
-
-      const pack = pickLocale(lang);
-      const baseNode = getLabelNode(u.key, lang);
-
-      // default morphology using Intl.PluralRules
-      const wordsInflected = inflect(baseNode, 'words', factor, lang);
-      const abbrInflected = inflect(baseNode, 'abbr', factor, lang);
-
-      const chosen = style === 'abbr' ? abbrInflected : wordsInflected;
-
-      const label = pack.rules?.resolveLabel
-        ? pack.rules.resolveLabel(
-            u.key,
-            { words: wordsInflected, abbr: abbrInflected },
-            factor,
-            style,
-          )
-        : chosen;
-
-      const numStr = renderNumber(factor, options, lang);
-      const joiner = pack.rules?.joiner ?? ' ';
-      const unitFirst = pack.rules?.unitOrder === 'before';
-      const sign = v < 0n ? '-' : '';
-
-      let out = unitFirst ? `${label}${joiner}${numStr}` : `${numStr}${joiner}${label}`;
-      if (pack.rules?.finalize) out = pack.rules.finalize(out);
-      return sign + out;
-    }
-
-    return renderFallback(value as number, options, lang);
   }
+
+  const v = typeof value === 'bigint' ? value : BigInt(value);
+  const absV = v < 0n ? -v : v;
+
+  const sys = systems.get(system);
+  if (!sys) {
+    if (unknownSystem === 'raw') {
+      return renderFallback(original, options, options.locale ?? defaultLocale);
+    }
+    if (unknownSystem === 'locale') {
+      return renderFallback(original, { ...options, fallback: 'locale' }, options.locale ?? defaultLocale);
+    }
+    if (typeof unknownSystem === 'object' && unknownSystem.use && systems.has(unknownSystem.use)) {
+      return format(original, { ...options, system: unknownSystem.use }); // still pass original
+    }
+    return renderFallback(original, options, options.locale ?? defaultLocale);
+  }
+
+  const smallest = sys.units[sys.units.length - 1]?.value ?? 1_000n;
+  if (!allowSubSmallest && absV < smallest) {
+    return renderFallback(original, options, options.locale ?? defaultLocale);
+  }
+
+  const lang = options.locale ?? defaultLocale;
+
+  for (const u of sys.units) {
+    const factor = exactFactor(absV, u.value, allowedFractions);
+    if (factor === null) continue;
+
+    const pack = pickLocale(lang);
+    const baseNode = getLabelNode(u.key, lang);
+
+    const wordsInflected = inflect(baseNode, 'words', factor, lang);
+    const abbrInflected  = inflect(baseNode, 'abbr',  factor, lang);
+    const chosen = style === 'abbr' ? abbrInflected : wordsInflected;
+
+    const label = pack.rules?.resolveLabel
+      ? pack.rules.resolveLabel(u.key, { words: wordsInflected, abbr: abbrInflected }, factor, style)
+      : chosen;
+
+    const numStr   = renderNumber(factor, options, lang);
+    const joiner   = pack.rules?.joiner ?? ' ';
+    const unitFirst= pack.rules?.unitOrder === 'before';
+    const sign     = v < 0n ? '-' : '';
+
+    let out = unitFirst ? `${label}${joiner}${numStr}` : `${numStr}${joiner}${label}`;
+    if (pack.rules?.finalize) out = pack.rules.finalize(out);
+    return sign + out;
+  }
+
+  return renderFallback(original, options, lang);
+}
 
   return {
     format,
