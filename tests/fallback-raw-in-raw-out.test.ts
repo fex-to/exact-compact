@@ -38,9 +38,9 @@ describe('raw-in → raw-out for fallbacks', () => {
     expect(fmt.format(big)).toBe(big.toString());
   });
 
-  it('locale built-in formats numbers only (bigint coerced only here)', () => {
+  it('locale built-in formats numbers with grouping by default', () => {
     const big = 1234n;
     const out = fmt.format(big, { fallback: 'locale', locale: 'en-US' });
-    expect(out).toBe('1234'); // formatted as number with useGrouping:false
+    expect(out).toBe('1,234'); // formatted with grouping enabled by default
   });
 });
