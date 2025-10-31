@@ -1,0 +1,15 @@
+{
+  "name": "precise-compact",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run --coverage",
+    "test:ui": "vitest",
+    "build": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.0.5",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.5"
+  }
+}
