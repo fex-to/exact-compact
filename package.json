@@ -20,7 +20,9 @@
   },
   "typesVersions": {
     "*": {
-      "i18n/*": ["types/i18n.d.ts"]
+      "i18n/*": [
+        "types/i18n.d.ts"
+      ]
     }
   },
   "publishConfig": {
@@ -45,6 +47,7 @@
     "generate:i18n:dts": "tsx scripts/generate-i18n-dts.ts",
     "prebuild": "npm run generate:locales && npm run generate:i18n:dts",
     "build": "tsup",
+    "postbuild": "node scripts/postbuild-cjs-default.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
@@ -60,8 +63,12 @@
     "release:major": "release-it major --ci --verbose"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,json,md,yml,yaml}": ["prettier --write"],
-    "*.{ts,tsx}": ["eslint --fix"]
+    "*.{ts,tsx,js,json,md,yml,yaml}": [
+      "prettier --write"
+    ],
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ]
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",

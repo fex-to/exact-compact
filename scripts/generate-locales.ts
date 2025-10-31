@@ -4,13 +4,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 /**
- * This generator writes 50 locale packs into ./i18n/*.ts
- * Each file exports a default LocalePack for your library.
+ * Writes 50 locale packs into ./i18n/*.ts
+ * Each file exports default LocalePack for the library (source .ts).
  *
- * NOTE:
- * - We emit morphology maps (zero/one/two/few/many/other) where it makes sense.
- * - For invariant languages we emit simple strings.
- * - Abbreviations are pragmatic and may be tuned later.
+ * Build flow:
+ *   1) npm run generate:locales  -> emits ./i18n/*.ts
+ *   2) tsup                      -> bundles to dist/i18n/*.mjs and *.cjs
+ *
+ * Morphology:
+ *   - words/abbr can be either string or a CLDR-like plural map:
+ *     { zero?, one?, two?, few?, many?, other? }
  */
 
 type UnitKey = 'thousand' | 'million' | 'billion' | 'trillion';
@@ -45,11 +48,7 @@ type LocalePackApprox = {
   };
 };
 
-// ---------- helpers to compose morphology nodes ----------
-
-function w(words: Morph, abbr: Morph): LabelNode {
-  return { words, abbr };
-}
+// ---------- helpers ----------
 
 function inv(word: string, abbr: string = word): LabelNode {
   // invariant (no plural changes)
@@ -61,6 +60,7 @@ function oneOther(one: string, other: string, abbr = other): LabelNode {
 }
 
 function slavic3(one: string, few: string, many: string, abbr: string): LabelNode {
+  // Russian/Ukrainian/Polish-like
   return { words: { one, few, many, other: few }, abbr: { other: abbr } };
 }
 
@@ -72,13 +72,11 @@ function arabic6(
   other: string,
   abbr: string,
 ): LabelNode {
+  // Arabic: zero/one/two/few/many/other
   return { words: { zero: other, one, two, few, many, other }, abbr: { other: abbr } };
 }
 
-// ---------- LOCALES DATA (50) ----------
-// Note: These are pragmatic lexical choices for units thousand/million/billion/trillion.
-// Some locales traditionally use long-scale; here we align to your library units.
-// Tune later if you need domain-accurate naming standards.
+// ---------- locales (50) ----------
 
 const LOCALES: LocalePackApprox[] = [
   // 1 English
@@ -168,7 +166,7 @@ const LOCALES: LocalePackApprox[] = [
     labels: {
       thousand: inv('mil', 'mil'),
       million: oneOther('milhão', 'milhões', 'M'),
-      billion: oneOther('mil milhões', 'mil milhões', 'MilM'), // pragmatic
+      billion: oneOther('mil milhões', 'mil milhões', 'MilM'),
       trillion: oneOther('bilião', 'biliões', 'Bl'),
     },
   },
@@ -228,7 +226,7 @@ const LOCALES: LocalePackApprox[] = [
       billion: oneOther('milliard', 'milliards', 'Md'),
       trillion: oneOther('billion', 'billions', 'Bn'),
     },
-    rules: { joiner: '\u202F' }, // thin space
+    rules: { joiner: '\u202F' },
   },
 
   // 14 Indonesian
@@ -656,13 +654,11 @@ import type { LocalePack } from '../src/precise-compact';
 }
 
 function emitPack(p: LocalePackApprox): string {
-  // We cast to any because your runtime supports morphology maps,
-  // while the compile-time type may declare words/abbr as string.
+  // keep explicit escapes for special spaces, otherwise keep native chars
   const body = `const pack = ${JSON.stringify(p, null, 2)} as any as LocalePack;
 
 export default pack;
 `;
-  // JSON.stringify escapes \u202F etc correctly.
   return body;
 }
 
@@ -676,11 +672,6 @@ function writePacks() {
   }
 }
 
-function safeVar(tag: string) {
-  return tag.replace(/[^A-Za-z0-9_]/g, '_').replace(/^(\d)/, '_$1');
-}
-
 // run
 writePacks();
-
 console.log(`✔ Generated ${LOCALES.length} locale packs into ./i18n`);
