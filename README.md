@@ -24,17 +24,19 @@
 - [Usage](#usage)
 - [Exactness rules](#exactness-rules)
 - [Internationalization (i18n)](#internationalization-i18n)
-  - [What is morphology?](#what-is-morphology)
-  - [Registering a locale](#registering-a-locale)
-  - [Writing morphology rules](#writing-morphology-rules)
+
+   - [What is morphology?](#what-is-morphology)
+   - [Registering a locale](#registering-a-locale)
+   - [Writing morphology rules](#writing-morphology-rules)
 
 - [Numbering systems](#numbering-systems)
 - [API](#api)
 - [Advanced](#advanced)
-  - [Custom systems](#custom-systems)
-  - [Allowed fractions](#allowed-fractions)
-  - [Fallback behavior](#fallback-behavior)
-  - [Below smallest unit](#below-smallest-unit)
+
+   - [Custom systems](#custom-systems)
+   - [Allowed fractions](#allowed-fractions)
+   - [Fallback behavior](#fallback-behavior)
+   - [Below smallest unit](#below-smallest-unit)
 
 - [Design goals](#design-goals)
 - [Build & i18n packs](#build--i18n-packs)
@@ -71,25 +73,27 @@ Node ≥ 18.17 (or ≥ 20). ESM & CJS are both supported.
 ## Usage
 
 ```ts
-import { createCompactFormatter, defaultFormatter } from '@fex-to/precise-compact';
+```ts
+import { createCompactFormatter, PreciseCompact } from '@fex-to/precise-compact';
 
 // 1) Quick start (English is built in)
-defaultFormatter.format(1000); // "1 thousand"
-defaultFormatter.format(1_000_000); // "1 million"
-defaultFormatter.format(1500); // "1.5 thousand"
-defaultFormatter.format(1501); // "1501" (not exact -> fallback raw)
+PreciseCompact.format(1000); // "1 thousand"
+PreciseCompact.format(1_000_000); // "1 million"
+PreciseCompact.format(1500); // "1.5 thousand"
+PreciseCompact.format(1501); // "1501" (not exact -> fallback raw)
 
 // 2) Abbreviations
-defaultFormatter.format(2_000_000, { style: 'abbr' }); // "2 M"
+PreciseCompact.format(2_000_000, { style: 'abbr' }); // "2 M"
 
 // 3) Indian system
-defaultFormatter.format(100_000, { system: 'indian' }); // "1 lakh"
-defaultFormatter.format(25_000_000, { system: 'indian' }); // "2.5 crore"
-defaultFormatter.format(25_000_000, { system: 'indian', style: 'abbr' }); // "2.5 Cr"
+PreciseCompact.format(100_000, { system: 'indian' }); // "1 lakh"
+PreciseCompact.format(25_000_000, { system: 'indian' }); // "2.5 crore"
+PreciseCompact.format(25_000_000, { system: 'indian', style: 'abbr' }); // "2.5 Cr"
 
 // 4) East Asia system
-defaultFormatter.format(10_000, { system: 'eastAsia' }); // "1 wan"
-defaultFormatter.format(100_000_000, { system: 'eastAsia' }); // "1 yi"
+PreciseCompact.format(10_000, { system: 'eastAsia' }); // "1 wan"
+PreciseCompact.format(100_000_000, { system: 'eastAsia' }); // "1 yi"
+```
 ```
 
 > ℹ️ For non-exact numbers (or values below the smallest unit), you can instruct the library to fallback to localized plain numbers:  
@@ -99,7 +103,7 @@ defaultFormatter.format(100_000_000, { system: 'eastAsia' }); // "1 yi"
 
 ## Exactness rules
 
-- **Exact integer multiples:** `k * unit` → formatted (`1_000 → 1 thousand`).
+- __Exact integer multiples:__ `k * unit` → formatted (`1_000 → 1 thousand`).
 - **Whitelisted fractions:** only those explicitly allowed by `setAllowedFractions([0, 0.5, 0.25, 0.1, ...])`.  
    Example: `1.5 * 1000 → 1.5 thousand`, but `1.3 * 1000 → 1300` (fallback) unless `0.3` is allowed.
 - **No approximation:** Values like `1499`, `1501`, `999` fall back.
@@ -225,7 +229,7 @@ interface CompactFormatter {
 }
 
 function createCompactFormatter(cfg?: Partial<CompactConfig>): CompactFormatter;
-export const defaultFormatter: CompactFormatter;
+export const PreciseCompact: CompactFormatter;
 ```
 
 `CompactConfig` also supports `defaultLocale` and advanced toggles (see below).
@@ -373,12 +377,12 @@ npm run prepublishOnly  # runs tests + build
 **1) English (built in)**
 
 ```ts
-import { defaultFormatter } from '@fex-to/precise-compact';
+import { PreciseCompact } from '@fex-to/precise-compact';
 
-defaultFormatter.format(1_000); // "1 thousand"
-defaultFormatter.format(1_500); // "1.5 thousand"
-defaultFormatter.format(1_000_000); // "1 million"
-defaultFormatter.format(1_501); // "1501"
+PreciseCompact.format(1_000); // "1 thousand"
+PreciseCompact.format(1_500); // "1.5 thousand"
+PreciseCompact.format(1_000_000); // "1 million"
+PreciseCompact.format(1_501); // "1501"
 ```
 
 **2) Russian with morphology**
@@ -398,11 +402,11 @@ fmt.format(5_000, { locale: 'ru' }); // "5 тысяч"
 **3) Indian system (fractions)**
 
 ```ts
-import { defaultFormatter as fmt } from '@fex-to/precise-compact';
+import { PreciseCompact } from '@fex-to/precise-compact';
 
-fmt.setAllowedFractions([0, 0.25, 0.5, 0.75]);
-fmt.format(125_000, { system: 'indian' }); // "1.25 lakh"
-fmt.format(75_000, { system: 'indian' }); // "0.75 lakh"
+PreciseCompact.setAllowedFractions([0, 0.25, 0.5, 0.75]);
+PreciseCompact.format(125_000, { system: 'indian' }); // "1.25 lakh"
+PreciseCompact.format(75_000, { system: 'indian' }); // "0.75 lakh"
 ```
 
 **4) East Asia + zh-CN joiner**

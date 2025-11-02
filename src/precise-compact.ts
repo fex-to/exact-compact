@@ -439,4 +439,4 @@ export function createCompactFormatter(cfg?: Partial<CompactConfig>): CompactFor
 }
 
 // Optional ready-to-use instance
-export const defaultFormatter = createCompactFormatter();
+export const PreciseCompact = createCompactFormatter();

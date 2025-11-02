@@ -1,6 +1,6 @@
 {
   "name": "@fex-to/precise-compact",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Exact compact number formatter with non-approximated units and per-locale morphology.",
   "license": "MIT",
   "type": "module",
@@ -78,12 +78,12 @@
     ]
   },
   "devDependencies": {
-    "@eslint/js": "^9.38.0",
+    "@eslint/js": "^9.39.0",
     "@release-it/conventional-changelog": "^10.0.1",
     "@types/node": "^24.9.2",
     "@vitest/coverage-v8": "^4.0.6",
     "@vitest/eslint-plugin": "^1.4.0",
-    "eslint": "^9.38.0",
+    "eslint": "^9.39.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.4",

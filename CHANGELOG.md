@@ -1,5 +1,16 @@
 # Changelog
 
+# Changelog
+
+## [0.0.8](https://github.com/fex-to/exact-compact/compare/v0.0.7...v0.0.8) (2025-11-02)
+
+### Features
+
+* **api:** Rename `defaultFormatter` to `PreciseCompact` for clearer naming ([#1](https://github.com/fex-to/exact-compact/issues/1))
+  - More explicit and intuitive export name
+  - Better reflects the library's purpose
+  - **BREAKING CHANGE:** Users should update imports from `defaultFormatter` to `PreciseCompact`
+
 ## [0.0.7](https://github.com/fex-to/exact-compact/compare/v0.0.6...v0.0.7) (2025-10-31)
 
 ## [0.0.6](https://github.com/fex-to/exact-compact/compare/v0.0.5...v0.0.6) (2025-10-31)

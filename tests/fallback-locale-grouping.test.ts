@@ -1,21 +1,21 @@
 // comments in English only
 import { describe, it, expect } from 'vitest';
 
-import { defaultFormatter, createCompactFormatter } from '../src/precise-compact';
+import { PreciseCompact, createCompactFormatter } from '../src/precise-compact';
 
 describe('fallback: "locale" with grouping', () => {
   it('formats 1001 with grouping for en-US locale', () => {
-    const result = defaultFormatter.format(1001, { fallback: 'locale', locale: 'en-US' });
+    const result = PreciseCompact.format(1001, { fallback: 'locale', locale: 'en-US' });
     expect(result).toBe('1,001');
   });
 
   it('formats larger numbers with grouping', () => {
-    const result = defaultFormatter.format(123456, { fallback: 'locale', locale: 'en-US' });
+    const result = PreciseCompact.format(123456, { fallback: 'locale', locale: 'en-US' });
     expect(result).toBe('123,456');
   });
 
   it('respects explicit useGrouping: false override', () => {
-    const result = defaultFormatter.format(1001, {
+    const result = PreciseCompact.format(1001, {
       fallback: 'locale',
       locale: 'en-US',
       numberOptions: { useGrouping: false },
@@ -24,27 +24,27 @@ describe('fallback: "locale" with grouping', () => {
   });
 
   it('formats with raw fallback (no grouping)', () => {
-    const result = defaultFormatter.format(1001, { fallback: 'raw' });
+    const result = PreciseCompact.format(1001, { fallback: 'raw' });
     expect(result).toBe('1001');
   });
 
   it('still compacts values that match units normally', () => {
-    const result = defaultFormatter.format(1000000);
+    const result = PreciseCompact.format(1000000);
     expect(result).toBe('1 million');
   });
 
   it('formats negative numbers with grouping', () => {
-    const result = defaultFormatter.format(-1001, { fallback: 'locale', locale: 'en-US' });
+    const result = PreciseCompact.format(-1001, { fallback: 'locale', locale: 'en-US' });
     expect(result).toBe('-1,001');
   });
 
   it('formats zero with locale fallback', () => {
-    const result = defaultFormatter.format(0, { fallback: 'locale', locale: 'en-US' });
+    const result = PreciseCompact.format(0, { fallback: 'locale', locale: 'en-US' });
     expect(result).toBe('0');
   });
 
   it('handles bigint with locale fallback', () => {
-    const result = defaultFormatter.format(1234n, { fallback: 'locale', locale: 'en-US' });
+    const result = PreciseCompact.format(1234n, { fallback: 'locale', locale: 'en-US' });
     expect(result).toBe('1,234');
   });
 
@@ -55,7 +55,7 @@ describe('fallback: "locale" with grouping', () => {
   });
 
   it('formats with different numberOptions when using locale fallback', () => {
-    const result = defaultFormatter.format(1234.567, {
+    const result = PreciseCompact.format(1234.567, {
       fallback: 'locale',
       locale: 'en-US',
       numberOptions: {
@@ -70,7 +70,7 @@ describe('fallback: "locale" with grouping', () => {
     // Even if the locale pack has useGrouping: false by default,
     // the locale fallback should enable grouping
     // Use 5001 to avoid exact match with 5 thousand
-    const result = defaultFormatter.format(5001, { fallback: 'locale', locale: 'en' });
+    const result = PreciseCompact.format(5001, { fallback: 'locale', locale: 'en' });
     expect(result).toBe('5,001');
   });
 });

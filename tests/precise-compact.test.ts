@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 
 import {
   createCompactFormatter,
-  defaultFormatter,
+  PreciseCompact,
   type LocalePack,
   type SystemId,
 } from '../src/precise-compact';
@@ -228,8 +228,8 @@ describe('systems registry and fallbacks', () => {
 });
 
 describe('default export exists', () => {
-  it('defaultFormatter works', () => {
-    expect(defaultFormatter.format(1000)).toBe('1 thousand');
+  it('PreciseCompact works', () => {
+    expect(PreciseCompact.format(1000)).toBe('1 thousand');
   });
 });
 
