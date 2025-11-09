@@ -22,6 +22,43 @@ describe('precise-compact (international, English defaults)', () => {
     expect(fmt.format(1_000_000)).toBe('1 million');
   });
 
+  it('formats large numbers (words)', () => {
+    expect(fmt.format(45_600_000_000)).toBe('45.6 billion');
+  });
+
+  it('formats billions with various decimal fractions', () => {
+    expect(fmt.format(1_000_000_000)).toBe('1 billion');
+    expect(fmt.format(2_000_000_000)).toBe('2 billion');
+    expect(fmt.format(1_100_000_000)).toBe('1.1 billion');
+    expect(fmt.format(2_300_000_000)).toBe('2.3 billion');
+    expect(fmt.format(5_500_000_000)).toBe('5.5 billion');
+    expect(fmt.format(7_900_000_000)).toBe('7.9 billion');
+    expect(fmt.format(12_400_000_000)).toBe('12.4 billion');
+    expect(fmt.format(99_700_000_000)).toBe('99.7 billion');
+  });
+
+  it('formats billions with abbreviation style', () => {
+    expect(fmt.format(1_000_000_000, { style: 'abbr' })).toBe('1 B');
+    expect(fmt.format(3_200_000_000, { style: 'abbr' })).toBe('3.2 B');
+    expect(fmt.format(45_600_000_000, { style: 'abbr' })).toBe('45.6 B');
+    expect(fmt.format(999_000_000_000, { style: 'abbr' })).toBe('999 B');
+  });
+
+  it('formats negative billions', () => {
+    expect(fmt.format(-1_000_000_000)).toBe('-1 billion');
+    expect(fmt.format(-2_500_000_000)).toBe('-2.5 billion');
+    expect(fmt.format(-10_800_000_000)).toBe('-10.8 billion');
+  });
+
+  it('falls back when billion value is not exact', () => {
+    // 1_000_000_001 is not an exact multiple or allowed fraction
+    expect(fmt.format(1_000_000_001)).toBe('1000000001');
+    // 1_150_000_000 = 1.15 billion, but it's 1150 million (exact integer)
+    expect(fmt.format(1_150_000_000)).toBe('1150 million');
+    // 1_234_567_890 is not an exact match for any unit
+    expect(fmt.format(1_234_567_890)).toBe('1234567890');
+  });
+
   it('formats exact .5 multiples only (no rounding)', () => {
     expect(fmt.format(1500)).toBe('1.5 thousand');
     // 1501 is not exact -> fallback raw
@@ -52,6 +89,53 @@ describe('precise-compact (international, English defaults)', () => {
       }),
     ).toBe('1.501');
   });
+
+  it('formats trillions correctly', () => {
+    expect(fmt.format(1_000_000_000_000)).toBe('1 trillion');
+    expect(fmt.format(5_000_000_000_000)).toBe('5 trillion');
+    expect(fmt.format(2_300_000_000_000)).toBe('2.3 trillion');
+    expect(fmt.format(1_000_000_000_000, { style: 'abbr' })).toBe('1 T');
+  });
+
+  it('formats edge cases with zero and very small values', () => {
+    expect(fmt.format(0)).toBe('0');
+    expect(fmt.format(1)).toBe('1');
+    expect(fmt.format(999)).toBe('999');
+    // 500 is below smallest unit (1000), so falls back to raw
+    expect(fmt.format(500)).toBe('500');
+  });
+
+  it('formats large integer multiples of thousands', () => {
+    expect(fmt.format(1_000)).toBe('1 thousand');
+    expect(fmt.format(5_000)).toBe('5 thousand');
+    expect(fmt.format(999_000)).toBe('999 thousand');
+    expect(fmt.format(1_000_000)).toBe('1 million');
+  });
+
+  it('formats all decimal tenths for millions', () => {
+    expect(fmt.format(1_100_000)).toBe('1.1 million');
+    expect(fmt.format(1_200_000)).toBe('1.2 million');
+    expect(fmt.format(1_300_000)).toBe('1.3 million');
+    expect(fmt.format(1_400_000)).toBe('1.4 million');
+    expect(fmt.format(1_600_000)).toBe('1.6 million');
+    expect(fmt.format(1_700_000)).toBe('1.7 million');
+    expect(fmt.format(1_800_000)).toBe('1.8 million');
+    expect(fmt.format(1_900_000)).toBe('1.9 million');
+  });
+
+  it('handles bigint values', () => {
+    expect(fmt.format(1_000_000n)).toBe('1 million');
+    expect(fmt.format(1_500_000n)).toBe('1.5 million');
+    expect(fmt.format(1_000_000_000n)).toBe('1 billion');
+    expect(fmt.format(-2_000_000n)).toBe('-2 million');
+  });
+
+  it('formats mixed scale values', () => {
+    expect(fmt.format(1_500_000_000)).toBe('1.5 billion');
+    // 500_000_000 = 0.5 billion (prefers larger unit)
+    expect(fmt.format(500_000_000)).toBe('0.5 billion');
+    expect(fmt.format(250_000)).toBe('250 thousand');
+  });
 });
 
 describe('indian system (lakh/crore)', () => {
@@ -68,6 +152,35 @@ describe('indian system (lakh/crore)', () => {
     expect(f.format(125_000, { system: 'indian' })).toBe('1.25 lakh');
     // 110000 = 1.1 * 100000 (lakh)
     expect(f.format(110_000, { system: 'indian' })).toBe('1.1 lakh');
+  });
+
+  it('formats arab and kharab units', () => {
+    expect(fmt.format(1_000_000_000, { system: 'indian' })).toBe('1 arab');
+    expect(fmt.format(5_000_000_000, { system: 'indian' })).toBe('5 arab');
+    expect(fmt.format(100_000_000_000, { system: 'indian' })).toBe('1 kharab');
+    // 50_000_000_000 = 0.5 kharab (prefers larger unit)
+    expect(fmt.format(50_000_000_000, { system: 'indian' })).toBe('0.5 kharab');
+  });
+
+  it('formats various lakh values', () => {
+    expect(fmt.format(100_000, { system: 'indian' })).toBe('1 lakh');
+    expect(fmt.format(200_000, { system: 'indian' })).toBe('2 lakh');
+    expect(fmt.format(500_000, { system: 'indian' })).toBe('5 lakh');
+    expect(fmt.format(50_000, { system: 'indian' })).toBe('0.5 lakh');
+    expect(fmt.format(75_000, { system: 'indian' })).toBe('75 thousand');
+  });
+
+  it('formats negative values in indian system', () => {
+    expect(fmt.format(-100_000, { system: 'indian' })).toBe('-1 lakh');
+    expect(fmt.format(-10_000_000, { system: 'indian' })).toBe('-1 crore');
+    expect(fmt.format(-1_000_000_000, { system: 'indian' })).toBe('-1 arab');
+  });
+
+  it('formats crore with decimals', () => {
+    expect(fmt.format(10_000_000, { system: 'indian' })).toBe('1 crore');
+    expect(fmt.format(15_000_000, { system: 'indian' })).toBe('1.5 crore');
+    expect(fmt.format(27_000_000, { system: 'indian' })).toBe('2.7 crore');
+    expect(fmt.format(99_000_000, { system: 'indian' })).toBe('9.9 crore');
   });
 });
 
@@ -98,6 +211,35 @@ describe('eastAsia system (wan/yi)', () => {
     expect(fmt.format(100_000_000, { system: 'eastAsia', locale: 'zh-CN' })).toBe('1亿');
     // negative
     expect(fmt.format(-20_000, { system: 'eastAsia', locale: 'zh-CN' })).toBe('-2万');
+  });
+
+  it('formats various wan values', () => {
+    expect(fmt.format(10_000, { system: 'eastAsia' })).toBe('1 wan');
+    expect(fmt.format(20_000, { system: 'eastAsia' })).toBe('2 wan');
+    expect(fmt.format(50_000, { system: 'eastAsia' })).toBe('5 wan');
+    expect(fmt.format(15_000, { system: 'eastAsia' })).toBe('1.5 wan');
+    expect(fmt.format(99_000, { system: 'eastAsia' })).toBe('9.9 wan');
+  });
+
+  it('formats yi with decimals', () => {
+    expect(fmt.format(100_000_000, { system: 'eastAsia' })).toBe('1 yi');
+    expect(fmt.format(200_000_000, { system: 'eastAsia' })).toBe('2 yi');
+    expect(fmt.format(150_000_000, { system: 'eastAsia' })).toBe('1.5 yi');
+    expect(fmt.format(580_000_000, { system: 'eastAsia' })).toBe('5.8 yi');
+  });
+
+  it('formats negative values in eastAsia system', () => {
+    expect(fmt.format(-10_000, { system: 'eastAsia' })).toBe('-1 wan');
+    expect(fmt.format(-100_000_000, { system: 'eastAsia' })).toBe('-1 yi');
+    expect(fmt.format(-35_000, { system: 'eastAsia' })).toBe('-3.5 wan');
+  });
+
+  it('handles thousand unit in eastAsia system', () => {
+    // 1_000 = 0.1 wan (prefers larger unit)
+    expect(fmt.format(1_000, { system: 'eastAsia' })).toBe('0.1 wan');
+    expect(fmt.format(5_000, { system: 'eastAsia' })).toBe('0.5 wan');
+    // For values below 1000, they fall back
+    expect(fmt.format(500, { system: 'eastAsia' })).toBe('500');
   });
 });
 

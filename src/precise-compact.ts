@@ -155,7 +155,9 @@ export function createCompactFormatter(cfg?: Partial<CompactConfig>): CompactFor
   const systems = new Map<SystemId, SystemDef>();
   const locales = new Map<string, LocalePack>();
   let defaultLocale = cfg?.defaultLocale ?? 'en';
-  let allowedFractions = (cfg?.allowedFractions ?? [0, 0.5]).slice().sort((a, b) => a - b);
+  let allowedFractions = (cfg?.allowedFractions ?? [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+    .slice()
+    .sort((a, b) => a - b);
 
   const allowSubSmallest = cfg?.allowSubSmallest ?? false;
   const unknownSystem = cfg?.unknownSystem ?? 'raw';
