@@ -92,10 +92,13 @@
     "prettier": "^3.6.2",
     "release-it": "^19.0.6",
     "rimraf": "^6.1.0",
-    "tsup": "^8.1.0",
+    "tsup": "^8.5.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.47.0",
     "vitest": "^4.0.10"
+  },
+  "overrides": {
+    "glob": "^11.0.0"
   }
 }
