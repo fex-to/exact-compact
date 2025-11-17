@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.0.13](///compare/v0.0.12...v0.0.13) (2025-11-17)
+
 ## [0.0.12](https://github.com/fex-to/exact-compact/compare/v0.0.11...v0.0.12) (2025-11-17)
 
 ### Features
