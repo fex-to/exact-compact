@@ -3,12 +3,12 @@
 > **Exact** compact number formatter — no rounding, no approximation.  
 > Human-readable units with per-locale **morphology** and on-demand i18n packs.
 
-[![npm](https://img.shields.io/npm/v/precise-compact.svg)](https://www.npmjs.com/package/precise-compact)
+[![npm](https://img.shields.io/npm/v/@fex-to/precise-compact.svg)](https://www.npmjs.com/package/@fex-to/precise-compact)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
 [![types](https://img.shields.io/badge/types-TypeScript-blue)](#usage)
 [![bundle](https://img.shields.io/badge/deps-0-brightgreen)](#design-goals)
 
-- ✅ **Exact only**: formats only exact integer multiples (and whitelisted fractions like `.5`, `.25`), never “~1.5M”.
+- ✅ **Exact only**: formats only exact integer multiples (and whitelisted fractions like `.5`, `.25`), never "~1.5M".
 - 🌐 **Systems**: international (thousand/million/billion/trillion), Indian (lakh/crore/arab/kharab), East Asia (wan/yi).
 - 🧠 **Morphology**: locale packs can implement grammar rules (plural, dual, case), e.g. Russian, Ukrainian, Arabic.
 - 📦 **On-demand i18n**: core ships with **English only**; optional locale packs live under `precise-compact/i18n/*`.
@@ -31,6 +31,7 @@
 
 - [Numbering systems](#numbering-systems)
 - [API](#api)
+- [Performance](#performance)
 - [Advanced](#advanced)
 
    - [Custom systems](#custom-systems)
@@ -209,6 +210,37 @@ export const PreciseCompact: CompactFormatter;
 ```
 
 `CompactConfig` also supports `defaultLocale` and advanced toggles (see below).
+
+---
+
+## Performance
+
+Benchmarks run on **100,000 iterations** per case with 2 warmup runs. Performance varies by locale complexity, morphology rules, and abbreviation style.
+
+**Test Environment:**
+- Host: darwin 25.1.0 (arm64)
+- CPU: Apple M2 Max x12
+- RAM: 32.0 GB
+
+**Results (sorted by ops/sec):**
+
+| Case | Sample Output | ops/sec |
+| --- | --- | ---:|
+| Fallback (raw) | `720`, `750` | ~27M |
+| English compact | `1 million` | ~460K |
+| Thai compact/abbr | `45 ล`, `30 ล้าน` | ~460K |
+| Russian/Ukrainian abbr | `2 млн`, `3 млн` | ~365K |
+| Arabic compact/abbr | `7 ملايين`, `12 م` | ~330K |
+| Japanese compact/abbr | `12千`, `120千` | ~325K |
+| French compact | `9,9 milliards` | ~306K |
+| English abbr | `250 K` | ~295K |
+| German compact | `2,5 Millionen` | ~292K |
+| Spanish compact | `3,4 millones` | ~287K |
+| Ukrainian morphology | `2,1 тисячі` | ~259K |
+| Portuguese abbr | `4,5 mi` | ~250K |
+| Russian morphology | `1,5 тысячи` | ~230K |
+
+_See [benchmarks/locale-bench-report.md](./benchmarks/locale-bench-report.md) for full details._
 
 ---
 

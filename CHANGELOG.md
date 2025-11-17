@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.15] (2025-11-17)
+
+### Security Fixes
+
+* **deps:** Fixed high severity vulnerability in `glob` dependency by adding package override to force version `^11.0.0`
+* **security:** Resolved 3 high severity vulnerabilities in transitive dependencies (glob via tsup → sucrase)
+
 ## [0.0.14] (2025-11-17)
 
 ### Features
