@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.16] (2025-11-17)
+
+### Bug Fixes
+
+* **types:** Fixed TypeScript ambient module declarations in `types/i18n.d.ts` to use scoped package name `@fex-to/precise-compact` instead of `precise-compact`
+* **types:** Fixed duplicate identifier errors in i18n locale type declarations
+* **types:** Updated `scripts/generate-i18n-dts.ts` to generate correct scoped package declarations
+
 ## [0.0.15] (2025-11-17)
 
 ### Security Fixes

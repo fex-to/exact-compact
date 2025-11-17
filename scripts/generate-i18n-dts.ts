@@ -7,8 +7,8 @@ const locales = globSync('i18n/*.ts').map((p) => path.basename(p, '.ts'));
 
 const header =
   `// Auto-generated. Do not edit.\n` +
-  `// Ambient module declarations for precise-compact i18n packs.\n\n` +
-  `declare module 'precise-compact' {\n` +
+  `// Ambient module declarations for @fex-to/precise-compact i18n packs.\n\n` +
+  `declare module '@fex-to/precise-compact' {\n` +
   `  export interface LocalePack {\n` +
   `    locale: string;\n` +
   `    labels: Record<string, { words: string; abbr: string } | undefined>;\n` +
@@ -30,10 +30,10 @@ const header =
 const body = locales
   .map(
     (loc) =>
-      `declare module 'precise-compact/i18n/${loc}' {\n` +
-      `  import type { LocalePack } from 'precise-compact';\n` +
-      `  const pack: LocalePack;\n` +
-      `  export default pack;\n` +
+      `declare module '@fex-to/precise-compact/i18n/${loc}' {\n` +
+      `  import type { LocalePack } from '@fex-to/precise-compact';\n` +
+      `  const locale: LocalePack;\n` +
+      `  export default locale;\n` +
       `}\n`,
   )
   .join('\n');

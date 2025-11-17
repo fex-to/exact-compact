@@ -11,7 +11,7 @@
 - ✅ **Exact only**: formats only exact integer multiples (and whitelisted fractions like `.5`, `.25`), never "~1.5M".
 - 🌐 **Systems**: international (thousand/million/billion/trillion), Indian (lakh/crore/arab/kharab), East Asia (wan/yi).
 - 🧠 **Morphology**: locale packs can implement grammar rules (plural, dual, case), e.g. Russian, Ukrainian, Arabic.
-- 📦 **On-demand i18n**: core ships with **English only**; optional locale packs live under `precise-compact/i18n/*`.
+- 📦 **On-demand i18n**: core ships with **English only**; optional locale packs live under `@fex-to/precise-compact/i18n/*`.
 - 🧩 **Bring-your-own numerals**: compact hits honor `locale` automatically; control raw fallbacks through `fallbackFn`.
 - ⚙️ **TypeScript-first** API; ESM & CJS exports; zero runtime deps.
 
@@ -74,8 +74,7 @@ Node ≥ 18.17 (or ≥ 20). ESM & CJS are both supported.
 ## Usage
 
 ```ts
-```ts
-import { createCompactFormatter, PreciseCompact } from '@fex-to/precise-compact';
+import { PreciseCompact } from '@fex-to/precise-compact';
 
 // 1) Quick start (English is built in)
 PreciseCompact.format(1000); // "1 thousand"
@@ -96,17 +95,22 @@ PreciseCompact.format(10_000, { system: 'eastAsia' }); // "1 wan"
 PreciseCompact.format(100_000_000, { system: 'eastAsia' }); // "1 yi"
 ```
 
-```md
-> ℹ️ Non-exact numbers (or values below the smallest unit) reuse the original digits. Provide a `fallbackFn` if you want localized plain numbers:
-> ```ts
-> const nf = new Intl.NumberFormat('de-DE', { useGrouping: true });
-> PreciseCompact.format(1501, {
->   fallbackFn: (value) => (typeof value === 'bigint' ? value.toString() : nf.format(value)),
-> }); // "1.501"
-> ```
+---
 
-> Compact hits already localize according to `locale`, so you only need custom logic for fallback cases.
-```
+## Exactness rules
+
+The library formats a number as compact **only if** it's an exact multiple of a unit (or an allowed fraction).
+
+- `1000` → `"1 thousand"` ✅ (exact multiple)
+- `1500` → `"1.5 thousand"` ✅ (0.5 is allowed by default)
+- `1501` → `"1501"` ❌ (not exact, falls back to raw)
+- `1250` → `"1250"` ❌ (0.25 not allowed by default)
+
+You can customize allowed fractions with `setAllowedFractions([0, 0.25, 0.5, 0.75])`.
+
+---
+
+## Internationalization (i18n)
 
 ### What is morphology?
 
@@ -124,10 +128,22 @@ Locale packs can ship a `rules.resolveLabel` function to dynamically choose the 
 ### Registering a locale
 
 ```ts
+import { PreciseCompact } from '@fex-to/precise-compact';
+import ru from '@fex-to/precise-compact/i18n/ru';
+
+// Register Russian locale
+PreciseCompact.registerLocale(ru);
+
+// Now you can use Russian
+PreciseCompact.format(2_000, { locale: 'ru' }); // "2 тысячи"
+PreciseCompact.format(1_000, { locale: 'ru' }); // "1 тысяча"
+PreciseCompact.format(5_000, { locale: 'ru' }); // "5 тысяч"
+
+// Or create your own custom formatter with locale
 import { createCompactFormatter, type LocalePack } from '@fex-to/precise-compact';
 
-const ruPack: LocalePack = {
-  locale: 'ru',
+const customPack: LocalePack = {
+  locale: 'ru-custom',
   labels: {
     thousand: { words: 'тысяча', abbr: 'тыс.' },
     million: { words: 'миллион', abbr: 'млн' },
@@ -157,8 +173,8 @@ const ruPack: LocalePack = {
 };
 
 const fmt = createCompactFormatter();
-fmt.registerLocale(ruPack);
-fmt.format(2_000, { locale: 'ru' }); // "2 тысячи"
+fmt.registerLocale(customPack);
+fmt.format(2_000, { locale: 'ru-custom' }); // "2 тысячи"
 ```
 
 ### Writing morphology rules
@@ -218,6 +234,7 @@ export const PreciseCompact: CompactFormatter;
 Benchmarks run on **100,000 iterations** per case with 2 warmup runs. Performance varies by locale complexity, morphology rules, and abbreviation style.
 
 **Test Environment:**
+
 - Host: darwin 25.1.0 (arm64)
 - CPU: Apple M2 Max x12
 - RAM: 32.0 GB
@@ -249,6 +266,9 @@ _See [benchmarks/locale-bench-report.md](./benchmarks/locale-bench-report.md) fo
 ### Custom systems
 
 ```ts
+import { createCompactFormatter } from '@fex-to/precise-compact';
+
+const fmt = createCompactFormatter();
 fmt.registerSystem({
   id: 'custom',
   units: [
@@ -265,11 +285,18 @@ fmt.format(3_000_000, { system: 'custom' }); // "3 million"
 By default only `[0, 0.5]` are allowed. You can extend:
 
 ```ts
-fmt.setAllowedFractions([0, 0.25, 0.5, 0.75, 0.1]);
+import { PreciseCompact } from '@fex-to/precise-compact';
 
-fmt.format(125_000, { system: 'indian' }); // "1.25 lakh"
-fmt.format(75_000, { system: 'indian' }); // "0.75 lakh"
+PreciseCompact.setAllowedFractions([0, 0.25, 0.5, 0.75, 0.1]);
+
+PreciseCompact.format(125_000, { system: 'indian' }); // "1.25 lakh"
+PreciseCompact.format(75_000, { system: 'indian' }); // "0.75 lakh"
 ```
+
+**Important:** The library has no built-in decimal precision limit. If you add fractions like `0.299`, values like `1299000` will format as `"1.299 million"`. For human-readable output, stick to **common fractions** with 1-2 decimal places:
+
+- ✅ Recommended: `[0, 0.25, 0.5, 0.75]` or `[0, 0.1, 0.2, ..., 0.9]`
+- ❌ Avoid: `[0, 0.123, 0.456, 0.789]` → produces "1.123 million", "1.456 million"
 
 ### Fallback behavior
 
@@ -278,9 +305,11 @@ fmt.format(75_000, { system: 'indian' }); // "0.75 lakh"
 - Compact hits already respect `locale`; rely on `fallbackFn` when values drop out of compact mode.
 
 ```ts
+import { PreciseCompact } from '@fex-to/precise-compact';
+
 const nf = new Intl.NumberFormat('de-DE', { useGrouping: true });
 
-fmt.format(1501, {
+PreciseCompact.format(1501, {
   fallbackFn: (value) => (typeof value === 'bigint' ? value.toString() : nf.format(value)),
 }); // "1.501"
 ```
@@ -289,19 +318,16 @@ You control locale/digit fallbacks inside the function. If a locale is unsupport
 
 ### Below smallest unit
 
-If the absolute value is **below smallest unit** of the selected system (e.g., `< 1000` for international), the library falls back.  
-You can still make sub-unit fractions possible by allowing them:
+If the absolute value is **below the smallest unit** of the selected system (e.g., `< 1000` for international), the library returns the raw value (no compact formatting).
 
 ```ts
-// Example: 500 → "0.5 thousand" if halves are allowed
-const f = createCompactFormatter({
-  /* optional cfg */
-});
-f.setAllowedFractions([0, 0.5]);
-f.format(500); // "0.5 thousand"
-```
+import { PreciseCompact } from '@fex-to/precise-compact';
 
-> If you want to **forbid** sub-unit fractions, keep the default allowed fractions or remove 0.5 from the list.
+PreciseCompact.format(500); // "500" (below 1000, not formatted)
+PreciseCompact.format(999); // "999" (below 1000, not formatted)
+PreciseCompact.format(1000); // "1 thousand" (exact match, formatted)
+PreciseCompact.format(1500); // "1.5 thousand" (>= smallest unit, formatted)
+```
 
 ---
 
@@ -325,8 +351,11 @@ This repo uses:
 Generated on-demand packs live in `./i18n` (source `.ts`) and are bundled to `dist/i18n/*.mjs|*.cjs|*.d.ts`. They are **not** auto-imported by core; you import what you need:
 
 ```ts
+import { PreciseCompact } from '@fex-to/precise-compact';
 import ru from '@fex-to/precise-compact/i18n/ru';
-fmt.registerLocale(ru);
+
+PreciseCompact.registerLocale(ru);
+PreciseCompact.format(1_000, { locale: 'ru' }); // "1 тысяча"
 ```
 
 ### Project scripts
@@ -353,7 +382,12 @@ npm run prepublishOnly  # runs tests + build
 ## FAQ
 
 **Q: Why not use `Intl.NumberFormat` with `notation: 'compact'`?**  
-**A:** It rounds/approximates (e.g., `1499000 → 1.5M`). We need **exact** thresholds and custom systems + morphology.
+**A:** `Intl.NumberFormat` rounds/approximates (e.g., `1499000 → 1.5M`), which is misleading. This library only formats **exact** multiples:
+- `1499000 → "1499 thousand"` (exact multiple of 1000)
+- `1500000 → "1.5 million"` (exact multiple with allowed fraction)
+- `1499 → "1499"` (not exact, fallback to raw)
+
+If you want to format only large units (millions+) and fallback smaller values, you can create a custom system without `thousand`, or use a wrapper function to check value size before formatting.
 
 **Q: Does it support BigInt?**  
 **A:** Yes — input can be `number | bigint`. The default fallback returns the original digits; if you supply a `fallbackFn`, convert `bigint` values to strings before calling `Intl.NumberFormat` (or similar).
@@ -363,6 +397,27 @@ npm run prepublishOnly  # runs tests + build
 
 **Q: How to handle RTL (Arabic/Hebrew)?**  
 **A:** Add `rules.finalize` to wrap with `\u200F` marks; pick digit sets via your `fallbackFn` (e.g., `Intl.NumberFormat('ar-EG-u-nu-arab')`).
+
+**Q: How to format only large units (millions, billions) and not thousands?**  
+**A:** Create a custom system without the `thousand` unit:
+
+```ts
+import { createCompactFormatter } from '@fex-to/precise-compact';
+
+const fmt = createCompactFormatter();
+fmt.registerSystem({
+  id: 'large-only',
+  units: [
+    { key: 'trillion', value: 1_000_000_000_000n },
+    { key: 'billion', value: 1_000_000_000n },
+    { key: 'million', value: 1_000_000n },
+  ],
+});
+
+fmt.format(1499000, { system: 'large-only' }); // "1499000" (no million, fallback)
+fmt.format(1500000, { system: 'large-only' }); // "1.5 million" (exact)
+fmt.format(2499000, { system: 'large-only' }); // "2499000" (no million, fallback)
+```
 
 ---
 
@@ -378,64 +433,3 @@ npm run prepublishOnly  # runs tests + build
 ## License
 
 [MIT](./LICENSE)
-
----
-
-### Quick examples (copy-paste)
-
-**1) English (built in)**
-
-```ts
-import { PreciseCompact } from '@fex-to/precise-compact';
-
-PreciseCompact.format(1_000); // "1 thousand"
-PreciseCompact.format(1_500); // "1.5 thousand"
-PreciseCompact.format(1_000_000); // "1 million"
-PreciseCompact.format(1_501); // "1501"
-```
-
-**2) Russian with morphology**
-
-```ts
-import { createCompactFormatter } from '@fex-to/precise-compact';
-import ru from '@fex-to/precise-compact/i18n/ru';
-
-const fmt = createCompactFormatter();
-fmt.registerLocale(ru);
-
-fmt.format(1_000, { locale: 'ru' }); // "1 тысяча"
-fmt.format(2_000, { locale: 'ru' }); // "2 тысячи"
-fmt.format(5_000, { locale: 'ru' }); // "5 тысяч"
-```
-
-**3) Indian system (fractions)**
-
-```ts
-import { PreciseCompact } from '@fex-to/precise-compact';
-
-PreciseCompact.setAllowedFractions([0, 0.25, 0.5, 0.75]);
-PreciseCompact.format(125_000, { system: 'indian' }); // "1.25 lakh"
-PreciseCompact.format(75_000, { system: 'indian' }); // "0.75 lakh"
-```
-
-**4) East Asia + zh-CN joiner**
-
-```ts
-import { createCompactFormatter, type LocalePack } from '@fex-to/precise-compact';
-
-const zhCN: LocalePack = {
-  locale: 'zh-CN',
-  labels: {
-    wan: { words: '万', abbr: '万' },
-    yi: { words: '亿', abbr: '亿' },
-    thousand: { words: '千', abbr: '千' },
-  },
-  rules: { joiner: '' },
-};
-
-const fmt = createCompactFormatter();
-fmt.registerLocale(zhCN);
-
-fmt.format(10_000, { system: 'eastAsia', locale: 'zh-CN' }); // "1万"
-fmt.format(100_000_000, { system: 'eastAsia', locale: 'zh-CN' }); // "1亿"
-```

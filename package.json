@@ -1,6 +1,6 @@
 {
   "name": "@fex-to/precise-compact",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Exact compact number formatter with non-approximated units and per-locale morphology.",
   "license": "MIT",
   "type": "module",
@@ -62,7 +62,7 @@
     "format:check": "prettier --check .",
     "test": "vitest run --coverage",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run build",
-    "prepare": "husky install",
+    "prepare": "husky",
     "prepublishOnly": "npm run verify",
     "release": "release-it",
     "release:patch": "release-it patch --ci --verbose",
