@@ -9,8 +9,6 @@ declare module 'precise-compact' {
       rtl?: boolean;
       joiner?: '' | ' ' | '\u00A0' | '\u202F';
       unitOrder?: 'after' | 'before';
-      numberLocale?: string;
-      numberOptions?: Intl.NumberFormatOptions;
       resolveLabel?: (
         unitKey: string,
         base: { words: string; abbr: string },

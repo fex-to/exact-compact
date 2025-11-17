@@ -1,6 +1,23 @@
 # Changelog
 
+## [0.0.12](https://github.com/fex-to/exact-compact/compare/v0.0.11...v0.0.12) (2025-11-17)
+
+### Features
+
+- **core:** Broke the formatter into focused modules (`src/types.ts`, `src/default-*`, `src/internal/*`) so caching, morphology helpers, and defaults remain reusable while the public API stays unchanged.
+- **bench:** Rebuilt `scripts/bench.ts` to run more locales/abbr cases, sort by ops/sec, capture host hardware, and persist Markdown reports under `benchmarks/` for transparent performance tracking.
+
 ## [0.0.11](https://github.com/fex-to/exact-compact/compare/v0.0.10...v0.0.11) (2025-11-09)
+
+```ts
+
+- **fallback:** Removed the built-in `'locale'` fallback plus `numberLocale` / `numberOptions`. The formatter now always returns raw digits unless you provide `fallbackFn`, giving callers full control over localized number formatting.
+- Updated README examples and API sections to describe the `fallbackFn` flow and removed references to deprecated options.
+```
+
+### Features
+
+- **format:** Compact numbers use an embedded `Intl.NumberFormat` driver that respects the `locale` argument for decimal separators (no manual driver needed anymore).
 
 ## [0.0.10](https://github.com/fex-to/exact-compact/compare/v0.0.9...v0.0.10) (2025-11-10)
 
@@ -44,31 +61,31 @@
 ### Features
 
 * **fallback:** Enable grouping for locale fallback by default
-  - When using `fallback: 'locale'`, number grouping (thousands separators) is now enabled by default
-  - Can be explicitly disabled by passing `numberOptions: { useGrouping: false }`
-  - Provides better readability for fallback numbers (e.g., "1,501" instead of "1501")
+   - When using `fallback: 'locale'`, number grouping (thousands separators) is now enabled by default
+   - Can be explicitly disabled by passing `numberOptions: { useGrouping: false }`
+   - Provides better readability for fallback numbers (e.g., "1,501" instead of "1501")
 
 ### Tests
 
 * Added comprehensive tests for locale fallback grouping behavior
-  - Verified default grouping with various locales (de-DE, en-US, fr-FR)
-  - Tested explicit override options
-  - Added tests for BigInt compatibility
+   - Verified default grouping with various locales (de-DE, en-US, fr-FR)
+   - Tested explicit override options
+   - Added tests for BigInt compatibility
 
 ## [0.0.6](https://github.com/fex-to/exact-compact/compare/v0.0.5...v0.0.6) (2025-10-31)
 
 ### Features
 
 * **fallback:** Add custom `fallbackFn` option for user-defined fallback formatting
-  - New `fallbackFn?: (value: number | bigint) => string` option in `FormatOptions`
-  - Allows complete control over fallback behavior for non-exact values
-  - Custom function receives the original input value (preserves number vs bigint type)
+   - New `fallbackFn?: (value: number | bigint) => string` option in `FormatOptions`
+   - Allows complete control over fallback behavior for non-exact values
+   - Custom function receives the original input value (preserves number vs bigint type)
 
 ### Bug Fixes
 
 * Improved fallback handling to preserve original argument type
-  - Ensures fallback functions receive the exact input value passed by the user
-  - Fixes edge cases where type conversion could affect fallback output
+   - Ensures fallback functions receive the exact input value passed by the user
+   - Fixes edge cases where type conversion could affect fallback output
 
 ### Tests
 
@@ -87,9 +104,9 @@
 ### Breaking Changes
 
 * **package:** Renamed package to scoped `@fex-to/precise-compact`
-  - Package name changed from `precise-compact` to `@fex-to/precise-compact`
-  - All users must update their package.json and imports
-  - Install with: `npm i @fex-to/precise-compact`
+   - Package name changed from `precise-compact` to `@fex-to/precise-compact`
+   - All users must update their package.json and imports
+   - Install with: `npm i @fex-to/precise-compact`
 
 ## [0.0.3](https://github.com/fex-to/exact-compact/compare/v0.0.2...v0.0.3) (2025-10-31)
 

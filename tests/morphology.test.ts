@@ -1,4 +1,3 @@
-// comments in English only
 import { describe, it, expect, beforeEach } from 'vitest';
 
 import type { LocalePack } from '../src/precise-compact';
@@ -212,15 +211,17 @@ describe('morphology by locale', () => {
 
   it('ru-RU: fractional (1.5 thousand) uses OTHER form', () => {
     f.setAllowedFractions([0, 0.5]);
-    // Force decimal separator to comma (ru-RU) to make assertion deterministic
-    const out = f.format(1_500, { locale: 'ru-RU', numberLocale: 'ru-RU' });
+    const out = f.format(1_500, { locale: 'ru-RU' });
     expect(out).toBe('1,5 тысячи');
   });
 
   it('uk-UA: thousand forms (words)', () => {
     expect(f.format(1_000, { locale: 'uk-UA' })).toBe('1 тисяча');
     expect(f.format(2_000, { locale: 'uk-UA' })).toBe('2 тисячі');
+    expect(f.format(2_100, { locale: 'uk-UA' })).toBe('2,1 тисячі');
     expect(f.format(5_000, { locale: 'uk-UA' })).toBe('5 тисяч');
+    expect(f.format(5_300, { locale: 'uk-UA' })).toBe('5,3 тисячі');
+    expect(f.format(5_700, { locale: 'uk-UA' })).toBe('5,7 тисячі');
   });
 
   it('pl-PL: correct units and forms (milion/miliard/bilion)', () => {

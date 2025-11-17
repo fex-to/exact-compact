@@ -1,4 +1,3 @@
-/* comments in English only */
 module.exports = {
   printWidth: 100,
   semi: true,

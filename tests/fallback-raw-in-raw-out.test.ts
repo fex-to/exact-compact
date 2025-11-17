@@ -1,4 +1,3 @@
-// comments in English only
 import { describe, it, expect } from 'vitest';
 
 import { createCompactFormatter } from '../src/precise-compact';
@@ -36,11 +35,5 @@ describe('raw-in → raw-out for fallbacks', () => {
   it('raw built-in returns exact original string for bigint', () => {
     const big = 999999999999999999999n;
     expect(fmt.format(big)).toBe(big.toString());
-  });
-
-  it('locale built-in formats numbers with grouping by default', () => {
-    const big = 1234n;
-    const out = fmt.format(big, { fallback: 'locale', locale: 'en-US' });
-    expect(out).toBe('1,234'); // formatted with grouping enabled by default
   });
 });

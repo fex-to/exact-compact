@@ -1,14 +1,6 @@
-// comments in English only
 import { createCompactFormatter, type LocalePack } from '../src/precise-compact';
 
-// --- tiny assert helpers ---
-function assertEqual(actual: string, expected: string, label: string) {
-  if (actual !== expected) {
-    console.error(`✖ ${label}\n   Expected: ${expected}\n   Received: ${actual}`);
-    throw new Error(`Assertion failed: ${label}`);
-  }
-  console.log(`✔ ${label}: ${actual}`);
-}
+// ---------- tiny assert helpers ----------
 function expectedIntl(
   n: number,
   loc = 'en-US',
@@ -16,8 +8,23 @@ function expectedIntl(
 ) {
   return new Intl.NumberFormat(loc, opts).format(n);
 }
+function ok(label: string, actual: string) {
+  console.log(`✔ ${label}: ${actual}`);
+}
+function eq(label: string, actual: string, expected: string) {
+  if (actual !== expected) {
+    console.error(`✖ ${label}\n   expected: ${expected}\n   received: ${actual}`);
+    throw new Error(`Assertion failed: ${label}`);
+  }
+  ok(label, actual);
+}
 
-// --- 30 locale packs (minimal labels; numberLocale mostly en-US for determinism) ---
+const groupingFallback = (value: number | bigint) => {
+  if (typeof value === 'bigint') return value.toString();
+  return new Intl.NumberFormat('en-US', { useGrouping: true }).format(value);
+};
+
+// ---------- 30 demo locale packs (labels minimal; numbers now raw unless caller formats) ----------
 const packs: LocalePack[] = [
   {
     locale: 'zh-CN',
@@ -26,7 +33,7 @@ const packs: LocalePack[] = [
       wan: { words: '万', abbr: '万' },
       yi: { words: '亿', abbr: '亿' },
     },
-    rules: { joiner: '', numberLocale: 'en-US' },
+    rules: { joiner: '' },
   },
   {
     locale: 'es',
@@ -36,7 +43,6 @@ const packs: LocalePack[] = [
       billion: { words: 'mil millones', abbr: 'MM' },
       trillion: { words: 'billón', abbr: 'Bn' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'ar',
@@ -46,7 +52,7 @@ const packs: LocalePack[] = [
       billion: { words: 'مليار', abbr: 'مليار' },
       trillion: { words: 'تريليون', abbr: 'تر' },
     },
-    rules: { rtl: true, numberLocale: 'en-US', finalize: (s) => `\u200F${s}\u200F` },
+    rules: { rtl: true, finalize: (s) => `\u200F${s}\u200F` },
   },
   {
     locale: 'pt-BR',
@@ -56,7 +62,6 @@ const packs: LocalePack[] = [
       billion: { words: 'bilhão', abbr: 'Bi' },
       trillion: { words: 'trilhão', abbr: 'Tri' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'pt-PT',
@@ -66,7 +71,6 @@ const packs: LocalePack[] = [
       billion: { words: 'mil milhões', abbr: 'MM' },
       trillion: { words: 'bilião', abbr: 'Bn' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'id-ID',
@@ -76,7 +80,6 @@ const packs: LocalePack[] = [
       billion: { words: 'miliar', abbr: 'mlr' },
       trillion: { words: 'triliun', abbr: 'trl' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'fr-FR',
@@ -86,7 +89,7 @@ const packs: LocalePack[] = [
       billion: { words: 'milliard', abbr: 'Md' },
       trillion: { words: 'billion', abbr: 'Bn' },
     },
-    rules: { joiner: '\u202F', numberLocale: 'en-US' },
+    rules: { joiner: '\u202F' },
   },
   {
     locale: 'ja-JP',
@@ -95,7 +98,7 @@ const packs: LocalePack[] = [
       wan: { words: '万', abbr: '万' },
       yi: { words: '億', abbr: '億' },
     },
-    rules: { joiner: '', numberLocale: 'en-US' },
+    rules: { joiner: '' },
   },
   {
     locale: 'ru-RU',
@@ -105,7 +108,6 @@ const packs: LocalePack[] = [
       billion: { words: 'миллиард', abbr: 'млрд' },
       trillion: { words: 'триллион', abbr: 'трлн' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'de-DE',
@@ -115,7 +117,6 @@ const packs: LocalePack[] = [
       billion: { words: 'Milliarde', abbr: 'Mrd.' },
       trillion: { words: 'Billion', abbr: 'Bio.' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'hi-IN',
@@ -125,7 +126,6 @@ const packs: LocalePack[] = [
       crore: { words: 'करोड़', abbr: 'Cr' },
       million: { words: 'मिलियन', abbr: 'M' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'tr-TR',
@@ -135,7 +135,6 @@ const packs: LocalePack[] = [
       billion: { words: 'milyar', abbr: 'Mr' },
       trillion: { words: 'trilyon', abbr: 'T' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'vi-VN',
@@ -144,7 +143,6 @@ const packs: LocalePack[] = [
       million: { words: 'triệu', abbr: 'Tr' },
       billion: { words: 'tỷ', abbr: 'Tỷ' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'ko-KR',
@@ -153,7 +151,7 @@ const packs: LocalePack[] = [
       wan: { words: '만', abbr: '만' },
       yi: { words: '억', abbr: '억' },
     },
-    rules: { joiner: '', numberLocale: 'en-US' },
+    rules: { joiner: '' },
   },
   {
     locale: 'it-IT',
@@ -163,7 +161,6 @@ const packs: LocalePack[] = [
       billion: { words: 'miliardo', abbr: 'Mld' },
       trillion: { words: 'bilione', abbr: 'Bn' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'fa-IR',
@@ -172,7 +169,7 @@ const packs: LocalePack[] = [
       million: { words: 'میلیون', abbr: 'م' },
       billion: { words: 'میلیارد', abbr: 'میلیارد' },
     },
-    rules: { rtl: true, numberLocale: 'en-US', finalize: (s) => `\u200F${s}\u200F` },
+    rules: { rtl: true, finalize: (s) => `\u200F${s}\u200F` },
   },
   {
     locale: 'pl-PL',
@@ -181,7 +178,6 @@ const packs: LocalePack[] = [
       million: { words: 'milion', abbr: 'mln' },
       billion: { words: 'miliard', abbr: 'mld' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'nl-NL',
@@ -190,7 +186,6 @@ const packs: LocalePack[] = [
       million: { words: 'miljoen', abbr: 'M' },
       billion: { words: 'miljard', abbr: 'Mrd' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'th-TH',
@@ -199,7 +194,6 @@ const packs: LocalePack[] = [
       million: { words: 'ล้าน', abbr: 'ล' },
       billion: { words: 'พันล้าน', abbr: 'พล' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'uk-UA',
@@ -208,7 +202,6 @@ const packs: LocalePack[] = [
       million: { words: 'мільйон', abbr: 'млн' },
       billion: { words: 'мільярд', abbr: 'млрд' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'he-IL',
@@ -217,7 +210,7 @@ const packs: LocalePack[] = [
       million: { words: 'מיליון', abbr: 'מל' },
       billion: { words: 'מיליארד', abbr: 'מל׳' },
     },
-    rules: { rtl: true, numberLocale: 'en-US', finalize: (s) => `\u200F${s}\u200F` },
+    rules: { rtl: true, finalize: (s) => `\u200F${s}\u200F` },
   },
   {
     locale: 'sv-SE',
@@ -226,7 +219,6 @@ const packs: LocalePack[] = [
       million: { words: 'miljon', abbr: 'M' },
       billion: { words: 'miljard', abbr: 'Md' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'hu-HU',
@@ -235,7 +227,6 @@ const packs: LocalePack[] = [
       million: { words: 'millió', abbr: 'M' },
       billion: { words: 'milliárd', abbr: 'Md' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'da-DK',
@@ -244,7 +235,6 @@ const packs: LocalePack[] = [
       million: { words: 'million', abbr: 'M' },
       billion: { words: 'milliard', abbr: 'Md' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'no-NO',
@@ -253,7 +243,6 @@ const packs: LocalePack[] = [
       million: { words: 'million', abbr: 'M' },
       billion: { words: 'milliard', abbr: 'Md' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'fi-FI',
@@ -262,7 +251,6 @@ const packs: LocalePack[] = [
       million: { words: 'miljoona', abbr: 'M' },
       billion: { words: 'miljardi', abbr: 'Md' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'cs-CZ',
@@ -271,7 +259,6 @@ const packs: LocalePack[] = [
       million: { words: 'milion', abbr: 'mil.' },
       billion: { words: 'miliarda', abbr: 'mld.' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'el-GR',
@@ -280,7 +267,6 @@ const packs: LocalePack[] = [
       million: { words: 'εκατομμύριο', abbr: 'Ε' },
       billion: { words: 'δισεκατομμύριο', abbr: 'Δ' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'ro-RO',
@@ -289,7 +275,6 @@ const packs: LocalePack[] = [
       million: { words: 'milion', abbr: 'M' },
       billion: { words: 'miliard', abbr: 'Md' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'ms-MY',
@@ -298,7 +283,6 @@ const packs: LocalePack[] = [
       million: { words: 'juta', abbr: 'jt' },
       billion: { words: 'bilion', abbr: 'bln' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'fil-PH',
@@ -307,7 +291,6 @@ const packs: LocalePack[] = [
       million: { words: 'milyon', abbr: 'M' },
       billion: { words: 'bilyon', abbr: 'B' },
     },
-    rules: { numberLocale: 'en-US' },
   },
   {
     locale: 'bn-BD',
@@ -316,159 +299,188 @@ const packs: LocalePack[] = [
       lakh: { words: 'লাখ', abbr: 'L' },
       crore: { words: 'কোটি', abbr: 'Cr' },
     },
-    rules: { numberLocale: 'en-US' },
   },
 ];
 
-// --- prepare formatter ---
+// ---------- prepare formatter ----------
 const fmt = createCompactFormatter();
-for (const p of packs) fmt.registerLocale(p);
+packs.forEach((p) => fmt.registerLocale(p));
 
-// --- show quick multi-locale samples (not asserts, just output) ---
-const sampleValues = [1_000, 1_500, 10_000, 1_000_000, 25_000_000];
+// ---------- 1) Basic usage across systems/styles/locales ----------
+console.log('\n== BASIC MATRIX (first 10 locales) ==');
+const basicValues = [1_000, 1_500, 10_000, 1_000_000, 25_000_000, 100_000_000, 1_000_000_000_000];
 for (const p of packs.slice(0, 10)) {
-  // show first 10 to keep log short
-  const locale = p.locale;
-  const v = [
-    fmt.format(1_000, { locale }),
-    fmt.format(1_500, { locale }),
-    fmt.format(10_000, { locale, system: 'eastAsia' }),
-    fmt.format(25_000_000, { locale, system: 'indian', style: 'abbr' }),
+  const L = p.locale;
+  const row = [
+    fmt.format(1_000, { locale: L }), // intl words
+    fmt.format(1_500, { locale: L, style: 'abbr' }), // intl abbr
+    fmt.format(10_000, { locale: L, system: 'eastAsia' }), // eastAsia words
+    fmt.format(100_000_000, { locale: L, system: 'eastAsia', style: 'abbr' }),
+    fmt.format(25_000_000, { locale: L, system: 'indian' }), // indian words
+    fmt.format(25_000_000, { locale: L, system: 'indian', style: 'abbr' }),
+    fmt.format(1_000_000_000_000n, { locale: L }), // bigint
   ].join(' | ');
-  console.log(`[${locale}] ${v}`);
+  console.log(`[${L}] ${row}`);
 }
 
-// --- 15 fallback variations (asserts) ---
-(function fallbackSuite() {
-  // 1) unknown system -> raw
-  assertEqual(
-    fmt.format(1_000_000, { system: '___unknown___' as any }),
-    '1000000',
-    'fallback: unknown system',
+// ---------- 2) All options demo (permutations distilled) ----------
+console.log('\n== OPTIONS SHOWCASE ==');
+(function optionsShowcase() {
+  // style words vs abbr
+  eq('style: words', fmt.format(2_000_000), '2 million');
+  eq('style: abbr', fmt.format(2_000_000, { style: 'abbr' }), '2 M');
+
+  // joiner and unitOrder via custom locale
+  fmt.registerLocale({
+    locale: 'xx-join-before',
+    labels: { thousand: { words: 'TH', abbr: 'TH' }, million: { words: 'MI', abbr: 'MI' } },
+    rules: { joiner: '\u00A0', unitOrder: 'before' },
+  });
+  eq('unitOrder before + NBSP', fmt.format(1_000, { locale: 'xx-join-before' }), 'TH\u00A01');
+
+  // resolveLabel (morphology)
+  fmt.registerLocale({
+    locale: 'ru-pl',
+    labels: {
+      thousand: { words: 'тысяча', abbr: 'тыс.' },
+      million: { words: 'миллион', abbr: 'млн' },
+      billion: { words: 'миллиард', abbr: 'млрд' },
+    },
+    rules: {
+      resolveLabel: (unit, base, factor, style) => {
+        if (style === 'abbr') return base.abbr;
+        const n = Math.floor(Math.abs(factor));
+        const last2 = n % 100,
+          last1 = n % 10;
+        const forms =
+          unit === 'thousand'
+            ? ['тысяча', 'тысячи', 'тысяч']
+            : unit === 'million'
+              ? ['миллион', 'миллиона', 'миллионов']
+              : ['миллиард', 'миллиарда', 'миллиардов'];
+        if (last2 >= 11 && last2 <= 14) return forms[2];
+        if (last1 === 1) return forms[0];
+        if (last1 >= 2 && last1 <= 4) return forms[1];
+        return forms[2];
+      },
+    },
+  });
+  eq('resolveLabel morphology', fmt.format(2_000, { locale: 'ru-pl' }), '2 тысячи');
+
+  // finalize hook (BiDi marker)
+  fmt.registerLocale({
+    locale: 'ar-demo',
+    labels: { thousand: { words: 'ألف', abbr: 'أ' }, million: { words: 'مليون', abbr: 'م' } },
+    rules: { finalize: (s) => `\u200F${s}\u200F` },
+  });
+  eq('finalize (BiDi)', fmt.format(1_000, { locale: 'ar-demo' }), '\u200F1 ألف\u200F');
+
+  // fallbackFn (caller controls presentation)
+  eq(
+    'fallbackFn grouping',
+    fmt.format(1_500_000, {
+      system: '___unknown___' as any,
+      fallbackFn: (value) => groupingFallback(value),
+    }),
+    expectedIntl(1_500_000, 'en-US', { useGrouping: true }),
   );
 
-  // 2) below smallest unit -> raw
-  assertEqual(fmt.format(999), '999', 'fallback: below smallest');
+  // allowedFractions
+  const f = createCompactFormatter();
+  f.setAllowedFractions([0, 0.25, 0.5, 0.75, 0.1]);
+  eq('allowedFractions .25', f.format(125_000, { system: 'indian' }), '1.25 lakh');
+  eq('allowedFractions .75', f.format(75_000, { system: 'indian' }), '0.75 lakh');
+  eq('allowedFractions .1', f.format(110_000, { system: 'indian' }), '1.1 lakh');
+})();
 
-  // 3) non-integer input -> raw
-  assertEqual(fmt.format(1.1), '1.1', 'fallback: non-integer input');
-
-  // 4) not allowed fraction -> raw after loop
+// ---------- 3) Fallback suite (modernized for fallbackFn) ----------
+console.log('\n== FALLBACK SUITE ==');
+(function fallbackSuite() {
+  // 1 unknown system -> raw string
+  eq('fb1 unknown system', fmt.format(1_000_000, { system: '___unknown___' as any }), '1000000');
+  // 2 below smallest -> raw
+  eq('fb2 < smallest', fmt.format(999), '999');
+  // 3 non-integer -> raw
+  eq('fb3 non-integer', fmt.format(1.1), '1.1');
+  // 4 disallowed fraction (only integer)
   const f4 = createCompactFormatter();
   f4.setAllowedFractions([0]);
-  assertEqual(f4.format(1_500), '1500', 'fallback: disallowed fraction');
-
-  // 5) invalid candidate -> use rules.numberLocale
-  const f5 = createCompactFormatter({
-    defaultLocale: 'xx',
-    locales: [
-      {
-        locale: 'custom',
-        labels: {},
-        rules: { numberLocale: 'en-US', numberOptions: { useGrouping: false } },
-      } as LocalePack,
-    ],
-  });
-  assertEqual(
-    f5.format(1_500, { locale: 'custom', numberLocale: 'zz' }),
-    `${expectedIntl(1.5)} thousand`,
-    'fallback chain: rules.numberLocale',
+  eq('fb4 disallowed fraction', f4.format(1_500), '1500');
+  // 5 custom fallback with Intl formatting
+  eq(
+    'fb5 custom fallback Intl',
+    fmt.format(1_234_567, { system: '___unknown___' as any, fallbackFn: groupingFallback }),
+    expectedIntl(1_234_567, 'en-US', { useGrouping: true }),
   );
-
-  // 6) invalid candidate + no rules.numberLocale + valid defaultLocale -> defaultLocale
-  const f6 = createCompactFormatter({
-    defaultLocale: 'en-GB',
-    locales: [{ locale: 'en-GB', labels: {} } as LocalePack],
-  });
-  assertEqual(
-    f6.format(1_500, { locale: 'en-GB', numberLocale: 'zz' }),
-    `${expectedIntl(1.5, 'en-US')} thousand`,
-    'fallback chain: defaultLocale (behaves like en-US here)',
+  // 6 custom fallback for BigInt input
+  eq(
+    'fb6 custom fallback BigInt',
+    fmt.format(999_999_999_999n, {
+      system: 'mystery' as any,
+      fallbackFn: (value) =>
+        typeof value === 'bigint' ? `${value.toString()}n` : value.toString(),
+    }),
+    '999999999999n',
   );
-
-  // 7) invalid candidate + invalid defaultLocale -> en-US
-  const f7 = createCompactFormatter({
-    defaultLocale: 'xx',
-    locales: [{ locale: 'xx', labels: {} } as LocalePack],
-  });
-  assertEqual(
-    f7.format(1_500, { locale: 'xx', numberLocale: 'yy' }),
-    `${expectedIntl(1.5, 'en-US')} thousand`,
-    'fallback chain: en-US',
-  );
-
-  // 8) missing label in locale -> fallback to English label
+  // 7 negative non-integer -> raw
+  eq('fb7 negative non-integer', fmt.format(-1501), '-1501');
+  // 8 missing label in locale -> fallback to English label
   const f8 = createCompactFormatter();
   f8.registerLocale({ locale: 'xx-lab', labels: { million: { words: 'MEGA', abbr: 'ME' } } });
-  assertEqual(f8.format(1_000, { locale: 'xx-lab' }), '1 thousand', 'label fallback: to English');
-
-  // 9) missing label in both locale and EN -> literal unit key
+  eq('fb8 label -> English', f8.format(1_000, { locale: 'xx-lab' }), '1 thousand');
+  // 9 missing label in both locale & EN -> literal unit key
   const f9 = createCompactFormatter();
   f9.registerSystem({
     id: 'custom-unknown' as any,
     units: [{ key: 'mega' as any, value: 1_000n }],
   });
-  assertEqual(
-    f9.format(1_000, { system: 'custom-unknown' as any }),
-    '1 mega',
-    'label fallback: literal unit key',
-  );
-
-  // 10) BigInt locale fallback
+  eq('fb9 label -> literal key', f9.format(1_000, { system: 'custom-unknown' as any }), '1 mega');
+  // 10 unknown locale -> default EN labels
   const f10 = createCompactFormatter();
-  assertEqual(
-    f10.format(1501n, { fallback: 'locale', numberLocale: 'en-US' }),
-    expectedIntl(1501, 'en-US'),
-    'fallback: bigint locale formatting',
+  eq('fb10 unknown locale', f10.format(1_000, { locale: 'zz-unknown' }), '1 thousand');
+  // 11 value equals top unit (trillion)
+  eq('fb11 exact trillion', fmt.format(1_000_000_000_000), '1 trillion');
+  // 12 eastAsia exact yi
+  eq('fb12 eastAsia yi', fmt.format(100_000_000, { system: 'eastAsia' }), '1 yi');
+  // 13 eastAsia exact wan
+  eq('fb13 eastAsia wan', fmt.format(10_000, { system: 'eastAsia' }), '1 wan');
+  // 14 indian crore
+  eq('fb14 indian crore', fmt.format(10_000_000, { system: 'indian' }), '1 crore');
+  // 15 indian arab
+  eq('fb15 indian arab', fmt.format(1_000_000_000, { system: 'indian' }), '1 arab');
+  // 16 setDefaultLocale effect (labels only)
+  const f16 = createCompactFormatter();
+  f16.registerLocale({ locale: 'xx-def', labels: { thousand: { words: 'TH', abbr: 'TH' } } });
+  f16.setDefaultLocale('xx-def');
+  eq('fb16 defaultLocale labels', f16.format(1_000), '1 TH');
+  // 17 style abbr in eastAsia
+  eq('fb17 eastAsia abbr', fmt.format(100_000_000, { system: 'eastAsia', style: 'abbr' }), '1 y');
+  // 18 style abbr in indian
+  eq('fb18 indian abbr', fmt.format(100_000, { system: 'indian', style: 'abbr' }), '1 L');
+  // 19 negative eastAsia with joiner=''
+  eq(
+    'fb19 negative eastAsia',
+    fmt.format(-20_000, { system: 'eastAsia', locale: 'zh-CN' }),
+    '-2万',
   );
-
-  // 11) negative non-integer -> raw
-  assertEqual(fmt.format(-1501), '-1501', 'fallback: negative non-integer');
-
-  // 12) unknown labels locale -> pick defaultLocale (en) labels
-  const f12 = createCompactFormatter();
-  assertEqual(
-    f12.format(1_000, { locale: 'zz-unknown' }),
-    '1 thousand',
-    'label locale fallback: default',
-  );
-
-  // 13) unknown system + fallback: "locale" with grouping
-  const f13 = createCompactFormatter();
-  assertEqual(
-    f13.format(1_000_000, {
-      system: '___unknown___' as any,
-      fallback: 'locale',
-      numberLocale: 'en-US',
-      numberOptions: { useGrouping: true },
-    }),
-    expectedIntl(1_000_000, 'en-US', { useGrouping: true }),
-    'fallback: unknown system + locale formatting',
-  );
-
-  // 14) eastAsia system but value < 10^4 -> fallback: "locale" with grouping
-  const f14 = createCompactFormatter();
-  assertEqual(
-    f14.format(9_999, {
-      system: 'eastAsia',
-      fallback: 'locale',
-      numberLocale: 'en-US',
-      numberOptions: { useGrouping: true },
-    }),
-    expectedIntl(9_999, 'en-US', { useGrouping: true }),
-    'fallback: eastAsia below unit threshold',
-  );
-
-  // 15) chain with broken rules.numberLocale + broken default -> ends at en-US
-  const f15 = createCompactFormatter({
-    defaultLocale: 'xx',
-    locales: [{ locale: 'xx', labels: {}, rules: { numberLocale: 'yy' } } as LocalePack],
-  });
-  assertEqual(
-    f15.format(1_500, { locale: 'xx', numberLocale: 'zz' }),
-    `${expectedIntl(1.5, 'en-US')} thousand`,
-    'fallback chain: broken rules.numberLocale + broken default -> en-US',
-  );
+  // 20 finalize present but no rtl digits (fa-IR)
+  eq('fb20 finalize hook out', fmt.format(1_000, { locale: 'fa-IR' }), '‏1 هزار‏');
 })();
 
-console.log('\nAll fallback variations passed.');
+// ---------- 4) ICU-sensitive demonstrations (no asserts; just visual) ----------
+console.log('\n== ICU-SENSITIVE (printed only) ==');
+console.log('[ar-EG Arabic-Indic digits via fallbackFn - printed, not asserted]');
+const fmtArDigits = createCompactFormatter();
+fmtArDigits.registerLocale({
+  locale: 'ar-num',
+  labels: { thousand: { words: 'ألف', abbr: 'أ' } },
+  rules: { finalize: (s) => `\u200F${s}\u200F` },
+});
+const arabicDigitsFallback = (value: number | bigint) =>
+  typeof value === 'bigint'
+    ? value.toString()
+    : new Intl.NumberFormat('ar-EG-u-nu-arab', { useGrouping: true }).format(value);
+console.log(' ', fmtArDigits.format(999, { locale: 'ar-num', fallbackFn: arabicDigitsFallback }));
+console.log(' ', fmtArDigits.format(1_500, { locale: 'ar-num' })); // ASCII digits by design
+
+console.log('\nAll demonstrations completed successfully.');

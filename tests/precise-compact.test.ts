@@ -1,4 +1,3 @@
-// comments in English only
 import { describe, it, expect, beforeEach } from 'vitest';
 
 import {
@@ -79,15 +78,10 @@ describe('precise-compact (international, English defaults)', () => {
     expect(fmt.format(1_000, { style: 'abbr' })).toBe('1 K');
   });
 
-  it('fallback locale rendering with Intl.NumberFormat', () => {
-    // 1501 -> "1.501" in de-DE with grouping
-    expect(
-      fmt.format(1501, {
-        fallback: 'locale',
-        numberLocale: 'de-DE',
-        numberOptions: { useGrouping: true },
-      }),
-    ).toBe('1.501');
+  it('delegates unmatched values to fallbackFn', () => {
+    const fallbackFn = (value: number | bigint) =>
+      new Intl.NumberFormat('de-DE').format(typeof value === 'bigint' ? Number(value) : value);
+    expect(fmt.format(1501, { fallbackFn })).toBe('1.501');
   });
 
   it('formats trillions correctly', () => {
@@ -201,8 +195,6 @@ describe('eastAsia system (wan/yi)', () => {
       },
       rules: {
         joiner: '',
-        numberLocale: 'zh-CN',
-        numberOptions: { useGrouping: false },
       },
     };
     fmt.registerLocale(zhCN);
@@ -323,7 +315,6 @@ describe('locale packs and rules', () => {
       },
       rules: {
         rtl: true,
-        numberLocale: 'en-US', // keep Latin digits for portability
         finalize: (s) => `\u200F${s}\u200F`,
       },
     };
@@ -338,7 +329,6 @@ describe('locale packs and rules', () => {
         thousand: { words: 'тысяча', abbr: 'тыс.' },
         million: { words: 'миллион', abbr: 'млн' },
       },
-      rules: { numberLocale: 'ru-RU' },
     };
     fmt.registerLocale(ru);
     fmt.setDefaultLocale('ru');
@@ -375,54 +365,27 @@ describe('default export exists', () => {
   });
 });
 
-describe('coverage: Intl fallback, bigint, fractionDenominator(1)', () => {
-  // comments in English only
-  it('Intl fallback uses rules.numberLocale when candidate invalid and no "en" registered', () => {
-    const fmtNoEn = createCompactFormatter({
-      defaultLocale: 'xx', // deliberately invalid to force fallback path
-      locales: [
-        {
-          locale: 'custom',
-          labels: {}, // unit labels will fall back to English
-          // choose a guaranteed-available number locale:
-          rules: {
-            numberLocale: 'en-US',
-            numberOptions: { useGrouping: false },
-          },
-        } as LocalePack,
-      ],
-    });
-
-    // Force invalid candidate -> trigger catch block in renderNumber
-    const out = fmtNoEn.format(1500, { locale: 'custom', numberLocale: 'yy' });
-
-    // Expected: uses rules.numberLocale ('en-US') for number and English label
-    const expected = `${new Intl.NumberFormat('en-US', {
-      useGrouping: false,
-    }).format(1.5)} thousand`;
-    expect(out).toBe(expected); // "1.5 thousand"
-  });
-
-  it('Intl fallback ultimately falls back to en-US when nothing else works', () => {
+describe('fallback coverage + fractionDenominator(1)', () => {
+  it('returns raw string when locale has no matching labels and no fallbackFn is provided', () => {
     const f = createCompactFormatter({
-      defaultLocale: 'xx', // invalid
-      locales: [{ locale: 'xx', labels: {} } as LocalePack], // only invalid locale registered
+      locales: [{ locale: 'custom', labels: {} } as LocalePack],
+      defaultLocale: 'custom',
     });
-
-    // numberLocale also invalid -> candidate fails; rules.numberLocale undefined; defaultLocale invalid -> next is en-US
-    const out = f.format(1500, { locale: 'xx', numberLocale: 'yy' });
-    expect(out).toBe('1.5 thousand'); // en-US decimal dot
+    // 1501 is not an allowed fraction -> raw string
+    expect(f.format(1501, { locale: 'custom' })).toBe('1501');
   });
 
-  it('renderFallback(locale) formats bigint path', () => {
+  it('uses fallbackFn for bigint values', () => {
     const f = createCompactFormatter();
-    // 1501 is not exact -> fallback, and we request locale formatting for bigint
+    const seen: Array<number | bigint> = [];
     const out = f.format(1501n, {
-      fallback: 'locale',
-      numberLocale: 'de-DE',
-      numberOptions: { useGrouping: true },
+      fallbackFn: (value) => {
+        seen.push(value);
+        return value.toString() + 'n';
+      },
     });
-    expect(out).toBe('1.501');
+    expect(out).toBe('1501n');
+    expect(seen[0]).toBe(1501n);
   });
 
   it('allowedFractions includes 1 => fractionDenominator(1) path is executed, then .5 matches', () => {
@@ -467,5 +430,78 @@ describe('sub-unit fractions allowed (indian system)', () => {
     const f = createCompactFormatter({ allowSubSmallest: true });
     f.setAllowedFractions([0, 0.5]);
     expect(f.format(500)).toBe('0.5 thousand');
+  });
+});
+
+describe('decimal number inputs (non-integer)', () => {
+  it('returns raw string for tiny decimal values with default fallback', () => {
+    expect(fmt.format(0.0001)).toBe('0.0001');
+    expect(fmt.format(-0.0001)).toBe('-0.0001');
+    expect(fmt.format(0.00001)).toBe('0.00001');
+    expect(fmt.format(0.123456)).toBe('0.123456');
+  });
+
+  it('returns raw string for larger decimal values with default fallback', () => {
+    expect(fmt.format(123.456)).toBe('123.456');
+    expect(fmt.format(-999.999)).toBe('-999.999');
+    expect(fmt.format(1234.5678)).toBe('1234.5678');
+  });
+
+  it('supports Intl formatting via fallbackFn for decimal values', () => {
+    const options = { minimumFractionDigits: 4, useGrouping: true };
+    const formatter = new Intl.NumberFormat('de-DE', options);
+    const expected = formatter.format(1234.5678);
+
+    expect(
+      fmt.format(1234.5678, {
+        fallbackFn: (value) => formatter.format(typeof value === 'bigint' ? Number(value) : value),
+      }),
+    ).toBe(expected);
+  });
+
+  it('supports Intl formatting via fallbackFn for tiny decimals', () => {
+    const options = { minimumFractionDigits: 6, useGrouping: false };
+    const formatter = new Intl.NumberFormat('en-US', options);
+    const expected = formatter.format(0.0001);
+
+    expect(
+      fmt.format(0.0001, {
+        fallbackFn: (value) => formatter.format(typeof value === 'bigint' ? Number(value) : value),
+      }),
+    ).toBe(expected);
+  });
+
+  it('handles negative tiny decimals via fallbackFn', () => {
+    const options = { minimumFractionDigits: 5, useGrouping: false };
+    const formatter = new Intl.NumberFormat('en-US', options);
+    const expected = formatter.format(-0.00001);
+
+    expect(
+      fmt.format(-0.00001, {
+        fallbackFn: (value) => formatter.format(typeof value === 'bigint' ? Number(value) : value),
+      }),
+    ).toBe(expected);
+  });
+
+  it('handles various decimal magnitudes', () => {
+    expect(fmt.format(0.1)).toBe('0.1');
+    expect(fmt.format(0.01)).toBe('0.01');
+    expect(fmt.format(0.001)).toBe('0.001');
+    expect(fmt.format(0.0001)).toBe('0.0001');
+    expect(fmt.format(0.00001)).toBe('0.00001');
+    expect(fmt.format(0.000001)).toBe('0.000001');
+  });
+
+  it('uses custom fallbackFn for decimal values', () => {
+    const result = fmt.format(0.0001, {
+      fallbackFn: (val) => `custom:${val}`,
+    });
+    expect(result).toBe('custom:0.0001');
+  });
+
+  it('handles NaN and Infinity decimal-related edge cases', () => {
+    expect(fmt.format(NaN)).toBe('NaN');
+    expect(fmt.format(Infinity)).toBe('Infinity');
+    expect(fmt.format(-Infinity)).toBe('-Infinity');
   });
 });

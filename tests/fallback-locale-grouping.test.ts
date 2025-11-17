@@ -1,76 +1,111 @@
-// comments in English only
 import { describe, it, expect } from 'vitest';
 
-import { PreciseCompact, createCompactFormatter } from '../src/precise-compact';
+import { PreciseCompact } from '../src/precise-compact';
 
-describe('fallback: "locale" with grouping', () => {
+function intlFallback(locale: string, options?: Intl.NumberFormatOptions) {
+  const formatter = new Intl.NumberFormat(locale, options);
+  return (value: number | bigint) => {
+    const asNumber = typeof value === 'bigint' ? Number(value) : value;
+    return formatter.format(asNumber);
+  };
+}
+
+describe('fallbackFn + Intl delegation', () => {
   it('formats 1001 with grouping for en-US locale', () => {
-    const result = PreciseCompact.format(1001, { fallback: 'locale', locale: 'en-US' });
+    const result = PreciseCompact.format(1001, { fallbackFn: intlFallback('en-US') });
     expect(result).toBe('1,001');
   });
 
   it('formats larger numbers with grouping', () => {
-    const result = PreciseCompact.format(123456, { fallback: 'locale', locale: 'en-US' });
+    const result = PreciseCompact.format(123456, { fallbackFn: intlFallback('en-US') });
     expect(result).toBe('123,456');
   });
 
-  it('respects explicit useGrouping: false override', () => {
+  it('respects custom Intl options', () => {
+    const options = {
+      useGrouping: false,
+      minimumFractionDigits: 2,
+    } satisfies Intl.NumberFormatOptions;
+    const expected = new Intl.NumberFormat('en-US', options).format(1001);
     const result = PreciseCompact.format(1001, {
-      fallback: 'locale',
-      locale: 'en-US',
-      numberOptions: { useGrouping: false },
+      fallbackFn: intlFallback('en-US', options),
     });
-    expect(result).toBe('1001');
-  });
-
-  it('formats with raw fallback (no grouping)', () => {
-    const result = PreciseCompact.format(1001, { fallback: 'raw' });
-    expect(result).toBe('1001');
+    expect(result).toBe(expected);
   });
 
   it('still compacts values that match units normally', () => {
-    const result = PreciseCompact.format(1000000);
+    const result = PreciseCompact.format(1_000_000, { fallbackFn: intlFallback('en-US') });
     expect(result).toBe('1 million');
   });
 
-  it('formats negative numbers with grouping', () => {
-    const result = PreciseCompact.format(-1001, { fallback: 'locale', locale: 'en-US' });
+  it('formats negative numbers through fallbackFn', () => {
+    const result = PreciseCompact.format(-1001, { fallbackFn: intlFallback('en-US') });
     expect(result).toBe('-1,001');
   });
 
-  it('formats zero with locale fallback', () => {
-    const result = PreciseCompact.format(0, { fallback: 'locale', locale: 'en-US' });
+  it('formats zero via fallbackFn', () => {
+    const result = PreciseCompact.format(0, { fallbackFn: intlFallback('en-US') });
     expect(result).toBe('0');
   });
 
-  it('handles bigint with locale fallback', () => {
-    const result = PreciseCompact.format(1234n, { fallback: 'locale', locale: 'en-US' });
+  it('handles bigint with fallbackFn', () => {
+    const result = PreciseCompact.format(1234n, { fallbackFn: intlFallback('en-US') });
     expect(result).toBe('1,234');
   });
 
-  it('uses custom formatter config with locale fallback', () => {
-    const fmt = createCompactFormatter();
-    const result = fmt.format(999, { fallback: 'locale', locale: 'en-US' });
-    expect(result).toBe('999');
-  });
-
-  it('formats with different numberOptions when using locale fallback', () => {
+  it('formats with different locales', () => {
+    const options = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
     const result = PreciseCompact.format(1234.567, {
-      fallback: 'locale',
-      locale: 'en-US',
-      numberOptions: {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      },
+      fallbackFn: intlFallback('de-DE', options),
     });
-    expect(result).toBe('1,234.57');
+    expect(result).toBe('1.234,57');
   });
 
-  it('locale fallback preserves useGrouping: true even with pack defaults', () => {
-    // Even if the locale pack has useGrouping: false by default,
-    // the locale fallback should enable grouping
-    // Use 5001 to avoid exact match with 5 thousand
-    const result = PreciseCompact.format(5001, { fallback: 'locale', locale: 'en' });
-    expect(result).toBe('5,001');
+  it('formats raw decimals with uk-UA comma separator', () => {
+    const fallbackFn = (value: number | bigint) =>
+      new Intl.NumberFormat('uk').format(typeof value === 'bigint' ? Number(value) : value);
+    const result = PreciseCompact.format(0.1, { fallbackFn, locale: 'uk' });
+
+    expect(result).toBe('0,1');
+  });
+
+  it('formats integers with uk-UA grouping when using fallbackFn', () => {
+    const options = { useGrouping: true } satisfies Intl.NumberFormatOptions;
+    const result = PreciseCompact.format(1501, {
+      fallbackFn: intlFallback('uk-UA', options),
+    });
+    expect(result).toBe('1\u00A0501');
+  });
+});
+
+describe('built-in locale digits', () => {
+  it('formats compact numbers with locale decimal separators', () => {
+    const result = PreciseCompact.format(1500, { locale: 'uk-UA' });
+    expect(result).toBe('1,5 thousand');
+  });
+
+  it('falls back to English when locale is invalid', () => {
+    const result = PreciseCompact.format(1500, { locale: 'xx-unknown' });
+    expect(result).toBe('1.5 thousand');
+  });
+
+  it('applies comma decimals for ru-RU locale', () => {
+    const result = PreciseCompact.format(2100, { locale: 'ru-RU' });
+    expect(result).toBe('2,1 thousand');
+  });
+
+  it('applies comma decimals for de-DE locale', () => {
+    const result = PreciseCompact.format(1500, { locale: 'de-DE' });
+    expect(result).toBe('1,5 thousand');
+  });
+
+  it('applies comma decimals for fr-FR locale', () => {
+    const result = PreciseCompact.format(2_500_000, { locale: 'fr-FR' });
+    expect(result).toBe('2,5 million');
+  });
+
+  it('keeps dot decimals for en-US locale', () => {
+    const result = PreciseCompact.format(2100, { locale: 'en-US' });
+    expect(result).toBe('2.1 thousand');
   });
 });

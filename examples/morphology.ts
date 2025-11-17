@@ -1,4 +1,4 @@
-// comments in English only
+
 import { createCompactFormatter, LocalePack } from '../src/precise-compact';
 
 const f = createCompactFormatter();
@@ -202,14 +202,14 @@ const ID: LocalePack = {
 };
 f.registerLocale(ID);
 
-// comments in English only
+
 
 // RU
 f.setAllowedFractions([0, 0.5]); // allow halves
 console.log(f.format(1_000, { locale: 'ru-RU' })); // "1 тысяча"
 console.log(f.format(2_000, { locale: 'ru-RU' })); // "2 тысячи"
 console.log(f.format(5_000, { locale: 'ru-RU' })); // "5 тысяч"
-console.log(f.format(1_500, { locale: 'ru-RU' })); // "1,5 тысячи" or "1.5 тысячи" depending on numberLocale
+console.log(f.format(1_500, { locale: 'ru-RU' })); // "1.5 тысячи" (raw numeric fallback)
 console.log(f.format(2_000_000, { locale: 'ru-RU' })); // "2 миллиона"
 
 // UK

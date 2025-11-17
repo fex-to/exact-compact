@@ -1,4 +1,4 @@
-// comments in English only
+
 import { globSync } from 'glob';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,8 +16,6 @@ const header =
   `      rtl?: boolean;\n` +
   `      joiner?: '' | ' ' | '\\u00A0' | '\\u202F';\n` +
   `      unitOrder?: 'after' | 'before';\n` +
-  `      numberLocale?: string;\n` +
-  `      numberOptions?: Intl.NumberFormatOptions;\n` +
   `      resolveLabel?: (\n` +
   `        unitKey: string,\n` +
   `        base: { words: string; abbr: string },\n` +

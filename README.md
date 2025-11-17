@@ -12,7 +12,7 @@
 - 🌐 **Systems**: international (thousand/million/billion/trillion), Indian (lakh/crore/arab/kharab), East Asia (wan/yi).
 - 🧠 **Morphology**: locale packs can implement grammar rules (plural, dual, case), e.g. Russian, Ukrainian, Arabic.
 - 📦 **On-demand i18n**: core ships with **English only**; optional locale packs live under `precise-compact/i18n/*`.
-- 🧩 **Intl-native**: relies on **Intl.NumberFormat** only (no custom decimal logic), robust fallback chain.
+- 🧩 **Bring-your-own numerals**: compact hits honor `locale` automatically; control raw fallbacks through `fallbackFn`.
 - ⚙️ **TypeScript-first** API; ESM & CJS exports; zero runtime deps.
 
 ---
@@ -94,37 +94,17 @@ PreciseCompact.format(25_000_000, { system: 'indian', style: 'abbr' }); // "2.5 
 PreciseCompact.format(10_000, { system: 'eastAsia' }); // "1 wan"
 PreciseCompact.format(100_000_000, { system: 'eastAsia' }); // "1 yi"
 ```
-```
 
-> ℹ️ For non-exact numbers (or values below the smallest unit), you can instruct the library to fallback to localized plain numbers:  
-> `format(1501, { fallback: 'locale', numberLocale: 'de-DE', numberOptions: { useGrouping: true } }) → "1.501"`
+```md
+> ℹ️ Non-exact numbers (or values below the smallest unit) reuse the original digits. Provide a `fallbackFn` if you want localized plain numbers:
+> ```ts
+> const nf = new Intl.NumberFormat('de-DE', { useGrouping: true });
+> PreciseCompact.format(1501, {
+>   fallbackFn: (value) => (typeof value === 'bigint' ? value.toString() : nf.format(value)),
+> }); // "1.501"
+> ```
 
----
-
-## Exactness rules
-
-- __Exact integer multiples:__ `k * unit` → formatted (`1_000 → 1 thousand`).
-- **Whitelisted fractions:** only those explicitly allowed by `setAllowedFractions([0, 0.5, 0.25, 0.1, ...])`.  
-   Example: `1.5 * 1000 → 1.5 thousand`, but `1.3 * 1000 → 1300` (fallback) unless `0.3` is allowed.
-- **No approximation:** Values like `1499`, `1501`, `999` fall back.
-
----
-
-## Internationalization (i18n)
-
-Core ships with **English** labels only. You can load **optional** locale packs **on demand**:
-
-```ts
-import { createCompactFormatter } from '@fex-to/precise-compact';
-
-// On-demand locale (tree-shakable)
-import ru from '@fex-to/precise-compact/i18n/ru'; // or any of ~50 packs in ./i18n
-
-const fmt = createCompactFormatter();
-fmt.registerLocale(ru);
-
-// Uses Russian morphology from the pack (see below)
-fmt.format(1000, { locale: 'ru' }); // "1 тысяча" / "2 тысячи" / "5 тысяч"
+> Compact hits already localize according to `locale`, so you only need custom logic for fallback cases.
 ```
 
 ### What is morphology?
@@ -154,7 +134,6 @@ const ruPack: LocalePack = {
     trillion: { words: 'триллион', abbr: 'трлн' },
   },
   rules: {
-    numberLocale: 'ru-RU',
     resolveLabel: (unit, base, factor, style) => {
       if (style === 'abbr') return base.abbr;
       const i = Math.floor(Math.abs(factor));
@@ -188,7 +167,6 @@ Each locale can implement:
 - `rules.resolveLabel(unitKey, base, factor, style)` → returns the string label.
 - `rules.joiner` (`" "`, `" "`, `""`), `rules.unitOrder` (`'after'` or `'before'`).
 - `rules.finalize(text)` for bidi marks, punctuation, etc.
-- `rules.numberLocale` / `rules.numberOptions`: passed to `Intl.NumberFormat`.
 
 ---
 
@@ -214,10 +192,8 @@ type LabelStyle = 'words' | 'abbr';
 interface FormatOptions {
   system?: SystemId; // default: 'international'
   style?: LabelStyle; // default: 'words'
-  fallback?: 'raw' | 'locale'; // default: 'raw'
+  fallbackFn?: (value: number | bigint) => string; // custom fallback when value isn't exact
   locale?: string; // labels locale override
-  numberLocale?: string; // Intl locale, e.g. 'ar-EG-u-nu-arab'
-  numberOptions?: Intl.NumberFormatOptions; // Intl options
 }
 
 interface CompactFormatter {
@@ -265,18 +241,19 @@ fmt.format(75_000, { system: 'indian' }); // "0.75 lakh"
 
 ### Fallback behavior
 
-- `fallback: 'raw'` (default) → return original value as string when not exact.
-- `fallback: 'locale'` → format plain number via `Intl.NumberFormat`.
+- Defaults to returning the original argument as a string whenever the value is not an exact match.
+- Supply `fallbackFn` to render those cases however you like (Intl, custom digit sets, etc.).
+- Compact hits already respect `locale`; rely on `fallbackFn` when values drop out of compact mode.
 
 ```ts
+const nf = new Intl.NumberFormat('de-DE', { useGrouping: true });
+
 fmt.format(1501, {
-  fallback: 'locale',
-  numberLocale: 'de-DE',
-  numberOptions: { useGrouping: true },
+  fallbackFn: (value) => (typeof value === 'bigint' ? value.toString() : nf.format(value)),
 }); // "1.501"
 ```
 
-Robust fallback chain for invalid locales: tries `numberLocale` → `defaultLocale` → `'en-US'` → `'en'`.
+You control locale/digit fallbacks inside the function. If a locale is unsupported by `Intl.NumberFormat`, catch the error or provide your own formatting logic.
 
 ### Below smallest unit
 
@@ -299,7 +276,7 @@ f.format(500); // "0.5 thousand"
 ## Design goals
 
 - **Deterministic**: never approximates; formats only exact matches.
-- **Native**: uses `Intl.NumberFormat` for numerals & separators.
+- **Native**: leans on `Intl.PluralRules`; you attach your preferred number formatter via `fallbackFn`.
 - **Composable**: locale packs are pure data + small rule hooks.
 - **Lightweight**: zero runtime deps; ESM/CJS builds; tree-shakeable i18n.
 
@@ -347,13 +324,13 @@ npm run prepublishOnly  # runs tests + build
 **A:** It rounds/approximates (e.g., `1499000 → 1.5M`). We need **exact** thresholds and custom systems + morphology.
 
 **Q: Does it support BigInt?**  
-**A:** Yes — input can be `number | bigint`. Fallback number rendering converts BigInt to number safely for display.
+**A:** Yes — input can be `number | bigint`. The default fallback returns the original digits; if you supply a `fallbackFn`, convert `bigint` values to strings before calling `Intl.NumberFormat` (or similar).
 
 **Q: How do I force localized fallback numbers?**  
-**A:** Use `fallback: 'locale'` with `numberLocale` and `numberOptions`.
+**A:** Pass `fallbackFn` and call `Intl.NumberFormat` (or any formatter) inside it. You control grouping, digit sets, and locale error handling there.
 
 **Q: How to handle RTL (Arabic/Hebrew)?**  
-**A:** Add `rules.finalize` to wrap with `\u200F` marks; choose digit sets via `numberLocale` (e.g., `'ar-EG-u-nu-arab'`).
+**A:** Add `rules.finalize` to wrap with `\u200F` marks; pick digit sets via your `fallbackFn` (e.g., `Intl.NumberFormat('ar-EG-u-nu-arab')`).
 
 ---
 
@@ -421,7 +398,7 @@ const zhCN: LocalePack = {
     yi: { words: '亿', abbr: '亿' },
     thousand: { words: '千', abbr: '千' },
   },
-  rules: { joiner: '', numberLocale: 'zh-CN' },
+  rules: { joiner: '' },
 };
 
 const fmt = createCompactFormatter();
