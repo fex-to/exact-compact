@@ -13,9 +13,9 @@ const localeEntries = Object.fromEntries(
 export default defineConfig([
   // Core bundle (+ d.ts)
   {
-    entry: { index: 'src/precise-compact.ts' },
+    entry: { index: 'src/index.ts' },
     format: ['esm', 'cjs'],
-    dts: { entry: { index: 'src/precise-compact.ts' } },
+    dts: { entry: { index: 'src/index.ts' } },
     sourcemap: true,
     clean: true,
     target: 'es2020',
