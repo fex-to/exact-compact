@@ -318,11 +318,21 @@ describe('Non-Western number systems', () => {
       const zh = preciseCompact({ locale: 'zh-CN' });
       const ja = preciseCompact({ locale: 'ja-JP' });
 
+      const enResult = en.format(10_000);
+      const hiResult = hi.format(10_000);
+      const zhResult = zh.format(10_000);
+      const jaResult = ja.format(10_000);
+
       console.log('\n=== 10,000 in different locales ===');
-      console.log('en-US:', en.format(10_000));
-      console.log('hi-IN:', hi.format(10_000));
-      console.log('zh-CN:', zh.format(10_000));
-      console.log('ja-JP:', ja.format(10_000));
+      console.log('en-US:', enResult);
+      console.log('hi-IN:', hiResult);
+      console.log('zh-CN:', zhResult);
+      console.log('ja-JP:', jaResult);
+
+      expect(enResult).toBeTruthy();
+      expect(hiResult).toBeTruthy();
+      expect(zhResult).toBeTruthy();
+      expect(jaResult).toBeTruthy();
     });
 
     it('compares 100,000,000 across locales', () => {
@@ -331,11 +341,21 @@ describe('Non-Western number systems', () => {
       const zh = preciseCompact({ locale: 'zh-CN' });
       const ja = preciseCompact({ locale: 'ja-JP' });
 
+      const enResult = en.format(100_000_000);
+      const hiResult = hi.format(100_000_000);
+      const zhResult = zh.format(100_000_000);
+      const jaResult = ja.format(100_000_000);
+
       console.log('\n=== 100,000,000 in different locales ===');
-      console.log('en-US:', en.format(100_000_000));
-      console.log('hi-IN:', hi.format(100_000_000));
-      console.log('zh-CN:', zh.format(100_000_000));
-      console.log('ja-JP:', ja.format(100_000_000));
+      console.log('en-US:', enResult);
+      console.log('hi-IN:', hiResult);
+      console.log('zh-CN:', zhResult);
+      console.log('ja-JP:', jaResult);
+
+      expect(enResult).toBeTruthy();
+      expect(hiResult).toBeTruthy();
+      expect(zhResult).toBeTruthy();
+      expect(jaResult).toBeTruthy();
     });
   });
 });

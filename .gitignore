@@ -134,3 +134,7 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Benchmark reports (generated artifacts)
+benchmarks/*-report.md
+!benchmarks/optimization-report.md

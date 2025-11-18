@@ -17,6 +17,7 @@ export default tseslint.config(
       // Убери строки ниже, если хочешь линтить примеры/скрипты
       'examples/**',
       'scripts/**',
+      'benchmarks/**',
     ],
   },
 
@@ -75,7 +76,7 @@ export default tseslint.config(
 
   // Vitest rules only for tests
   {
-    files: ['tests/**/*.{ts,tsx}'],
+    files: ['test/**/*.{ts,tsx}', 'tests/**/*.{ts,tsx}'],
     ...vitest.configs.recommended,
     rules: {
       ...vitest.configs.recommended.rules,
