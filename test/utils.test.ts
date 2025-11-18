@@ -1,12 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { isExactOnGrid, findScaleLevel } from '../src/utils';
+
 import { SCALE_LEVELS } from '../src/constants';
+import { isExactOnGrid, findScaleLevel } from '../src/utils';
 
 describe('utils', () => {
   describe('isExactOnGrid', () => {
     const thousandLevel = SCALE_LEVELS[0]; // scale=1000, d=1
-    const millionLevel = SCALE_LEVELS[1];  // scale=1000000, d=2
-    const billionLevel = SCALE_LEVELS[2];  // scale=1000000000, d=2
+    const millionLevel = SCALE_LEVELS[1]; // scale=1000000, d=2
+    const billionLevel = SCALE_LEVELS[2]; // scale=1000000000, d=2
     const trillionLevel = SCALE_LEVELS[3]; // scale=1000000000000, d=2
 
     describe('thousands level', () => {
@@ -75,7 +76,7 @@ describe('utils', () => {
     describe('boundary cases', () => {
       it('returns false for unsafe integers', () => {
         // Number that would overflow when scaled
-        const unsafeNumber = (Number.MAX_SAFE_INTEGER / 10) + 1;
+        const unsafeNumber = Number.MAX_SAFE_INTEGER / 10 + 1;
         expect(isExactOnGrid(unsafeNumber, thousandLevel)).toBe(false);
       });
 

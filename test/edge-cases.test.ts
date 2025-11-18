@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { preciseCompact } from '../src/formatter';
 
 /**
@@ -285,7 +286,7 @@ describe('Edge cases and boundaries', () => {
 
     it('handles numbers that overflow when scaled', () => {
       // Number that would overflow when multiplied by 100
-      const unsafeWhenScaled = (Number.MAX_SAFE_INTEGER / 100) + 1000000;
+      const unsafeWhenScaled = Number.MAX_SAFE_INTEGER / 100 + 1000000;
       const result = fmt.format(unsafeWhenScaled);
       // Should use regular format due to safety check
       expect(result).not.toMatch(/M|B|T/);

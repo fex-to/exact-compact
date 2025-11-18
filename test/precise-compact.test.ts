@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { preciseCompact } from '../src/formatter';
 
 describe('preciseCompact', () => {
@@ -271,11 +272,11 @@ describe('preciseCompact', () => {
         locale: 'de-DE',
         currency: 'EUR',
       });
-      
+
       const result1000 = fmt.format(1000);
       expect(result1000).toMatch(/1/);
       // German might use different compact notation
-      
+
       const result1500 = fmt.format(1500);
       expect(result1500).toMatch(/1[\s\u00A0.]?500/);
     });
@@ -285,10 +286,10 @@ describe('preciseCompact', () => {
         locale: 'ru-RU',
         currency: 'RUB',
       });
-      
+
       const result1000 = fmt.format(1000);
       expect(result1000).toMatch(/1/);
-      
+
       const result1000000 = fmt.format(1_000_000);
       expect(result1000000).toMatch(/1/);
     });
@@ -299,7 +300,7 @@ describe('preciseCompact', () => {
       const fmt = preciseCompact({
         locale: 'en-US',
       });
-      
+
       // A number that would overflow when multiplied
       const largeNumber = Number.MAX_SAFE_INTEGER / 10;
       const result = fmt.format(largeNumber);
@@ -311,9 +312,9 @@ describe('preciseCompact', () => {
       const fmt = preciseCompact({
         locale: 'en-US',
       });
-      
+
       // Number that when multiplied by 100 exceeds safe integer
-      const unsafeNumber = (Number.MAX_SAFE_INTEGER / 100) + 1_000_000;
+      const unsafeNumber = Number.MAX_SAFE_INTEGER / 100 + 1_000_000;
       const result = fmt.format(unsafeNumber);
       // Should use regular format
       expect(result).not.toMatch(/M|K/);
@@ -331,7 +332,7 @@ describe('preciseCompact', () => {
       expect(fmt.format(1_100)).toMatch(/K/);
       expect(fmt.format(1_200)).toMatch(/K/);
       expect(fmt.format(1_900)).toMatch(/K/);
-      
+
       // These should NOT be compact (more than 1 decimal place needed)
       expect(fmt.format(1_010)).not.toMatch(/K/);
       expect(fmt.format(1_050)).not.toMatch(/K/);
@@ -344,7 +345,7 @@ describe('preciseCompact', () => {
       expect(fmt.format(1_100_000)).toMatch(/M/);
       expect(fmt.format(1_230_000)).toMatch(/M/);
       expect(fmt.format(1_990_000)).toMatch(/M/);
-      
+
       // These should NOT be compact (more than 2 decimal places needed)
       expect(fmt.format(1_001_000)).not.toMatch(/M/);
       expect(fmt.format(1_005_000)).not.toMatch(/M/);

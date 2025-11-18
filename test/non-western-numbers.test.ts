@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { preciseCompact } from '../src/formatter';
 
 describe('Non-Western number systems', () => {

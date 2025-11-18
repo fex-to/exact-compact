@@ -1,9 +1,5 @@
 export { preciseCompact } from './formatter';
-export type { 
-  PreciseCompactOptions, 
-  PreciseCompactFormatter,
-  ScaleLevel,
-} from '../types';
+export type { PreciseCompactOptions, PreciseCompactFormatter, ScaleLevel } from '../types';
 export { SCALE_LEVELS } from './constants';
 export { isExactOnGrid, findScaleLevel } from './utils';
 

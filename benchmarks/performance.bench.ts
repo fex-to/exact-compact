@@ -1,4 +1,5 @@
 import { performance } from 'node:perf_hooks';
+
 import { preciseCompact } from '../src/formatter';
 
 interface BenchmarkCase {
@@ -31,19 +32,19 @@ const benchmarkCases: BenchmarkCase[] = [
   { name: 'Exact 1M', value: 1000000, locale: 'en-US' },
   { name: 'Exact 1.23M', value: 1230000, locale: 'en-US' },
   { name: 'Exact 1B', value: 1000000000, locale: 'en-US' },
-  
+
   // Non-exact numbers - regular format
   { name: 'Non-exact 1.15K', value: 1150, locale: 'en-US' },
   { name: 'Non-exact 1.234M', value: 1234567, locale: 'en-US' },
-  
+
   // Below 1000 - regular format
   { name: 'Small 500', value: 500, locale: 'en-US' },
   { name: 'Small 999.99', value: 999.99, locale: 'en-US' },
-  
+
   // With currency
   { name: 'Exact 1K EUR', value: 1000, locale: 'cs-CZ', currency: 'EUR' },
   { name: 'Non-exact 1.15K EUR', value: 1150, locale: 'cs-CZ', currency: 'EUR' },
-  
+
   // Different locales
   { name: 'Chinese 1万', value: 10000, locale: 'zh-CN' },
   { name: 'Japanese 1万', value: 10000, locale: 'ja-JP' },
@@ -67,35 +68,35 @@ function benchmark(fn: () => void, iterations: number): number {
 
 function runBenchmark(testCase: BenchmarkCase): BenchmarkResult {
   const { name, value, locale, currency } = testCase;
-  
+
   // Create formatters
   const smartFormatter = preciseCompact({ locale, currency });
-  
+
   const nativeCompact = new Intl.NumberFormat(locale, {
     notation: 'compact',
     compactDisplay: 'short',
     ...(currency ? { style: 'currency', currency } : { style: 'decimal' }),
   });
-  
+
   const nativeRegular = new Intl.NumberFormat(locale, {
     ...(currency ? { style: 'currency', currency } : { style: 'decimal' }),
   });
-  
+
   // Warmup
   warmup(() => smartFormatter.format(value), WARMUP_RUNS);
   warmup(() => nativeCompact.format(value), WARMUP_RUNS);
   warmup(() => nativeRegular.format(value), WARMUP_RUNS);
-  
+
   // Run benchmarks
   const smartTime = benchmark(() => smartFormatter.format(value), ITERATIONS);
   const compactTime = benchmark(() => nativeCompact.format(value), ITERATIONS);
   const regularTime = benchmark(() => nativeRegular.format(value), ITERATIONS);
-  
+
   // Calculate ops/sec
   const smartOps = Math.round((ITERATIONS / smartTime) * 1000);
   const compactOps = Math.round((ITERATIONS / compactTime) * 1000);
   const regularOps = Math.round((ITERATIONS / regularTime) * 1000);
-  
+
   return {
     case: name,
     smartCompactTime: smartTime,
@@ -142,9 +143,15 @@ for (const testCase of benchmarkCases) {
 }
 
 console.log('\n📊 Results:\n');
-console.log('┌─────────────────────────┬──────────────────┬─────────────┬─────────────┬─────────────┐');
-console.log('│ Case                    │ Output           │ Smart (ms)  │ Compact (ms)│ Regular (ms)│');
-console.log('├─────────────────────────┼──────────────────┼─────────────┼─────────────┼─────────────┤');
+console.log(
+  '┌─────────────────────────┬──────────────────┬─────────────┬─────────────┬─────────────┐',
+);
+console.log(
+  '│ Case                    │ Output           │ Smart (ms)  │ Compact (ms)│ Regular (ms)│',
+);
+console.log(
+  '├─────────────────────────┼──────────────────┼─────────────┼─────────────┼─────────────┤',
+);
 
 for (const result of results) {
   const caseName = result.case.padEnd(23);
@@ -152,11 +159,13 @@ for (const result of results) {
   const smartTime = formatTime(result.smartCompactTime).padStart(11);
   const compactTime = formatTime(result.nativeCompactTime).padStart(11);
   const regularTime = formatTime(result.nativeRegularTime).padStart(11);
-  
+
   console.log(`│ ${caseName} │ ${output} │ ${smartTime} │ ${compactTime} │ ${regularTime} │`);
 }
 
-console.log('└─────────────────────────┴──────────────────┴─────────────┴─────────────┴─────────────┘\n');
+console.log(
+  '└─────────────────────────┴──────────────────┴─────────────┴─────────────┴─────────────┘\n',
+);
 
 console.log('📈 Operations per second:\n');
 console.log('┌─────────────────────────┬──────────────┬──────────────┬──────────────┐');
@@ -168,7 +177,7 @@ for (const result of results) {
   const smartOps = formatNumber(result.smartCompactOps).padStart(12);
   const compactOps = formatNumber(result.nativeCompactOps).padStart(12);
   const regularOps = formatNumber(result.nativeRegularOps).padStart(12);
-  
+
   console.log(`│ ${caseName} │ ${smartOps} │ ${compactOps} │ ${regularOps} │`);
 }
 
@@ -183,7 +192,7 @@ for (const result of results) {
   const caseName = result.case.padEnd(23);
   const vsCompact = formatSpeedup(result.speedupVsCompact).padStart(20);
   const vsRegular = formatSpeedup(result.speedupVsRegular).padStart(20);
-  
+
   console.log(`│ ${caseName} │ ${vsCompact} │ ${vsRegular} │`);
 }
 
@@ -208,11 +217,11 @@ console.log(`  Smart vs Native Compact: ${formatSpeedup(avgSpeedupVsCompact)}`);
 console.log(`  Smart vs Native Regular: ${formatSpeedup(avgSpeedupVsRegular)}\n`);
 
 // Find best and worst cases
-const bestVsCompact = results.reduce((best, r) => 
-  r.speedupVsCompact > best.speedupVsCompact ? r : best
+const bestVsCompact = results.reduce((best, r) =>
+  r.speedupVsCompact > best.speedupVsCompact ? r : best,
 );
-const worstVsCompact = results.reduce((worst, r) => 
-  r.speedupVsCompact < worst.speedupVsCompact ? r : worst
+const worstVsCompact = results.reduce((worst, r) =>
+  r.speedupVsCompact < worst.speedupVsCompact ? r : worst,
 );
 
 console.log('🏆 Best case (vs Native Compact):');
@@ -239,9 +248,12 @@ Platform: ${process.platform} ${process.arch}
 
 | Case | Output | Smart (ms) | Compact (ms) | Regular (ms) | Smart ops/s | vs Compact | vs Regular |
 |------|--------|------------|--------------|--------------|-------------|------------|------------|
-${results.map(r => 
-  `| ${r.case} | ${r.output} | ${formatTime(r.smartCompactTime)} | ${formatTime(r.nativeCompactTime)} | ${formatTime(r.nativeRegularTime)} | ${formatNumber(r.smartCompactOps)} | ${formatSpeedup(r.speedupVsCompact)} | ${formatSpeedup(r.speedupVsRegular)} |`
-).join('\n')}
+${results
+  .map(
+    (r) =>
+      `| ${r.case} | ${r.output} | ${formatTime(r.smartCompactTime)} | ${formatTime(r.nativeCompactTime)} | ${formatTime(r.nativeRegularTime)} | ${formatNumber(r.smartCompactOps)} | ${formatSpeedup(r.speedupVsCompact)} | ${formatSpeedup(r.speedupVsRegular)} |`,
+  )
+  .join('\n')}
 
 ## Summary
 
