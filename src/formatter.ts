@@ -60,6 +60,7 @@ function createFormatters(options: PreciseCompactOptions) {
  */
 export function PreciseCompact(options: PreciseCompactOptions): PreciseCompactFormatter {
   const { regularFormatter, compactFormatters } = createFormatters(options);
+  const { fallbackFn } = options;
 
   return {
     format(value: number): string {
@@ -67,7 +68,7 @@ export function PreciseCompact(options: PreciseCompactOptions): PreciseCompactFo
 
       // For values below 1000, always use regular format
       if (abs < 1000) {
-        return regularFormatter.format(value);
+        return fallbackFn ? fallbackFn(value) : regularFormatter.format(value);
       }
 
       // Find the appropriate scale level
@@ -75,12 +76,12 @@ export function PreciseCompact(options: PreciseCompactOptions): PreciseCompactFo
 
       // If no level found, use regular format
       if (!level) {
-        return regularFormatter.format(value);
+        return fallbackFn ? fallbackFn(value) : regularFormatter.format(value);
       }
 
       // Check if the number is "exact" on the grid
       if (!isExactOnGrid(abs, level)) {
-        return regularFormatter.format(value);
+        return fallbackFn ? fallbackFn(value) : regularFormatter.format(value);
       }
 
       // Use compact format with pre-computed index

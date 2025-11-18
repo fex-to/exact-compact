@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-11-18
+
+### Added
+
+- **NEW**: `fallbackFn` option for custom handling of non-exact values
+  - Allows passing raw values to custom formatter function
+  - Useful for custom rounding, special formatting, or business logic
+  - Full control over non-compact number presentation
+
+### Tests
+
+- Added 8 new tests for `fallbackFn` feature
+- Achieved 100% code coverage (177 tests total)
+
 ## [1.1.0] - 2025-11-18
 
 ### Changed

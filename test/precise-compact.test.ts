@@ -353,3 +353,106 @@ describe('PreciseCompact', () => {
     });
   });
 });
+
+describe('Custom fallback function', () => {
+  it('uses fallbackFn for non-exact values', () => {
+    const fallbackFn = (value: number) => `~${Math.round(value / 100) * 100}`;
+    const fmt = PreciseCompact({
+      locale: 'en-US',
+      fallbackFn,
+    });
+
+    // Exact values still use compact notation
+    expect(fmt.format(1000)).toBe('1K');
+    expect(fmt.format(1500)).toBe('1.5K');
+    expect(fmt.format(2000000)).toBe('2M');
+
+    // Non-exact values use fallbackFn
+    expect(fmt.format(1234)).toBe('~1200');
+    expect(fmt.format(1567)).toBe('~1600');
+    expect(fmt.format(999)).toBe('~1000');
+  });
+
+  it('uses fallbackFn for values below 1000', () => {
+    const fallbackFn = (value: number) => `custom:${value}`;
+    const fmt = PreciseCompact({
+      locale: 'en-US',
+      fallbackFn,
+    });
+
+    expect(fmt.format(500)).toBe('custom:500');
+    expect(fmt.format(123)).toBe('custom:123');
+  });
+
+  it('uses fallbackFn with currency', () => {
+    const fallbackFn = (value: number) =>
+      `≈${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value)}`;
+    const fmt = PreciseCompact({
+      locale: 'en-US',
+      currency: 'USD',
+      fallbackFn,
+    });
+
+    // Exact
+    expect(fmt.format(1000)).toBe('$1K');
+
+    // Non-exact uses fallbackFn
+    expect(fmt.format(1234)).toBe('≈$1,234');
+    expect(fmt.format(567)).toBe('≈$567');
+  });
+
+  it('fallbackFn receives negative values correctly', () => {
+    const fallbackFn = (value: number) => `fallback:${value}`;
+    const fmt = PreciseCompact({
+      locale: 'en-US',
+      fallbackFn,
+    });
+
+    expect(fmt.format(-1234)).toBe('fallback:-1234');
+    expect(fmt.format(-500)).toBe('fallback:-500');
+  });
+
+  it('works without fallbackFn (uses regular formatter)', () => {
+    const fmt = PreciseCompact({ locale: 'en-US' });
+
+    expect(fmt.format(1000)).toBe('1K');
+    expect(fmt.format(1234)).toBe('1,234');
+    expect(fmt.format(500)).toBe('500');
+  });
+});
+
+describe('Edge cases with fallbackFn', () => {
+  it('uses fallbackFn when no scale level found (very large numbers)', () => {
+    const fallbackFn = (value: number) => `huge:${value.toExponential(2)}`;
+    const fmt = PreciseCompact({
+      locale: 'en-US',
+      fallbackFn,
+    });
+
+    // Very large number beyond scale levels
+    const veryLarge = 1e20;
+    expect(fmt.format(veryLarge)).toBe(`huge:${veryLarge.toExponential(2)}`);
+  });
+
+  it('uses fallbackFn for special values', () => {
+    const fallbackFn = (value: number) => `special:${value}`;
+    const fmt = PreciseCompact({
+      locale: 'en-US',
+      fallbackFn,
+    });
+
+    // Special values use fallbackFn when provided
+    expect(fmt.format(Infinity)).toBe('special:Infinity');
+    expect(fmt.format(-Infinity)).toBe('special:-Infinity');
+    expect(fmt.format(NaN)).toBe('special:NaN');
+  });
+
+  it('uses regular formatter for special values without fallbackFn', () => {
+    const fmt = PreciseCompact({ locale: 'en-US' });
+
+    // Without fallbackFn, uses regular formatter
+    expect(fmt.format(Infinity)).toContain('∞');
+    expect(fmt.format(-Infinity)).toContain('∞');
+    expect(fmt.format(NaN)).toBe('NaN');
+  });
+});

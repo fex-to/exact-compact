@@ -8,6 +8,8 @@ export interface PreciseCompactOptions {
   currency?: string;
   /** Display format for compact notation: "short" (e.g., "1K") or "long" (e.g., "1 thousand") */
   compactDisplay?: 'short' | 'long';
+  /** Custom fallback function for non-exact numbers. If provided, will be called instead of regular formatter */
+  fallbackFn?: (value: number) => string;
 }
 
 /**
