@@ -1,6 +1,6 @@
 {
   "name": "@fex-to/precise-compact",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Intl.NumberFormat wrapper that shows compact notation (K, M, thousand, million, लाख, 万) ONLY for exact numbers. Prevents precision loss - returns regular format (1,234) for approximations instead of misleading compact notation.",
   "license": "MIT",
   "type": "module",
