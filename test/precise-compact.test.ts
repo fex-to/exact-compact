@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 
-import { preciseCompact } from '../src/formatter';
+import { PreciseCompact } from '../src/formatter';
 
-describe('preciseCompact', () => {
+describe('PreciseCompact', () => {
   describe('cs-CZ locale with EUR currency', () => {
-    const fmt = preciseCompact({
+    const fmt = PreciseCompact({
       locale: 'cs-CZ',
       currency: 'EUR',
     });
@@ -212,7 +212,7 @@ describe('preciseCompact', () => {
   });
 
   describe('en-US locale with USD currency', () => {
-    const fmt = preciseCompact({
+    const fmt = PreciseCompact({
       locale: 'en-US',
       currency: 'USD',
     });
@@ -236,7 +236,7 @@ describe('preciseCompact', () => {
   });
 
   describe('without currency (decimal style)', () => {
-    const fmt = preciseCompact({
+    const fmt = PreciseCompact({
       locale: 'en-US',
     });
 
@@ -268,7 +268,7 @@ describe('preciseCompact', () => {
 
   describe('different locales', () => {
     it('formats with de-DE locale', () => {
-      const fmt = preciseCompact({
+      const fmt = PreciseCompact({
         locale: 'de-DE',
         currency: 'EUR',
       });
@@ -282,7 +282,7 @@ describe('preciseCompact', () => {
     });
 
     it('formats with ru-RU locale', () => {
-      const fmt = preciseCompact({
+      const fmt = PreciseCompact({
         locale: 'ru-RU',
         currency: 'RUB',
       });
@@ -297,7 +297,7 @@ describe('preciseCompact', () => {
 
   describe('safe integer boundary', () => {
     it('handles numbers near MAX_SAFE_INTEGER', () => {
-      const fmt = preciseCompact({
+      const fmt = PreciseCompact({
         locale: 'en-US',
       });
 
@@ -309,7 +309,7 @@ describe('preciseCompact', () => {
     });
 
     it('rejects numbers that overflow safe integer check', () => {
-      const fmt = preciseCompact({
+      const fmt = PreciseCompact({
         locale: 'en-US',
       });
 
@@ -322,7 +322,7 @@ describe('preciseCompact', () => {
   });
 
   describe('precision validation', () => {
-    const fmt = preciseCompact({
+    const fmt = PreciseCompact({
       locale: 'en-US',
     });
 

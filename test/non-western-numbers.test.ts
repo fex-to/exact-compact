@@ -1,15 +1,15 @@
 import { describe, it, expect } from 'vitest';
 
-import { preciseCompact } from '../src/formatter';
+import { PreciseCompact } from '../src/formatter';
 
 describe('Non-Western number systems', () => {
   describe('Indian numbering system (hi-IN)', () => {
-    const fmt = preciseCompact({
+    const fmt = PreciseCompact({
       locale: 'hi-IN',
       currency: 'INR',
     });
 
-    const fmtDecimal = preciseCompact({
+    const fmtDecimal = PreciseCompact({
       locale: 'hi-IN',
     });
 
@@ -57,7 +57,7 @@ describe('Non-Western number systems', () => {
   });
 
   describe('Arabic/Urdu numbering system (ar-SA)', () => {
-    const fmt = preciseCompact({
+    const fmt = PreciseCompact({
       locale: 'ar-SA',
     });
 
@@ -85,7 +85,7 @@ describe('Non-Western number systems', () => {
   });
 
   describe('Ukrainian numbering system (uk-UA)', () => {
-    const fmt = preciseCompact({
+    const fmt = PreciseCompact({
       locale: 'uk-UA',
       compactDisplay: 'long',
     });
@@ -116,7 +116,7 @@ describe('Non-Western number systems', () => {
   });
 
   describe('Thai numbering system (th-TH)', () => {
-    const fmt = preciseCompact({
+    const fmt = PreciseCompact({
       locale: 'th-TH',
       compactDisplay: 'long',
     });
@@ -144,12 +144,12 @@ describe('Non-Western number systems', () => {
   });
 
   describe('Chinese numbering system (zh-CN)', () => {
-    const fmt = preciseCompact({
+    const fmt = PreciseCompact({
       locale: 'zh-CN',
       currency: 'CNY',
     });
 
-    const fmtDecimal = preciseCompact({
+    const fmtDecimal = PreciseCompact({
       locale: 'zh-CN',
     });
 
@@ -202,12 +202,12 @@ describe('Non-Western number systems', () => {
   });
 
   describe('Japanese numbering system (ja-JP)', () => {
-    const fmt = preciseCompact({
+    const fmt = PreciseCompact({
       locale: 'ja-JP',
       currency: 'JPY',
     });
 
-    const fmtDecimal = preciseCompact({
+    const fmtDecimal = PreciseCompact({
       locale: 'ja-JP',
     });
 
@@ -237,12 +237,12 @@ describe('Non-Western number systems', () => {
   });
 
   describe('Korean numbering system (ko-KR)', () => {
-    const fmt = preciseCompact({
+    const fmt = PreciseCompact({
       locale: 'ko-KR',
       currency: 'KRW',
     });
 
-    const fmtDecimal = preciseCompact({
+    const fmtDecimal = PreciseCompact({
       locale: 'ko-KR',
     });
 
@@ -271,12 +271,12 @@ describe('Non-Western number systems', () => {
   });
 
   describe('Pakistani/Urdu numbering system (ur-PK)', () => {
-    const fmt = preciseCompact({
+    const fmt = PreciseCompact({
       locale: 'ur-PK',
       currency: 'PKR',
     });
 
-    const fmtDecimal = preciseCompact({
+    const fmtDecimal = PreciseCompact({
       locale: 'ur-PK',
     });
 
@@ -313,10 +313,10 @@ describe('Non-Western number systems', () => {
 
   describe('Comparison: Same numbers in different locales', () => {
     it('compares 10,000 across locales', () => {
-      const en = preciseCompact({ locale: 'en-US' });
-      const hi = preciseCompact({ locale: 'hi-IN' });
-      const zh = preciseCompact({ locale: 'zh-CN' });
-      const ja = preciseCompact({ locale: 'ja-JP' });
+      const en = PreciseCompact({ locale: 'en-US' });
+      const hi = PreciseCompact({ locale: 'hi-IN' });
+      const zh = PreciseCompact({ locale: 'zh-CN' });
+      const ja = PreciseCompact({ locale: 'ja-JP' });
 
       const enResult = en.format(10_000);
       const hiResult = hi.format(10_000);
@@ -336,10 +336,10 @@ describe('Non-Western number systems', () => {
     });
 
     it('compares 100,000,000 across locales', () => {
-      const en = preciseCompact({ locale: 'en-US' });
-      const hi = preciseCompact({ locale: 'hi-IN' });
-      const zh = preciseCompact({ locale: 'zh-CN' });
-      const ja = preciseCompact({ locale: 'ja-JP' });
+      const en = PreciseCompact({ locale: 'en-US' });
+      const hi = PreciseCompact({ locale: 'hi-IN' });
+      const zh = PreciseCompact({ locale: 'zh-CN' });
+      const ja = PreciseCompact({ locale: 'ja-JP' });
 
       const enResult = en.format(100_000_000);
       const hiResult = hi.format(100_000_000);

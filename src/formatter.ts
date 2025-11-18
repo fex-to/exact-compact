@@ -50,7 +50,7 @@ function createFormatters(options: PreciseCompactOptions) {
  * @returns PreciseCompactFormatter instance
  *
  * @example
- * const fmt = preciseCompact({ locale: 'cs-CZ', currency: 'EUR' });
+ * const fmt = PreciseCompact({ locale: 'cs-CZ', currency: 'EUR' });
  *
  * fmt.format(1000)      // "1 tis. EUR" (compact - exact)
  * fmt.format(1100)      // "1,1 tis. EUR" (compact - exact)
@@ -58,7 +58,7 @@ function createFormatters(options: PreciseCompactOptions) {
  * fmt.format(1000000)   // "1 mil. EUR" (compact - exact)
  * fmt.format(1234567)   // "1 234 567,00 €" (regular - not exact)
  */
-export function preciseCompact(options: PreciseCompactOptions): PreciseCompactFormatter {
+export function PreciseCompact(options: PreciseCompactOptions): PreciseCompactFormatter {
   const { regularFormatter, compactFormatters } = createFormatters(options);
 
   return {

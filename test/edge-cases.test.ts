@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 
-import { preciseCompact } from '../src/formatter';
+import { PreciseCompact } from '../src/formatter';
 
 /**
  * Comprehensive edge cases and boundary tests
  * Ensures all formatting rules and exceptions are covered
  */
 describe('Edge cases and boundaries', () => {
-  const fmt = preciseCompact({ locale: 'en-US' });
-  const fmtCurrency = preciseCompact({ locale: 'en-US', currency: 'USD' });
+  const fmt = PreciseCompact({ locale: 'en-US' });
+  const fmtCurrency = PreciseCompact({ locale: 'en-US', currency: 'USD' });
 
   describe('Below 1000 - always regular format', () => {
     it('formats 0', () => {

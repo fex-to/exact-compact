@@ -1,6 +1,6 @@
 import { performance } from 'node:perf_hooks';
 
-import { preciseCompact } from '../src/formatter';
+import { PreciseCompact } from '../src/formatter';
 
 interface BenchmarkCase {
   name: string;
@@ -70,7 +70,7 @@ function runBenchmark(testCase: BenchmarkCase): BenchmarkResult {
   const { name, value, locale, currency } = testCase;
 
   // Create formatters
-  const smartFormatter = preciseCompact({ locale, currency });
+  const smartFormatter = PreciseCompact({ locale, currency });
 
   const nativeCompact = new Intl.NumberFormat(locale, {
     notation: 'compact',

@@ -42,21 +42,21 @@ npm install @fex-to/precise-compact
 ## 🚀 Quick Start
 
 ```typescript
-import { preciseCompact } from '@fex-to/precise-compact';
+import { PreciseCompact } from '@fex-to/precise-compact';
 
 // Word-based notation (default: short forms like K, M)
-const format = preciseCompact({ 
+const format = PreciseCompact({
   locale: 'en-US',
-  compactDisplay: 'long'  // 👈 Use words instead of letters
+  compactDisplay: 'long', // 👈 Use words instead of letters
 });
 
 // ✅ Exact values → compact notation
-format.format(1000);      // "1 thousand"
-format.format(1500);      // "1.5 thousand"
-format.format(2500000);   // "2.5 million"
+format.format(1000); // "1 thousand"
+format.format(1500); // "1.5 thousand"
+format.format(2500000); // "2.5 million"
 
 // ❌ Non-exact values → regular format (not "1.2K" which would be misleading)
-format.format(1234);      // "1,234" (not "1.2 thousand")
+format.format(1234); // "1,234" (not "1.2 thousand")
 ```
 
 ## 💡 Usage
@@ -65,91 +65,91 @@ format.format(1234);      // "1,234" (not "1.2 thousand")
 
 ```typescript
 // English words
-const formatEN = preciseCompact({ locale: 'en-US', compactDisplay: 'long' });
-formatEN.format(1000);         // "1 thousand"
-formatEN.format(1000000);      // "1 million"
-formatEN.format(1000000000);   // "1 billion"
+const formatEN = PreciseCompact({ locale: 'en-US', compactDisplay: 'long' });
+formatEN.format(1000); // "1 thousand"
+formatEN.format(1000000); // "1 million"
+formatEN.format(1000000000); // "1 billion"
 
 // Russian words
-const formatRU = preciseCompact({ locale: 'ru-RU', compactDisplay: 'long' });
-formatRU.format(1000);         // "1 тысяча"
-formatRU.format(1000000);      // "1 миллион"
-formatRU.format(1000000000);   // "1 миллиард"
+const formatRU = PreciseCompact({ locale: 'ru-RU', compactDisplay: 'long' });
+formatRU.format(1000); // "1 тысяча"
+formatRU.format(1000000); // "1 миллион"
+formatRU.format(1000000000); // "1 миллиард"
 
 // German words
-const formatDE = preciseCompact({ locale: 'de-DE', compactDisplay: 'long' });
-formatDE.format(1000);         // "1 Tausend"
-formatDE.format(1000000);      // "1 Million"
+const formatDE = PreciseCompact({ locale: 'de-DE', compactDisplay: 'long' });
+formatDE.format(1000); // "1 Tausend"
+formatDE.format(1000000); // "1 Million"
 
 // Ukrainian words
-const formatUA = preciseCompact({ locale: 'uk-UA', compactDisplay: 'long' });
-formatUA.format(1000);         // "1 тисяча"
-formatUA.format(1000000);      // "1 мільйон"
-formatUA.format(1000000000);   // "1 мільярд"
+const formatUA = PreciseCompact({ locale: 'uk-UA', compactDisplay: 'long' });
+formatUA.format(1000); // "1 тисяча"
+formatUA.format(1000000); // "1 мільйон"
+formatUA.format(1000000000); // "1 мільярд"
 
 // Short forms (K, M, B, T)
-const formatShort = preciseCompact({ locale: 'en-US', compactDisplay: 'short' });
-formatShort.format(1500);      // "1.5K" (default behavior)
+const formatShort = PreciseCompact({ locale: 'en-US', compactDisplay: 'short' });
+formatShort.format(1500); // "1.5K" (default behavior)
 ```
 
 ### Currency & Locales
 
 ```typescript
-const formatUSD = preciseCompact({ locale: 'en-US', currency: 'USD' });
-formatUSD.format(1500);      // "$1.5K"
-formatUSD.format(1234);      // "$1,234.00"
+const formatUSD = PreciseCompact({ locale: 'en-US', currency: 'USD' });
+formatUSD.format(1500); // "$1.5K"
+formatUSD.format(1234); // "$1,234.00"
 
-const formatEUR = preciseCompact({ locale: 'de-DE', currency: 'EUR' });
-formatEUR.format(1000);      // "1 Tsd. €"
+const formatEUR = PreciseCompact({ locale: 'de-DE', currency: 'EUR' });
+formatEUR.format(1000); // "1 Tsd. €"
 ```
 
 ### Non-Western Numbering Systems 🌏
 
 ```typescript
 // 🇮🇳 Indian numbering system (लाख = lakh = 100,000 | करोड़ = crore = 10,000,000)
-const formatHI = preciseCompact({ locale: 'hi-IN', compactDisplay: 'long' });
-formatHI.format(100000);       // "1 लाख"
-formatHI.format(150000);       // "1.5 लाख"
-formatHI.format(10000000);     // "1 करोड़"
+const formatHI = PreciseCompact({ locale: 'hi-IN', compactDisplay: 'long' });
+formatHI.format(100000); // "1 लाख"
+formatHI.format(150000); // "1.5 लाख"
+formatHI.format(10000000); // "1 करोड़"
 
 // 🇨🇳 Chinese (万 = wan = 10,000 | 億 = yi = 100,000,000)
-const formatZH = preciseCompact({ locale: 'zh-CN' });
-formatZH.format(10000);        // "1万"
-formatZH.format(100000000);    // "1亿"
+const formatZH = PreciseCompact({ locale: 'zh-CN' });
+formatZH.format(10000); // "1万"
+formatZH.format(100000000); // "1亿"
 
 // 🇯🇵 Japanese (万 = man = 10,000 | 億 = oku = 100,000,000)
-const formatJA = preciseCompact({ locale: 'ja-JP' });
-formatJA.format(10000);        // "1万"
-formatJA.format(100000000);    // "1億"
+const formatJA = PreciseCompact({ locale: 'ja-JP' });
+formatJA.format(10000); // "1万"
+formatJA.format(100000000); // "1億"
 
 // 🇰🇷 Korean (만 = man = 10,000 | 억 = eok = 100,000,000)
-const formatKO = preciseCompact({ locale: 'ko-KR' });
-formatKO.format(10000);        // "1만"
-formatKO.format(100000000);    // "1억"
+const formatKO = PreciseCompact({ locale: 'ko-KR' });
+formatKO.format(10000); // "1만"
+formatKO.format(100000000); // "1억"
 
 // 🇹🇭 Thai (พัน = thousand | ล้าน = million)
-const formatTH = preciseCompact({ locale: 'th-TH', compactDisplay: 'long' });
-formatTH.format(1000);         // "1 พัน"
-formatTH.format(1000000);      // "1 ล้าน"
+const formatTH = PreciseCompact({ locale: 'th-TH', compactDisplay: 'long' });
+formatTH.format(1000); // "1 พัน"
+formatTH.format(1000000); // "1 ล้าน"
 
 // 🇸🇦 Arabic (ألف = thousand | مليون = million)
-const formatAR = preciseCompact({ locale: 'ar-SA', compactDisplay: 'long' });
-formatAR.format(1000);         // "١ ألف"
-formatAR.format(1000000);      // "١ مليون"
+const formatAR = PreciseCompact({ locale: 'ar-SA', compactDisplay: 'long' });
+formatAR.format(1000); // "١ ألف"
+formatAR.format(1000000); // "١ مليون"
 ```
 
 ## 📖 API
 
-### `preciseCompact(options)`
+### `PreciseCompact(options)`
 
 Creates a formatter instance.
 
 **Parameters:**
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `locale` | `string` | `"en-US"` | BCP 47 locale code (supports all `Intl` locales) |
-| `currency` | `string` | — | ISO currency code (e.g., `"USD"`, `"EUR"`, `"INR"`) |
+| Option           | Type                | Default   | Description                                                              |
+| ---------------- | ------------------- | --------- | ------------------------------------------------------------------------ |
+| `locale`         | `string`            | `"en-US"` | BCP 47 locale code (supports all `Intl` locales)                         |
+| `currency`       | `string`            | —         | ISO currency code (e.g., `"USD"`, `"EUR"`, `"INR"`)                      |
 | `compactDisplay` | `"short" \| "long"` | `"short"` | **`"long"`** for words (thousand, लाख), **`"short"`** for letters (K, M) |
 
 **Returns:** `{ format(value: number): string }`
@@ -166,13 +166,13 @@ A number is "exact" if it can be represented without approximation. **Non-exact 
 
 **Examples:**
 
-| Input | Output | Reason |
-|-------|--------|--------|
-| `1000` | `"1K"` | ✅ Exact: 1000 ÷ 1000 = 1 |
-| `1500` | `"1.5K"` | ✅ Exact: 1500 ÷ 1000 = 1.5 (1 decimal) |
-| `1234` | `"1,234"` | ❌ Not exact → regular format (not "1.2K") |
-| `1000000` | `"1M"` | ✅ Exact: 1M ÷ 1M = 1 |
-| `1230000` | `"1.23M"` | ✅ Exact: 1.23M with 2 decimals |
+| Input     | Output        | Reason                                      |
+| --------- | ------------- | ------------------------------------------- |
+| `1000`    | `"1K"`        | ✅ Exact: 1000 ÷ 1000 = 1                   |
+| `1500`    | `"1.5K"`      | ✅ Exact: 1500 ÷ 1000 = 1.5 (1 decimal)     |
+| `1234`    | `"1,234"`     | ❌ Not exact → regular format (not "1.2K")  |
+| `1000000` | `"1M"`        | ✅ Exact: 1M ÷ 1M = 1                       |
+| `1230000` | `"1.23M"`     | ✅ Exact: 1.23M with 2 decimals             |
 | `1234567` | `"1,234,567"` | ❌ Not exact → regular format (not "1.23M") |
 
 **Why?** Native `Intl.NumberFormat` with `notation: "compact"` would show `1234` as `"1.2K"`, losing precision. This library prevents that.
@@ -181,11 +181,11 @@ A number is "exact" if it can be represented without approximation. **Non-exact 
 
 Benchmark (100,000 iterations):
 
-| Implementation | Avg Time | Throughput |
-|----------------|----------|------------|
-| **preciseCompact** | 31ms | **3.2M ops/sec** |
-| Native compact | 30ms | 3.3M ops/sec |
-| **Overhead** | **+1ms** | **1.02× slower** |
+| Implementation     | Avg Time | Throughput       |
+| ------------------ | -------- | ---------------- |
+| **PreciseCompact** | 31ms     | **3.2M ops/sec** |
+| Native compact     | 30ms     | 3.3M ops/sec     |
+| **Overhead**       | **+1ms** | **1.02× slower** |
 
 Minimal performance cost (2%) for exact number detection.
 
