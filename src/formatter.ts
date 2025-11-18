@@ -83,9 +83,8 @@ export function preciseCompact(options: PreciseCompactOptions): PreciseCompactFo
         return regularFormatter.format(value);
       }
 
-      // Use compact format
-      const levelIndex = SCALE_LEVELS.indexOf(level);
-      return compactFormatters[levelIndex].format(value);
+      // Use compact format with pre-computed index
+      return compactFormatters[level.index].format(value);
     },
   };
 }

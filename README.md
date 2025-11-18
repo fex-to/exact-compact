@@ -6,10 +6,10 @@
 
 [![npm version](https://img.shields.io/npm/v/@fex-to/precise-compact.svg)](https://www.npmjs.com/package/@fex-to/precise-compact)
 [![npm downloads](https://img.shields.io/npm/dm/@fex-to/precise-compact.svg)](https://www.npmjs.com/package/@fex-to/precise-compact)
-[![CI](https://img.shields.io/github/actions/workflow/status/fex-to/precise-compact/ci.yml?branch=main)](https://github.com/fex-to/precise-compact/actions)
-[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/fex-to/precise-compact)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/fex-to/precise-compact)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 
 **Problem:** Native `Intl.NumberFormat` with `compact` notation shows `1234` as `"1.2K"` (loses precision)  
 **Solution:** This library shows `"1K"` or `"1 thousand"` for exact `1000`, but keeps `"1,234"` for non-exact `1234`
@@ -144,7 +144,7 @@ Creates a formatter instance.
 
 A number is "exact" if it can be represented without approximation. **Non-exact values fall back to regular format** to avoid misleading compact notation.
 
-```
+```sh
 (abs(value) × 10^decimals) % scale === 0
 ```
 

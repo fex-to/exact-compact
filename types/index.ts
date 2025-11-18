@@ -27,11 +27,15 @@ export interface PreciseCompactFormatter {
  */
 export interface ScaleLevel {
   /** Minimum absolute value for this level */
-  min: number;
+  readonly min: number;
   /** Maximum absolute value for this level (exclusive) */
-  max: number;
+  readonly max: number;
   /** Scale factor (e.g., 1000 for thousands) */
-  scale: number;
+  readonly scale: number;
   /** Maximum fraction digits allowed for "exact" numbers */
-  maxFractionDigits: number;
+  readonly maxFractionDigits: number;
+  /** Pre-computed index for fast lookup */
+  readonly index: number;
+  /** Pre-computed factor (10^maxFractionDigits) for performance */
+  readonly factor: number;
 }

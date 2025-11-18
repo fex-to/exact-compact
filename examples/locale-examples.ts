@@ -1,6 +1,8 @@
 /**
  * Examples demonstrating preciseCompact with different locales
  * Run: tsx examples/locale-examples.ts
+ * 
+ * Covers 11 locales: en-US, ru-RU, de-DE, uk-UA, cs-CZ, hi-IN, zh-CN, ja-JP, ko-KR, ar-SA
  */
 
 import { preciseCompact } from '../src/index';
@@ -80,6 +82,24 @@ console.log('10.000.000      →', deDE.format(10000000));     // "10 Millionen"
 console.log('1.000.000.000   →', deDE.format(1000000000));   // "1 Milliarde"
 console.log('1.234           →', deDE.format(1234));         // "1.234" (not exact)
 console.log('1.234.567       →', deDE.format(1234567));      // "1.234.567" (not exact)
+console.log();
+
+// ============================================================================
+// 🇺🇦 Ukrainian (Ukraine) - uk-UA
+// ============================================================================
+console.log('🇺🇦 UKRAINIAN (uk-UA) - Words (тисяча, мільйон, мільярд)');
+console.log('-'.repeat(80));
+const ukUA = preciseCompact({ locale: 'uk-UA', compactDisplay: 'long' });
+console.log('1 000           →', ukUA.format(1000));         // "1 тисяча"
+console.log('2 000           →', ukUA.format(2000));         // "2 тисячі"
+console.log('5 000           →', ukUA.format(5000));         // "5 тисяч"
+console.log('10 000          →', ukUA.format(10000));        // "10 тисяч"
+console.log('100 000         →', ukUA.format(100000));       // "100 тисяч"
+console.log('1 000 000       →', ukUA.format(1000000));      // "1 мільйон"
+console.log('2 000 000       →', ukUA.format(2000000));      // "2 мільйони"
+console.log('5 000 000       →', ukUA.format(5000000));      // "5 мільйонів"
+console.log('1 000 000 000   →', ukUA.format(1000000000));   // "1 мільярд"
+console.log('1 234           →', ukUA.format(1234));         // "1 234" (not exact)
 console.log();
 
 // ============================================================================

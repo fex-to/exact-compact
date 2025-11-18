@@ -24,10 +24,9 @@ import { SCALE_LEVELS } from './constants';
  * isExactOnGrid(1234567, SCALE_LEVELS[1])  // false: 1234567 * 100 = 123456700, 123456700 % 1000000 = 456700
  */
 export function isExactOnGrid(abs: number, level: ScaleLevel): boolean {
-  const { scale, maxFractionDigits } = level;
-  const factor = Math.pow(10, maxFractionDigits);
+  const { scale, factor } = level;
 
-  // Calculate the scaled value
+  // Calculate the scaled value using pre-computed factor
   const scaledValue = abs * factor;
 
   // Check if the scaled value is a safe integer

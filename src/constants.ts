@@ -15,29 +15,37 @@ import type { ScaleLevel } from '../types';
  * Level 4: Trillions and above (1T+)
  * - Allows up to 2 decimal places (e.g., 1.23T)
  */
-export const SCALE_LEVELS: ScaleLevel[] = [
+export const SCALE_LEVELS: ReadonlyArray<ScaleLevel> = [
   {
     min: 1000,
     max: 1_000_000,
     scale: 1000,
     maxFractionDigits: 1,
+    index: 0,
+    factor: 10, // 10^1
   },
   {
     min: 1_000_000,
     max: 1_000_000_000,
     scale: 1_000_000,
     maxFractionDigits: 2,
+    index: 1,
+    factor: 100, // 10^2
   },
   {
     min: 1_000_000_000,
     max: 1_000_000_000_000,
     scale: 1_000_000_000,
     maxFractionDigits: 2,
+    index: 2,
+    factor: 100, // 10^2
   },
   {
     min: 1_000_000_000_000,
     max: Infinity,
     scale: 1_000_000_000_000,
     maxFractionDigits: 2,
+    index: 3,
+    factor: 100, // 10^2
   },
-];
+] as const;
