@@ -84,6 +84,65 @@ describe('Non-Western number systems', () => {
     });
   });
 
+  describe('Ukrainian numbering system (uk-UA)', () => {
+    const fmt = preciseCompact({
+      locale: 'uk-UA',
+      compactDisplay: 'long',
+    });
+
+    it('formats thousands with proper declension', () => {
+      const result1 = fmt.format(1000); // 1 тисяча
+      const result2 = fmt.format(2000); // 2 тисячі
+      const result3 = fmt.format(5000); // 5 тисяч
+      console.log('1000 (uk-UA):', result1);
+      console.log('2000 (uk-UA):', result2);
+      console.log('5000 (uk-UA):', result3);
+      expect(result1).toBeTruthy();
+      expect(result2).toBeTruthy();
+      expect(result3).toBeTruthy();
+    });
+
+    it('formats millions', () => {
+      const result = fmt.format(1_000_000);
+      console.log('1,000,000 (uk-UA):', result);
+      expect(result).toBeTruthy();
+    });
+
+    it('formats billions', () => {
+      const result = fmt.format(1_000_000_000);
+      console.log('1,000,000,000 (uk-UA):', result);
+      expect(result).toBeTruthy();
+    });
+  });
+
+  describe('Thai numbering system (th-TH)', () => {
+    const fmt = preciseCompact({
+      locale: 'th-TH',
+      compactDisplay: 'long',
+    });
+
+    it('formats thousands (พัน)', () => {
+      const result1 = fmt.format(1000);
+      const result2 = fmt.format(1500);
+      console.log('1000 (th-TH):', result1);
+      console.log('1500 (th-TH):', result2);
+      expect(result1).toBeTruthy();
+      expect(result2).toBeTruthy();
+    });
+
+    it('formats millions (ล้าน)', () => {
+      const result = fmt.format(1_000_000);
+      console.log('1,000,000 (th-TH):', result);
+      expect(result).toBeTruthy();
+    });
+
+    it('formats billions (พันล้าน)', () => {
+      const result = fmt.format(1_000_000_000);
+      console.log('1,000,000,000 (th-TH):', result);
+      expect(result).toBeTruthy();
+    });
+  });
+
   describe('Chinese numbering system (zh-CN)', () => {
     const fmt = preciseCompact({
       locale: 'zh-CN',

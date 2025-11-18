@@ -2,7 +2,7 @@
  * Examples demonstrating preciseCompact with different locales
  * Run: tsx examples/locale-examples.ts
  * 
- * Covers 11 locales: en-US, ru-RU, de-DE, uk-UA, cs-CZ, hi-IN, zh-CN, ja-JP, ko-KR, ar-SA
+ * Covers 12 locales: en-US, ru-RU, de-DE, uk-UA, cs-CZ, hi-IN, zh-CN, ja-JP, ko-KR, th-TH, ar-SA
  */
 
 import { preciseCompact } from '../src/index';
@@ -190,6 +190,24 @@ console.log('100,000,000 (eok)→', koKR.format(100000000));   // "1억"
 console.log('123,000,000     →', koKR.format(123000000));    // "1.23억"
 console.log('1,234           →', koKR.format(1234));         // "1,234" (not exact)
 console.log('12,345          →', koKR.format(12345));        // "12,345" (not exact)
+console.log();
+
+// ============================================================================
+// 🇹🇭 Thai (Thailand) - th-TH - Thai numbering system
+// ============================================================================
+console.log('🇹🇭 THAI (th-TH) - Thai system (พัน, ล้าน, พันล้าน)');
+console.log('-'.repeat(80));
+const thTH = preciseCompact({ locale: 'th-TH', compactDisplay: 'long' });
+console.log('1,000           →', thTH.format(1000));         // "1 พัน"
+console.log('1,500           →', thTH.format(1500));         // "1.5 พัน"
+console.log('10,000          →', thTH.format(10000));        // "10 พัน"
+console.log('100,000         →', thTH.format(100000));       // "100 พัน"
+console.log('1,000,000       →', thTH.format(1000000));      // "1 ล้าน"
+console.log('1,230,000       →', thTH.format(1230000));      // "1.23 ล้าน"
+console.log('10,000,000      →', thTH.format(10000000));     // "10 ล้าน"
+console.log('1,000,000,000   →', thTH.format(1000000000));   // "1 พันล้าน"
+console.log('1,234           →', thTH.format(1234));         // "1,234" (not exact)
+console.log('1,234,567       →', thTH.format(1234567));      // "1,234,567" (not exact)
 console.log();
 
 // ============================================================================

@@ -1,13 +1,19 @@
-name: CI & Publish
+name: Release & Publish
 
 on:
   push:
     tags:
       - 'v*.*.*'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'Dry run (skip publishing)'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 concurrency:
@@ -16,34 +22,65 @@ concurrency:
 
 jobs:
   verify-and-publish:
+    name: Verify & Publish to npm
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Use Node.js 20
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
 
-      - name: Install deps (CI)
+      - name: Install dependencies
         run: npm ci
 
       - name: Verify (typecheck, lint, test, build)
         run: npm run verify
 
-      - name: Publish to npm
+      - name: Validate version
         if: startsWith(github.ref, 'refs/tags/v')
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           PKG_VER=$(node -p "require('./package.json').version")
           TAG_VER=${GITHUB_REF#refs/tags/v}
+          echo "Package version: $PKG_VER"
+          echo "Tag version: $TAG_VER"
+          
           if [ "$PKG_VER" != "$TAG_VER" ]; then
-            echo "Package version ($PKG_VER) and tag ($TAG_VER) mismatch"; exit 1;
+            echo "❌ Version mismatch!"
+            echo "Package version ($PKG_VER) does not match tag ($TAG_VER)"
+            exit 1
           fi
+          
+          echo "✅ Version validation passed"
 
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v') && !inputs.dry-run
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          files: |
+            dist/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to npm
+        if: startsWith(github.ref, 'refs/tags/v') && !inputs.dry-run
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "📦 Publishing to npm..."
           npm publish --provenance --access public
+          echo "✅ Published successfully!"
+
+      - name: Dry run info
+        if: inputs.dry-run
+        run: |
+          echo "🏃 Dry run mode - skipping publish"
+          echo "Package would be published to: https://www.npmjs.com/package/@fex-to/precise-compact"

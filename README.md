@@ -14,7 +14,7 @@
 **Problem:** Native `Intl.NumberFormat` with `compact` notation shows `1234` as `"1.2K"` (loses precision)  
 **Solution:** This library shows `"1K"` or `"1 thousand"` for exact `1000`, but keeps `"1,234"` for non-exact `1234`
 
-Supports words (thousand, тысяча, लाख, 万) and all numbering systems (Western, Indian, Chinese, Japanese, Arabic)
+Supports words (thousand, тысяча, тисяча, लाख, 万, พัน) and all numbering systems (Western, Ukrainian, Indian, Chinese, Japanese, Korean, Thai, Arabic)
 
 [Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [API](#-api)
 
@@ -25,13 +25,13 @@ Supports words (thousand, тысяча, लाख, 万) and all numbering system
 ## ✨ Features
 
 - 🎯 **No approximations** — Shows compact (1.5K, "1.5 thousand") **only for exact values**. Returns regular format (1,234) for non-exact instead of misleading "1.2K"
-- 📝 **Word-based notation** — Display "thousand", "million", "тысяча", "миллион" instead of K, M
-- 🌏 **Multiple numbering systems** — Western (K, M, B, T), Indian (लाख, करोड़), Chinese/Japanese (万, 億), Arabic (ألف, مليون)
+- 📝 **Word-based notation** — Display "thousand", "million", "тысяча", "миллион", "тисяча", "мільйон" instead of K, M
+- 🌏 **Multiple numbering systems** — Western (K, M, B, T), Indian (लाख, करोड़), Chinese/Japanese/Korean (万, 億), Thai (พัน, ล้าน), Arabic (ألف, مليون)
 - 💱 **Currency support** — Works with all currencies: $1.5K, ₹1 लाख, ¥1万, €1 Tsd.
 - 🚀 **Zero dependencies** — Uses native `Intl.NumberFormat` API
 - ⚡ **High performance** — ~3.2M ops/sec with minimal 2% overhead
 - 📦 **Tiny & tree-shakeable** — ESM/CJS with full TypeScript types
-- ✅ **100% test coverage** — 163 tests including non-Western locales
+- ✅ **100% test coverage** — 169 tests including non-Western locales
 
 ## 📦 Installation
 
@@ -81,6 +81,12 @@ const formatDE = preciseCompact({ locale: 'de-DE', compactDisplay: 'long' });
 formatDE.format(1000);         // "1 Tausend"
 formatDE.format(1000000);      // "1 Million"
 
+// Ukrainian words
+const formatUA = preciseCompact({ locale: 'uk-UA', compactDisplay: 'long' });
+formatUA.format(1000);         // "1 тисяча"
+formatUA.format(1000000);      // "1 мільйон"
+formatUA.format(1000000000);   // "1 мільярд"
+
 // Short forms (K, M, B, T)
 const formatShort = preciseCompact({ locale: 'en-US', compactDisplay: 'short' });
 formatShort.format(1500);      // "1.5K" (default behavior)
@@ -115,6 +121,16 @@ formatZH.format(100000000);    // "1亿"
 const formatJA = preciseCompact({ locale: 'ja-JP' });
 formatJA.format(10000);        // "1万"
 formatJA.format(100000000);    // "1億"
+
+// 🇰🇷 Korean (만 = man = 10,000 | 억 = eok = 100,000,000)
+const formatKO = preciseCompact({ locale: 'ko-KR' });
+formatKO.format(10000);        // "1만"
+formatKO.format(100000000);    // "1억"
+
+// 🇹🇭 Thai (พัน = thousand | ล้าน = million)
+const formatTH = preciseCompact({ locale: 'th-TH', compactDisplay: 'long' });
+formatTH.format(1000);         // "1 พัน"
+formatTH.format(1000000);      // "1 ล้าน"
 
 // 🇸🇦 Arabic (ألف = thousand | مليون = million)
 const formatAR = preciseCompact({ locale: 'ar-SA', compactDisplay: 'long' });
@@ -177,7 +193,7 @@ Minimal performance cost (2%) for exact number detection.
 
 Requires `Intl.NumberFormat` with compact notation support:
 
-- ✅ Node.js 12+
+- ✅ Node.js 18.17+ or 20+
 - ✅ Chrome 77+, Firefox 78+, Safari 14.1+, Edge 79+
 - ✅ All modern browsers and runtimes (Deno, Bun, etc.)
 
