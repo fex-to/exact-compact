@@ -68,6 +68,10 @@
     "url": "https://github.com/sponsors/fex-to"
   },
   "packageManager": "npm@11.6.2",
+  "overrides": {
+    "glob": "^11.0.0",
+    "sucrase": "^3.35.0"
+  },
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
