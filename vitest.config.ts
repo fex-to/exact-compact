@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     globals: true,
     coverage: {
-      provider: 'v8',
+      provider: 'istanbul',
       reporter: ['text', 'html'],
       thresholds: {
         statements: 90,
