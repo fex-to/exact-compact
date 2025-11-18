@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { createSmartCompactFormatter } from '../src/formatter';
+import { preciseCompact } from '../src/formatter';
 
-describe('createSmartCompactFormatter', () => {
+describe('preciseCompact', () => {
   describe('cs-CZ locale with EUR currency', () => {
-    const fmt = createSmartCompactFormatter({
+    const fmt = preciseCompact({
       locale: 'cs-CZ',
       currency: 'EUR',
     });
@@ -211,7 +211,7 @@ describe('createSmartCompactFormatter', () => {
   });
 
   describe('en-US locale with USD currency', () => {
-    const fmt = createSmartCompactFormatter({
+    const fmt = preciseCompact({
       locale: 'en-US',
       currency: 'USD',
     });
@@ -235,7 +235,7 @@ describe('createSmartCompactFormatter', () => {
   });
 
   describe('without currency (decimal style)', () => {
-    const fmt = createSmartCompactFormatter({
+    const fmt = preciseCompact({
       locale: 'en-US',
     });
 
@@ -267,7 +267,7 @@ describe('createSmartCompactFormatter', () => {
 
   describe('different locales', () => {
     it('formats with de-DE locale', () => {
-      const fmt = createSmartCompactFormatter({
+      const fmt = preciseCompact({
         locale: 'de-DE',
         currency: 'EUR',
       });
@@ -281,7 +281,7 @@ describe('createSmartCompactFormatter', () => {
     });
 
     it('formats with ru-RU locale', () => {
-      const fmt = createSmartCompactFormatter({
+      const fmt = preciseCompact({
         locale: 'ru-RU',
         currency: 'RUB',
       });
@@ -296,7 +296,7 @@ describe('createSmartCompactFormatter', () => {
 
   describe('safe integer boundary', () => {
     it('handles numbers near MAX_SAFE_INTEGER', () => {
-      const fmt = createSmartCompactFormatter({
+      const fmt = preciseCompact({
         locale: 'en-US',
       });
       
@@ -308,7 +308,7 @@ describe('createSmartCompactFormatter', () => {
     });
 
     it('rejects numbers that overflow safe integer check', () => {
-      const fmt = createSmartCompactFormatter({
+      const fmt = preciseCompact({
         locale: 'en-US',
       });
       
@@ -321,7 +321,7 @@ describe('createSmartCompactFormatter', () => {
   });
 
   describe('precision validation', () => {
-    const fmt = createSmartCompactFormatter({
+    const fmt = preciseCompact({
       locale: 'en-US',
     });
 

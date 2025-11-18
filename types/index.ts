@@ -1,19 +1,21 @@
 /**
- * Options for creating a smart compact formatter
+ * Options for creating a precise compact formatter
  */
-export interface SmartCompactOptions {
+export interface PreciseCompactOptions {
   /** Locale string (e.g., "cs-CZ", "en-US") */
   locale: string;
   /** Optional currency code (e.g., "EUR"); if not provided, formats as decimal number */
   currency?: string;
+  /** Display format for compact notation: "short" (e.g., "1K") or "long" (e.g., "1 thousand") */
+  compactDisplay?: 'short' | 'long';
 }
 
 /**
- * Smart compact formatter interface
+ * Precise compact formatter interface
  */
-export interface SmartCompactFormatter {
+export interface PreciseCompactFormatter {
   /**
-   * Format a number with smart compact notation
+   * Format a number with precise compact notation
    * @param value - The number to format
    * @returns Formatted string
    */

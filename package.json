@@ -1,23 +1,17 @@
 {
   "name": "@fex-to/precise-compact",
-  "version": "0.0.16",
-  "description": "Exact compact number formatter with non-approximated units and per-locale morphology.",
+  "version": "1.0.0",
+  "description": "Intl.NumberFormat wrapper that shows compact notation (K, M, thousand, million, लाख, 万) ONLY for exact numbers. Prevents precision loss - returns regular format (1,234) for approximations instead of misleading compact notation.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "i18n/*": [
-        "types/i18n.d.ts"
-      ]
     }
   },
   "publishConfig": {
@@ -37,12 +31,42 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/fex-to/exact-compact"
+    "url": "https://github.com/fex-to/precise-compact"
   },
   "bugs": {
-    "url": "https://github.com/fex-to/exact-compact/issues"
+    "url": "https://github.com/fex-to/precise-compact/issues"
   },
-  "homepage": "https://github.com/fex-to/exact-compact#readme",
+  "homepage": "https://github.com/fex-to/precise-compact#readme",
+  "keywords": [
+    "intl",
+    "number-format",
+    "compact-notation",
+    "thousand",
+    "million",
+    "localization",
+    "i18n",
+    "formatting",
+    "precision",
+    "exact",
+    "indian-numbering",
+    "lakh",
+    "crore",
+    "wan",
+    "chinese-numbers",
+    "japanese-numbers",
+    "arabic-numbers",
+    "currency",
+    "word-based",
+    "typescript"
+  ],
+  "author": {
+    "name": "fex-to",
+    "url": "https://github.com/fex-to"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/fex-to"
+  },
   "packageManager": "npm@11.6.2",
   "scripts": {
     "clean": "rimraf dist",
@@ -56,6 +80,7 @@
     "format:check": "prettier --check .",
     "test": "vitest run --coverage",
     "bench": "tsx benchmarks/performance.bench.ts",
+    "examples": "tsx examples/locale-examples.ts",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run build",
     "prepare": "husky",
     "prepublishOnly": "npm run verify",

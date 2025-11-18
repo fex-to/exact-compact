@@ -1,4 +1,4 @@
-import type { SmartCompactOptions, SmartCompactFormatter } from '../types';
+import type { PreciseCompactOptions, PreciseCompactFormatter } from '../types';
 import { SCALE_LEVELS } from './constants';
 import { findScaleLevel, isExactOnGrid } from './utils';
 
@@ -8,7 +8,7 @@ import { findScaleLevel, isExactOnGrid } from './utils';
  * @param options - Formatter options
  * @returns Object with regular and compact formatters
  */
-function createFormatters(options: SmartCompactOptions) {
+function createFormatters(options: PreciseCompactOptions) {
   const { locale, currency } = options;
   
   // Base format options
@@ -39,17 +39,17 @@ function createFormatters(options: SmartCompactOptions) {
 }
 
 /**
- * Create a smart compact formatter with the given options
+ * Create a precise compact formatter with the given options
  * 
  * This formatter uses compact notation (e.g., "1K", "1.5M") only for "exact" numbers
  * that can be represented without approximation. For all other numbers, it uses
  * regular formatting.
  * 
  * @param options - Formatter options
- * @returns SmartCompactFormatter instance
+ * @returns PreciseCompactFormatter instance
  * 
  * @example
- * const fmt = createSmartCompactFormatter({ locale: 'cs-CZ', currency: 'EUR' });
+ * const fmt = preciseCompact({ locale: 'cs-CZ', currency: 'EUR' });
  * 
  * fmt.format(1000)      // "1 tis. EUR" (compact - exact)
  * fmt.format(1100)      // "1,1 tis. EUR" (compact - exact)
@@ -57,9 +57,9 @@ function createFormatters(options: SmartCompactOptions) {
  * fmt.format(1000000)   // "1 mil. EUR" (compact - exact)
  * fmt.format(1234567)   // "1 234 567,00 €" (regular - not exact)
  */
-export function createSmartCompactFormatter(
-  options: SmartCompactOptions
-): SmartCompactFormatter {
+export function preciseCompact(
+  options: PreciseCompactOptions
+): PreciseCompactFormatter {
   const { regularFormatter, compactFormatters } = createFormatters(options);
   
   return {

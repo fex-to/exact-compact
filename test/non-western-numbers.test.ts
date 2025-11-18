@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import { createSmartCompactFormatter } from '../src/formatter';
+import { preciseCompact } from '../src/formatter';
 
 describe('Non-Western number systems', () => {
   describe('Indian numbering system (hi-IN)', () => {
-    const fmt = createSmartCompactFormatter({
+    const fmt = preciseCompact({
       locale: 'hi-IN',
       currency: 'INR',
     });
 
-    const fmtDecimal = createSmartCompactFormatter({
+    const fmtDecimal = preciseCompact({
       locale: 'hi-IN',
     });
 
@@ -56,7 +56,7 @@ describe('Non-Western number systems', () => {
   });
 
   describe('Arabic/Urdu numbering system (ar-SA)', () => {
-    const fmt = createSmartCompactFormatter({
+    const fmt = preciseCompact({
       locale: 'ar-SA',
     });
 
@@ -84,12 +84,12 @@ describe('Non-Western number systems', () => {
   });
 
   describe('Chinese numbering system (zh-CN)', () => {
-    const fmt = createSmartCompactFormatter({
+    const fmt = preciseCompact({
       locale: 'zh-CN',
       currency: 'CNY',
     });
 
-    const fmtDecimal = createSmartCompactFormatter({
+    const fmtDecimal = preciseCompact({
       locale: 'zh-CN',
     });
 
@@ -142,12 +142,12 @@ describe('Non-Western number systems', () => {
   });
 
   describe('Japanese numbering system (ja-JP)', () => {
-    const fmt = createSmartCompactFormatter({
+    const fmt = preciseCompact({
       locale: 'ja-JP',
       currency: 'JPY',
     });
 
-    const fmtDecimal = createSmartCompactFormatter({
+    const fmtDecimal = preciseCompact({
       locale: 'ja-JP',
     });
 
@@ -177,12 +177,12 @@ describe('Non-Western number systems', () => {
   });
 
   describe('Korean numbering system (ko-KR)', () => {
-    const fmt = createSmartCompactFormatter({
+    const fmt = preciseCompact({
       locale: 'ko-KR',
       currency: 'KRW',
     });
 
-    const fmtDecimal = createSmartCompactFormatter({
+    const fmtDecimal = preciseCompact({
       locale: 'ko-KR',
     });
 
@@ -211,12 +211,12 @@ describe('Non-Western number systems', () => {
   });
 
   describe('Pakistani/Urdu numbering system (ur-PK)', () => {
-    const fmt = createSmartCompactFormatter({
+    const fmt = preciseCompact({
       locale: 'ur-PK',
       currency: 'PKR',
     });
 
-    const fmtDecimal = createSmartCompactFormatter({
+    const fmtDecimal = preciseCompact({
       locale: 'ur-PK',
     });
 
@@ -253,10 +253,10 @@ describe('Non-Western number systems', () => {
 
   describe('Comparison: Same numbers in different locales', () => {
     it('compares 10,000 across locales', () => {
-      const en = createSmartCompactFormatter({ locale: 'en-US' });
-      const hi = createSmartCompactFormatter({ locale: 'hi-IN' });
-      const zh = createSmartCompactFormatter({ locale: 'zh-CN' });
-      const ja = createSmartCompactFormatter({ locale: 'ja-JP' });
+      const en = preciseCompact({ locale: 'en-US' });
+      const hi = preciseCompact({ locale: 'hi-IN' });
+      const zh = preciseCompact({ locale: 'zh-CN' });
+      const ja = preciseCompact({ locale: 'ja-JP' });
 
       console.log('\n=== 10,000 in different locales ===');
       console.log('en-US:', en.format(10_000));
@@ -266,10 +266,10 @@ describe('Non-Western number systems', () => {
     });
 
     it('compares 100,000,000 across locales', () => {
-      const en = createSmartCompactFormatter({ locale: 'en-US' });
-      const hi = createSmartCompactFormatter({ locale: 'hi-IN' });
-      const zh = createSmartCompactFormatter({ locale: 'zh-CN' });
-      const ja = createSmartCompactFormatter({ locale: 'ja-JP' });
+      const en = preciseCompact({ locale: 'en-US' });
+      const hi = preciseCompact({ locale: 'hi-IN' });
+      const zh = preciseCompact({ locale: 'zh-CN' });
+      const ja = preciseCompact({ locale: 'ja-JP' });
 
       console.log('\n=== 100,000,000 in different locales ===');
       console.log('en-US:', en.format(100_000_000));
