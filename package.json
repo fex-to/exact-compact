@@ -70,7 +70,8 @@
   "packageManager": "npm@11.6.2",
   "overrides": {
     "glob": "^11.0.0",
-    "sucrase": "^3.35.0"
+    "sucrase": "^3.35.0",
+    "magicast": "^0.5.1"
   },
   "scripts": {
     "clean": "rimraf dist",
