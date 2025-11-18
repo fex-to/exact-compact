@@ -11,11 +11,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
-    },
-    "./i18n/*": {
-      "types": "./types/i18n.d.ts",
-      "import": "./dist/i18n/*.mjs",
-      "require": "./dist/i18n/*.cjs"
     }
   },
   "typesVersions": {
@@ -51,8 +46,7 @@
   "packageManager": "npm@11.6.2",
   "scripts": {
     "clean": "rimraf dist",
-    "generate:locales": "tsx scripts/generate-locales.ts",
-    "prebuild": "npm run clean && npm run generate:locales",
+    "prebuild": "npm run clean",
     "build": "tsup",
     "postbuild": "node scripts/postbuild-cjs-default.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -61,6 +55,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run --coverage",
+    "bench": "tsx benchmarks/performance.bench.ts",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run build",
     "prepare": "husky",
     "prepublishOnly": "npm run verify",
@@ -83,6 +78,7 @@
     "@types/node": "^24.10.1",
     "@vitest/coverage-v8": "^4.0.10",
     "@vitest/eslint-plugin": "^1.4.3",
+    "cheerio": "^1.1.2",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
